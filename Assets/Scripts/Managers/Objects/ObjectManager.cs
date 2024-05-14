@@ -6,6 +6,7 @@ using System.Linq;
 public class ObjectManager : Singleton<ObjectManager>
 {
     [SerializeField] private ObjectPool _objectPool;
+    public Transform globalObjectParent;
     private void Awake()
     {
         if(_objectPool == null)
@@ -13,22 +14,27 @@ public class ObjectManager : Singleton<ObjectManager>
             _objectPool = GetComponent<ObjectPool>();
         }
     }
-    public void SpawnObject(GameObject obj, ObjectType eObjectType, bool isPooling = true)
+    public void MakePool(GameObject obj, string objectCode)
     {
-        if(isPooling)
-        {
-            _objectPool.CreateObject(obj, eObjectType);
-        }
-        else
-        {
-            Instantiate(obj);
-        }
+        _objectPool.MakePool(obj, objectCode);
     }
-    public void RemoveObject(GameObject obj, ObjectType eObjectType, bool isPooling = true)
+    /// <summary>
+    /// Spawn object
+    /// </summary>
+    /// <param name="obj">Target of spawn object</param>
+    /// <param name="objectCode">Target object code. If object is not pooling object, can use null</param>
+    /// <param name="isPooling">Is pooling object?</param>
+    /// <returns>Spawned object</returns>
+    /// <exception cref="Exception">If pooling object, but object code is null, throw exception</exception>
+    public GameObject SpawnObject(GameObject obj, string objectCode, bool isPooling = true)
+    {
+        return isPooling ? _objectPool.CreateObject(obj, objectCode) : Instantiate(obj);
+    }
+    public void RemoveObject(GameObject obj, string objectCode, bool isPooling = true)
     {
         if(isPooling)
         {
-            _objectPool.RemoveObject(obj, eObjectType);
+            _objectPool.RemoveObject(obj, objectCode);
         }
         else
         {
