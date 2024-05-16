@@ -4,9 +4,25 @@ using UnityEngine;
 
 public class SamplePawn : Pawn
 {
+    protected override void OnMouseUp()
+    {
+        base.OnMouseUp();
+        ShowMoveRange();
+    }
+    protected override void ShowMoveRange()
+    {
+        // TODO : Show move range
+        GameManager.Instance.TurnEnd();
+    }
     public override void Move()
     {
+        if(!_isPlayerPawn)
+            StartCoroutine(EnemyMove());
+    }
+    public override IEnumerator EnemyMove()
+    {
         
+        yield break;
     }
     public override void Attack()
     {
@@ -24,7 +40,7 @@ public class SamplePawn : Pawn
     {
         
     }
-    public override void Die()
+    protected override void Die()
     {
         
     }

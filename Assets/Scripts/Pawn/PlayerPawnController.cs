@@ -14,7 +14,7 @@ public class PlayerPawnController : MonoBehaviour
         for(int i = 0; i < 3; i++)
         {
             var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, "PlayerPawn", true);
-            obj.transform.position = new Vector3(spawnPoints[i].x, 1, spawnPoints[i].y);
+            obj.transform.position = new Vector3(spawnPoints[i*8].x, 1, spawnPoints[0].y);
             obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
             obj.gameObject.name = $"PlayerPawn_{i}";
         }
