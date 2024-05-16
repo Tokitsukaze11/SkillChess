@@ -8,7 +8,9 @@ public class MapSpawner : MonoBehaviour
     [Header("Debugging Spawn")]
     public GameObject place;
     
-    private Vector2[] _places = new Vector2[64]; // x: 행, z: 열
+    private Vector2[] _square = new Vector2[64]; // x: 행, z: 열
+    private MapSquare[,] _mapSquares = new MapSquare[8, 8];
+    private Dictionary<Vector2,MapSquare> _mapSquareDic = new Dictionary<Vector2, MapSquare>();
     
     private void Awake()
     {
@@ -27,10 +29,14 @@ public class MapSpawner : MonoBehaviour
                 obj.transform.position = new Vector3(i * 1.5f, 0, j * 1.5f);
                 obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
                 obj.gameObject.name = $"Place_{i}_{j}";
-                _places[i * 8 + j] = new Vector2(i * 1.5f, j * 1.5f);
+                Vector2 spawnPoint = new Vector2(i * 1.5f, j * 1.5f);
+                _square[i * 8 + j] = spawnPoint;
+                _mapSquares[i, j] = obj.GetComponent<MapSquare>();
+                _mapSquareDic.Add(spawnPoint, _mapSquares[i, j]);
             }
         }
-        PawnManager.Instance.SpawnPoints = _places;
+        PawnManager.Instance.SpawnPoints = _square;
         PawnManager.Instance.SpawnPawn();
+        PawnManager.Instance.MapSquareDic = _mapSquareDic;
     }
 }
