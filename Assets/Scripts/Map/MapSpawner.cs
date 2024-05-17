@@ -16,7 +16,7 @@ public class MapSpawner : MonoBehaviour
     {
         ObjectManager.Instance.MakePool(place, StringKeys.MAP_PLACE);
     }
-    private void Start()
+    private void Start() // TODO : Will be called by other class
     {
         for (int i = 0; i < 8; i++)
         {
@@ -36,7 +36,7 @@ public class MapSpawner : MonoBehaviour
             }
         }
         PawnManager.Instance.SpawnPoints = _square;
-        PawnManager.Instance.SpawnPawn();
         PawnManager.Instance.MapSquareDic = _mapSquareDic;
+        PawnManager.Instance.SpawnPawn();
     }
 }

@@ -31,7 +31,7 @@ public class PawnManager : Singleton<PawnManager>
             select keyValuePair.Value).FirstOrDefault();
         return currentMapSquare;
     }
-    public void SpawnPawn()
+    public void SpawnPawn() // TODO : Will maybe get count of pawn
     {
         _playerPawnController.SpawnPlayerPawn(spawnPoints);
         _enemyPawnController.SpawnEnemyPawn(spawnPoints);
@@ -49,11 +49,25 @@ public class PawnManager : Singleton<PawnManager>
         var keys = _mapSquareDic.Keys.ToList();
         for (int i = 1; i <= movementRange; i++)
         {
-            CheckDirection(curKeyIndex + (i*8), 64, keys, targetSquares); //Right
+            /*CheckDirection(curKeyIndex + (i*8), 63, keys, targetSquares); //Right
             CheckDirection(curKeyIndex - (i*8), 0, keys, targetSquares); //Left
-            CheckDirection(curKeyIndex + i, 64, keys, targetSquares); //Up
-            CheckDirection(curKeyIndex - i, 0, keys, targetSquares); //Down
+            CheckDirection(curKeyIndex + i, 63, keys, targetSquares); //Up
+            CheckDirection(curKeyIndex - i, 0, keys, targetSquares); //Down*/
+            GetVerticalMoves();
+            GetHorizontalMoves();
         }
+    }
+    private void GetVerticalMoves()
+    {
+        // n*m (n 행 m 열)
+        // 위 = +1 => each n*(i(0~n)+1)-1 (마지막 행)
+        // 아래 = -1 => each n*i(0~n-1) (첫 행)
+    }
+    private void GetHorizontalMoves()
+    {
+        // n*m (n 행 m 열)
+        // 오른쪽 = +m => n*(m-1)~n*m-1 (마지막 열)
+        // 왼쪽 = -m => n*0~n*(m-1) (첫 열)
     }
     private void CheckDirection(int newKeyIndex, int boundary, List<Vector2> keys, List<MapSquare> targetSquares)
     {
@@ -61,7 +75,7 @@ public class PawnManager : Singleton<PawnManager>
         {
             var newKey = keys[newKeyIndex];
             var newSquare = GetCurrentMapSquare(newKey);
-            if (newSquare != null)
+            if (newSquare != null && newSquare.IsCanMove())
                 targetSquares.Add(newSquare);
         }
     }

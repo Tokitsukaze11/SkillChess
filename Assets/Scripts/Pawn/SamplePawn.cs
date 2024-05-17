@@ -7,29 +7,49 @@ public class SamplePawn : Pawn
 {
     protected override void OnMouseUp()
     {
-        base.OnMouseUp();
+        if (!_isPlayerPawn || !GameManager.Instance.IsPlayerTurn.Invoke())
+            return;
         ShowMoveRange();
     }
     protected override void ShowMoveRange()
     {
+        // Reset color
         PawnManager.Instance.ResetSquaresColor();
+        // Check now values
         var targetSquares = new List<MapSquare>();
-        Vector2 currentPos = new Vector2(transform.position.x, transform.position.z);
         var mapSquareDic = PawnManager.Instance.MapSquareDic;
-        MapSquare nowSquare = PawnManager.Instance.GetCurrentMapSquare(currentPos);
-        Vector2 nowKey = mapSquareDic.FirstOrDefault(x => x.Value == nowSquare).Key;
+        Vector2 nowKey = mapSquareDic.FirstOrDefault(x => x.Value == _curMapSquare).Key;
         var keys = mapSquareDic.Keys.ToList(); // 64개의 키값을 리스트로 변환 8x8
         var curKeyIndex = keys.IndexOf(nowKey); // 현재 키값의 인덱스
+        // Check target squares
         PawnManager.Instance.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares);
-        targetSquares.Where(x => x.IsCanMove()).ToList().ForEach(x => x.SetColor(Color.yellow));
-        //GameManager.Instance.TurnEnd();
+        targetSquares.Where(x => x.IsCanMove()).ToList().ForEach(x =>
+        {
+            x.SetColor(Color.yellow);
+            x.OnClickSquare += (mapSquare) =>
+            {
+                _moveTargetSquare = mapSquare;
+                Move();
+            };
+        });
     }
     public override void Move()
     {
         if(!_isPlayerPawn)
-            StartCoroutine(EnemyMove());
+            StartCoroutine(Co_EnemyMove());
+        
+        PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
+        
+        this.transform.position = new Vector3(_moveTargetSquare.transform.position.x, 1, _moveTargetSquare.transform.position.z);
+        // 위 코드는 애니메이션으로 대체되어야 함
+        
+        // 아래 코드는 이동이 끝나면 실행되어야 함 (일단 지금은 기능만 구현)
+        _curMapSquare.CurPawn = null;
+        _curMapSquare = _moveTargetSquare;
+        _moveTargetSquare.CurPawn = this;
+        GameManager.Instance.TurnEnd();
     }
-    public override IEnumerator EnemyMove()
+    public override IEnumerator Co_EnemyMove()
     {
         yield return new WaitForSeconds(3); // TODO : AI
         // 임시로 3초 대기 후 턴 종료

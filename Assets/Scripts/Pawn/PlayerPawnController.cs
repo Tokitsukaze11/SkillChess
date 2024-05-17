@@ -19,7 +19,9 @@ public class PlayerPawnController : MonoBehaviour
             obj.gameObject.name = $"PlayerPawn_{i}";
             var pawn = obj.GetComponent<SamplePawn>();
             pawn._isPlayerPawn = true;
-            
+            var curMapSquare = PawnManager.Instance.GetCurrentMapSquare(new Vector2(spawnPoints[i*8].x, spawnPoints[0].y));
+            curMapSquare.CurPawn = pawn;
+            pawn.CurMapSquare = curMapSquare;
         }
     }
     public void DespawnPlayerPawn()

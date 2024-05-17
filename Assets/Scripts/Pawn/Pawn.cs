@@ -10,17 +10,22 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected int _damage;
     [SerializeField] protected int _defense;
     [SerializeField] protected int _movementRange;
-    protected virtual void OnMouseUp()
+    protected MapSquare _curMapSquare;
+    public MapSquare CurMapSquare
     {
-        if (!_isPlayerPawn)
-            return;
+        set
+        {
+            _curMapSquare = value;
+        }
     }
+    protected MapSquare _moveTargetSquare;
+    protected abstract void OnMouseUp();
     protected virtual void ShowMoveRange()
     {
         
     }
     public abstract void Move();
-    public abstract IEnumerator EnemyMove();
+    public abstract IEnumerator Co_EnemyMove();
     public abstract void Attack();
     public abstract void Defend();
     public abstract void UseSkill();

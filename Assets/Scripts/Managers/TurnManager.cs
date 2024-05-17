@@ -9,6 +9,7 @@ public class TurnManager : MonoBehaviour
     private void Awake()
     {
         GameManager.Instance.OnTurnEnd += TurnChange;
+        GameManager.Instance.IsPlayerTurn = () => _isPlayerTurn;
     }
     private void TurnChange()
     {
@@ -18,10 +19,17 @@ public class TurnManager : MonoBehaviour
     }
     private void PlayerTurn()
     {
-        Debug.Log("Player Turn");
+        Debug.Log("<color=green>Player Turn</color>");
     }
     private void EnemyTurn()
     {
         Debug.Log("Enemy Turn");
+        Debug.Log("<color=red>3초후 플레이어 턴으로 전환합니다.</color>");
+        StartCoroutine(Co_EnemySample());
+    }
+    private IEnumerator Co_EnemySample()
+    {
+        yield return new WaitForSeconds(3f);
+        GameManager.Instance.TurnEnd();
     }
 }
