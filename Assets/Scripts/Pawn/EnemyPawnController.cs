@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyPawnController : MonoBehaviour
 {
     public GameObject enemyPawnPrefab;
-    private List<Pawn> _enemyPawns;
+    private List<Pawn> _enemyPawns = new List<Pawn>();
     private void Awake()
     {
         ObjectManager.Instance.MakePool(enemyPawnPrefab, "EnemyPawn");

@@ -53,18 +53,66 @@ public class PawnManager : Singleton<PawnManager>
             CheckDirection(curKeyIndex - (i*8), 0, keys, targetSquares); //Left
             CheckDirection(curKeyIndex + i, 63, keys, targetSquares); //Up
             CheckDirection(curKeyIndex - i, 0, keys, targetSquares); //Down*/
-            GetVerticalMoves();
-            GetHorizontalMoves();
+            GetVerticalMoves(i, curKeyIndex, targetSquares);
+            GetHorizontalMoves(i,curKeyIndex, targetSquares);
         }
     }
-    private void GetVerticalMoves()
+    private void GetVerticalMoves(int moveRange, int curKeyIndex, List<MapSquare> targetSquares)
     {
+        int n = 8;
+        int m = 8;
+        
+        int nowCol = curKeyIndex % n;
+        
+        // Check Up Direction
+        if (nowCol < m - 1)
+        {
+            for (int i = 1; i <= moveRange; i++)
+            {
+                int newKeyIndex = curKeyIndex + i;
+                CheckDirection(newKeyIndex, n * m, _mapSquareDic.Keys.ToList(), targetSquares);
+            }
+        }
+        // Check Down Direction
+        if (nowCol > 0)
+        {
+            for (int i = 1; i <= moveRange; i++)
+            {
+                int newKeyIndex = curKeyIndex - i;
+                CheckDirection(newKeyIndex, n * m , _mapSquareDic.Keys.ToList(), targetSquares);
+            }
+        }
+
         // n*m (n 행 m 열)
         // 위 = +1 => each n*(i(0~n)+1)-1 (마지막 행)
         // 아래 = -1 => each n*i(0~n-1) (첫 행)
     }
-    private void GetHorizontalMoves()
+    private void GetHorizontalMoves(int moveRange, int curKeyIndex, List<MapSquare> targetSquares)
     {
+        int n = 8;
+        int m = 8;
+
+        int nowRow = curKeyIndex / n;
+        
+        // Check Right Direction
+        if (nowRow < n - 1)
+        {
+            for (int i = 1; i <= moveRange; i++)
+            {
+                int newKeyIndex = curKeyIndex + (i * n);
+                CheckDirection(newKeyIndex, n * m, _mapSquareDic.Keys.ToList(), targetSquares);
+            }
+        }
+        // Check Left Direction
+        if (nowRow > 0)
+        {
+            for (int i = 1; i <= moveRange; i++)
+            {
+                int newKeyIndex = curKeyIndex - (i * n);
+                CheckDirection(newKeyIndex, n * m, _mapSquareDic.Keys.ToList(), targetSquares);
+            }
+        }
+
         // n*m (n 행 m 열)
         // 오른쪽 = +m => n*(m-1)~n*m-1 (마지막 열)
         // 왼쪽 = -m => n*0~n*(m-1) (첫 열)
