@@ -49,10 +49,6 @@ public class PawnManager : Singleton<PawnManager>
         var keys = _mapSquareDic.Keys.ToList();
         for (int i = 1; i <= movementRange; i++)
         {
-            /*CheckDirection(curKeyIndex + (i*8), 63, keys, targetSquares); //Right
-            CheckDirection(curKeyIndex - (i*8), 0, keys, targetSquares); //Left
-            CheckDirection(curKeyIndex + i, 63, keys, targetSquares); //Up
-            CheckDirection(curKeyIndex - i, 0, keys, targetSquares); //Down*/
             GetVerticalMoves(i, curKeyIndex, targetSquares);
             GetHorizontalMoves(i,curKeyIndex, targetSquares);
         }
@@ -123,51 +119,8 @@ public class PawnManager : Singleton<PawnManager>
         {
             var newKey = keys[newKeyIndex];
             var newSquare = GetCurrentMapSquare(newKey);
-            if (newSquare != null && newSquare.IsCanMove())
+            if (newSquare != null)
                 targetSquares.Add(newSquare);
         }
     }
-    #region Original CheckTargetSquares
-    /*public void CheckTargetSquares(int movementRange, int curKeyIndex, ref List<MapSquare> targetSquares)
-    {
-        var keys = _mapSquareDic.Keys.ToList();
-        for (int i = 1; i <= movementRange; i++)
-        {
-            // 오른쪽으로 간다 = x값이 증가한다 = 원래는 i,j로 되어 있던게 index로 변함, 0~63.
-            // i*8 + j 이렇게 저장되어 있음. 여기서 오른쪽으로 간다는 거는 i*8이 변한다는 것. 그래서 i가 증가함. 결국에는 이전과는 index의 차이가 8이 나는 것.
-            //여기서 moveRange만큼 이동 가능하다는 말은 1 ~ moveRange까지 이동 가능하다는 것. for문에서 i가 1부터 증가하니까
-            //즉, i가 1 증가할 때 마다 8씩 증가. 그렇다면 해당 숫자 만큼 증가 시킨 값이 64보다 작으면 이동 가능한 것.
-            if(curKeyIndex + (i*8) < 64) //Right
-            {
-                var newKey = keys[curKeyIndex + (i*8)];
-                var newSquare = PawnManager.Instance.GetCurrentMapSquare(newKey);
-                if (newSquare != null)
-                    targetSquares.Add(newSquare);
-            }
-            if (curKeyIndex - (i*8) >= 0) //Left
-            {
-                var newKey = keys[curKeyIndex - (i*8)];
-                var newSquare = PawnManager.Instance.GetCurrentMapSquare(newKey);
-                if (newSquare != null)
-                    targetSquares.Add(newSquare);
-            }
-            // 위로 간다 = y값이 증가한다 = 이번에는 j값이 증가한다. j만 증가하면 되니까 i는 그대로.
-            //for문을 기준으로 한다면 i만큼 증가시키면 된다.
-            if (curKeyIndex + i < 64) //Up
-            {
-                var newKey = keys[curKeyIndex + i];
-                var newSquare = PawnManager.Instance.GetCurrentMapSquare(newKey);
-                if (newSquare != null)
-                    targetSquares.Add(newSquare);
-            }
-            if (curKeyIndex - i >= 0) //Down
-            {
-                var newKey = keys[curKeyIndex - i];
-                var newSquare = PawnManager.Instance.GetCurrentMapSquare(newKey);
-                if (newSquare != null)
-                    targetSquares.Add(newSquare);
-            }
-        }
-    }*/
-  #endregion
 }

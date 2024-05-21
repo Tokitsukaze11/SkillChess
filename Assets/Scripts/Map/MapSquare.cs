@@ -17,6 +17,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
             _curPawn = value;
             _isOccupied = _curPawn != null;
         }
+        get => _curPawn;
     }
     public bool IsCanMove()
     {

@@ -125,3 +125,4 @@ MonoBehaviour:
   _damage: 0
   _defense: 0
   _movementRange: 1
+  _attackRange: 1
