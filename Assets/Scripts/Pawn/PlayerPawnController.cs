@@ -35,11 +35,17 @@ public class PlayerPawnController : MonoBehaviour
             var curMapSquare = PawnManager.Instance.GetCurrentMapSquare(new Vector2(spawnPoints[i*8].x, spawnPoints[0].y));
             curMapSquare.CurPawn = pawn;
             pawn.CurMapSquare = curMapSquare;
+            pawn.OnDie += PawnDie;
         }
     }
     public void DespawnPlayerPawn()
     {
         
+    }
+    private void PawnDie(Pawn diedPawn)
+    {
+        ObjectManager.Instance.RemoveObject(diedPawn.gameObject, "PlayerPawn",true);
+        // TODO : If pawn is king, game over
     }
     private void PawnBehaviorUIPanelActive(bool active, Pawn curPawn = null)
     {

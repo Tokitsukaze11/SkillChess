@@ -121,8 +121,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isPlayerPawn: 0
-  _health: 0
-  _damage: 0
+  _health: 100
+  _damage: 10
   _defense: 0
-  _movementRange: 1
+  _movementRange: 2
   _attackRange: 1

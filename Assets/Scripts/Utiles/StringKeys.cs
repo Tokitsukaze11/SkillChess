@@ -5,4 +5,5 @@ using UnityEngine;
 public static class StringKeys
 {
     public static readonly string MAP_PLACE = "MAP_PLACE";
+    public static readonly string DAMAGE = "DAMAGE";
 }

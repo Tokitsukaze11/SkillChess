@@ -31,6 +31,10 @@ public class ObjectPool : MonoBehaviour
         {
             throw new System.Exception("Object Code is cannot be null");
         }
+        if(!_objectPooling.ContainsKey(objectCode))
+        {
+            _objectPooling.Add(objectCode, new Queue<GameObject>());
+        }
         var targetQueue = _objectPooling[objectCode];
         if (targetQueue.Count != 0)
         {

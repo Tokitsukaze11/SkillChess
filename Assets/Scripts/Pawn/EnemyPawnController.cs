@@ -26,10 +26,17 @@ public class EnemyPawnController : MonoBehaviour
             curMapSquare.CurPawn = pawn;
             pawn.CurMapSquare = curMapSquare;
             _enemyPawns.Add(pawn);
+            pawn.OnDie += PawnDie;
         }
     }
     public void DespawnEnemyPawn()
     {
         
+    }
+    private void PawnDie(Pawn diedPawn)
+    {
+        _enemyPawns.Remove(diedPawn);
+        ObjectManager.Instance.RemoveObject(diedPawn.gameObject, "EnemyPawn",true);
+        // TODO : If pawn is king, game over
     }
 }

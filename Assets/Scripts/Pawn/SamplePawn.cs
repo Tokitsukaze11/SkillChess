@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using DG.Tweening;
+using TMPro;
 
 public class SamplePawn : Pawn
 {
@@ -101,10 +103,26 @@ public class SamplePawn : Pawn
     }
     public override void TakeDamage(int damage)
     {
-        Debug.Log($"{this.gameObject.name} takes {damage} damage");
+        _curHealth -= damage;
+        var damageParticle = UIManager.Instance.ShowUIParticle();
+        Vector3 pos = GameManager.Instance.mainCamera.GetComponent<Camera>().WorldToScreenPoint(this.transform.position);
+        var rect = damageParticle.GetComponent<RectTransform>();
+        rect.rect.Set(pos.x, pos.y, rect.rect.width, rect.rect.height);
+        var vector3 = damageParticle.transform.position;
+        vector3.z = 0;
+        damageParticle.transform.position = vector3;
+        damageParticle.GetComponent<TextMeshProUGUI>().text = damage.ToString();
+        /*float nowY = damageParticle.GetComponent<RectTransform>().anchoredPosition.y;
+        damageParticle.GetComponent<RectTransform>().DOAnchorPosY(nowY+10, 1).OnComplete(() => ObjectManager.Instance.RemoveObject(damageParticle, StringKeys.DAMAGE, true));*/
+        /*damageParticle.transform.position = this.transform.position;
+        damageParticle.GetComponent<TextMeshPro>().text = damage.ToString();
+        damageParticle.transform.DOMoveY(3, 1).OnComplete(() => ObjectManager.Instance.RemoveObject(damageParticle, StringKeys.DAMAGE, true));*/
+        if (_curHealth <= 0)
+            Die();
     }
     protected override void Die()
     {
-        
+        Debug.Log($"{this.gameObject.name} is dead");
+        OnDie?.Invoke(this);
     }
 }

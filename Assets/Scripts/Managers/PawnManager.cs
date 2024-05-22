@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,6 +45,7 @@ public class PawnManager : Singleton<PawnManager>
     {
         _mapSquareDic.Values.ToList().ForEach(x => x.ResetColor());
     }
+    #region Check Target Squares
     public void CheckTargetSquares(int movementRange, int curKeyIndex, List<MapSquare> targetSquares)
     {
         var keys = _mapSquareDic.Keys.ToList();
@@ -123,4 +125,5 @@ public class PawnManager : Singleton<PawnManager>
                 targetSquares.Add(newSquare);
         }
     }
+  #endregion
 }
