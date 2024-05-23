@@ -6,6 +6,7 @@ using System.Linq;
 
 public class PawnManager : Singleton<PawnManager>
 {
+    public GameObject _damageTextParticle;
     private Vector2[] spawnPoints;
     public Vector2[] SpawnPoints
     {
@@ -25,6 +26,10 @@ public class PawnManager : Singleton<PawnManager>
     }
     [SerializeField] private PlayerPawnController _playerPawnController;
     [SerializeField] private EnemyPawnController _enemyPawnController;
+    private void Awake()
+    {
+        ObjectManager.Instance.MakePool(_damageTextParticle, StringKeys.DAMAGE);
+    }
     public MapSquare GetCurrentMapSquare(Vector2 newKey)
     {
         var currentMapSquare = (from keyValuePair in _mapSquareDic let key = keyValuePair.Key 

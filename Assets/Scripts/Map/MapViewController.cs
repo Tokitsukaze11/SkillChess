@@ -48,8 +48,8 @@ public class MapViewController : MonoBehaviour
     {
         // Y축 회전
         if (Input.GetKey(_rightRotationKey))
-            _cameraTransform.Rotate(Vector3.up, _rotationSpeed * Time.deltaTime,Space.World);
-        if (Input.GetKey(_leftRotationKey))
             _cameraTransform.Rotate(Vector3.up, -_rotationSpeed * Time.deltaTime,Space.World);
+        if (Input.GetKey(_leftRotationKey))
+            _cameraTransform.Rotate(Vector3.up, _rotationSpeed * Time.deltaTime,Space.World);
     }
 }

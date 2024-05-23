@@ -9,6 +9,11 @@ public class SamplePawn : Pawn
 {
     protected override void OnMouseDown()
     {
+        if(_curMapSquare.IsCanClick()) // MapSquare을 누를 수 있게 보정
+        {
+            _curMapSquare.OnMouseDown();
+            return;
+        }
         if (!_isPlayerPawn || !GameManager.Instance.IsPlayerTurn.Invoke())
             return;
         OnPawnClicked?.Invoke(true, this);
@@ -104,19 +109,17 @@ public class SamplePawn : Pawn
     public override void TakeDamage(int damage)
     {
         _curHealth -= damage;
-        var damageParticle = UIManager.Instance.ShowUIParticle();
-        Vector3 pos = GameManager.Instance.mainCamera.GetComponent<Camera>().WorldToScreenPoint(this.transform.position);
-        var rect = damageParticle.GetComponent<RectTransform>();
-        rect.rect.Set(pos.x, pos.y, rect.rect.width, rect.rect.height);
-        var vector3 = damageParticle.transform.position;
-        vector3.z = 0;
-        damageParticle.transform.position = vector3;
-        damageParticle.GetComponent<TextMeshProUGUI>().text = damage.ToString();
-        /*float nowY = damageParticle.GetComponent<RectTransform>().anchoredPosition.y;
-        damageParticle.GetComponent<RectTransform>().DOAnchorPosY(nowY+10, 1).OnComplete(() => ObjectManager.Instance.RemoveObject(damageParticle, StringKeys.DAMAGE, true));*/
-        /*damageParticle.transform.position = this.transform.position;
-        damageParticle.GetComponent<TextMeshPro>().text = damage.ToString();
-        damageParticle.transform.DOMoveY(3, 1).OnComplete(() => ObjectManager.Instance.RemoveObject(damageParticle, StringKeys.DAMAGE, true));*/
+        var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
+        damParticle.transform.position = this.transform.position;
+        damParticle.transform.position += new Vector3(0, 1, 0);
+        Vector3 rotate = GameManager.Instance.mainCamera.transform.rotation.eulerAngles;
+        damParticle.transform.rotation = Quaternion.Euler(rotate.x, rotate.y, rotate.z);
+        float carY = damParticle.transform.position.y;
+        damParticle.GetComponent<TextMeshPro>().text = damage.ToString();
+        damParticle.transform.DOMoveY(carY+1, 1).OnComplete(() =>
+        { 
+            ObjectManager.Instance.RemoveObject(damParticle, StringKeys.DAMAGE, true);
+        });
         if (_curHealth <= 0)
             Die();
     }

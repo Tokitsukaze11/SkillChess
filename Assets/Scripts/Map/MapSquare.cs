@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
@@ -28,15 +29,19 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
         _meshRenderer.material.color = color;
         _isChoosen = color == Color.yellow;
     }
-    public void OnMouseUp()
+    public void OnMouseDown()
     {
         if (!_isChoosen)
             return;
         OnClickSquare?.Invoke(this);
     }
+    public bool IsCanClick()
+    {
+        return _isChoosen;
+    }
     public void ResetColor()
     {
-        _meshRenderer.material.color = Color.red;
+        SetColor(Color.red);
         OnClickSquare = null;
     }
 }
