@@ -37,6 +37,10 @@ public class EnemyPawnController : MonoBehaviour
     {
         _enemyPawns.Remove(diedPawn);
         ObjectManager.Instance.RemoveObject(diedPawn.gameObject, "EnemyPawn",true);
-        // TODO : If pawn is king, game over
+        if(diedPawn.PawnType == PawnType.King)
+        {
+            Debug.Log("Game Over");
+            // TODO : If pawn is king, game over
+        }
     }
 }

@@ -45,7 +45,11 @@ public class PlayerPawnController : MonoBehaviour
     private void PawnDie(Pawn diedPawn)
     {
         ObjectManager.Instance.RemoveObject(diedPawn.gameObject, "PlayerPawn",true);
-        // TODO : If pawn is king, game over
+        if(diedPawn.PawnType == PawnType.King)
+        {
+            Debug.Log("Game Over");
+            // TODO : If pawn is king, game over
+        }
     }
     private void PawnBehaviorUIPanelActive(bool active, Pawn curPawn = null)
     {

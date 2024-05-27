@@ -65,64 +65,58 @@ public class PawnManager : Singleton<PawnManager>
         int n = 8;
         int m = 8;
         
-        int nowCol = curKeyIndex % n;
+        int nowCol = curKeyIndex / n;
+        
+        int maxBoundary = n * (nowCol + 1) - 1;
+        int minBoundary = n * nowCol;
         
         // Check Up Direction
-        if (nowCol < m - 1)
+        for(int i = 1; i <= moveRange; i++)
         {
-            for (int i = 1; i <= moveRange; i++)
-            {
-                int newKeyIndex = curKeyIndex + i;
-                CheckDirection(newKeyIndex, n * m, _mapSquareDic.Keys.ToList(), targetSquares);
-            }
+            int newKeyIndex = curKeyIndex + i;
+            CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
         }
         // Check Down Direction
-        if (nowCol > 0)
+        for(int i = 1; i <= moveRange; i++)
         {
-            for (int i = 1; i <= moveRange; i++)
-            {
-                int newKeyIndex = curKeyIndex - i;
-                CheckDirection(newKeyIndex, n * m , _mapSquareDic.Keys.ToList(), targetSquares);
-            }
+            int newKeyIndex = curKeyIndex - i;
+            CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
         }
 
         // n*m (n 행 m 열)
-        // 위 = +1 => each n*(i(0~n)+1)-1 (마지막 행)
-        // 아래 = -1 => each n*i(0~n-1) (첫 행)
+        // 나의 열에서의 최대 값 : n*(현재 열+1)-1
+        // 나의 열에서의 최소 값 : n*현재 열
     }
     private void GetHorizontalMoves(int moveRange, int curKeyIndex, List<MapSquare> targetSquares)
     {
         int n = 8;
         int m = 8;
 
-        int nowRow = curKeyIndex / n;
+        int nowRow = curKeyIndex % n;
+        
+        int minBoundary = nowRow;
+        int maxBoundary = curKeyIndex + (n * moveRange);
         
         // Check Right Direction
-        if (nowRow < n - 1)
+        for(int i = 1; i <= moveRange; i++)
         {
-            for (int i = 1; i <= moveRange; i++)
-            {
-                int newKeyIndex = curKeyIndex + (i * n);
-                CheckDirection(newKeyIndex, n * m, _mapSquareDic.Keys.ToList(), targetSquares);
-            }
+            int newKeyIndex = curKeyIndex + (i * n);
+            CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
         }
         // Check Left Direction
-        if (nowRow > 0)
+        for(int i = 1; i <= moveRange; i++)
         {
-            for (int i = 1; i <= moveRange; i++)
-            {
-                int newKeyIndex = curKeyIndex - (i * n);
-                CheckDirection(newKeyIndex, n * m, _mapSquareDic.Keys.ToList(), targetSquares);
-            }
+            int newKeyIndex = curKeyIndex - (i * n);
+            CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
         }
 
         // n*m (n 행 m 열)
-        // 오른쪽 = +m => n*(m-1)~n*m-1 (마지막 열)
-        // 왼쪽 = -m => n*0~n*(m-1) (첫 열)
+        // 나의 행에서 이동할 수 있는 거리만큼의 최대 값 : 현재 인덱스 + (n*이동할 수 있는 거리)
+        // 나의 행에서 이동할 수 있는 거리만큼의 최소 값 : 현재 행의 인덱스
     }
-    private void CheckDirection(int newKeyIndex, int boundary, List<Vector2> keys, List<MapSquare> targetSquares)
+    private void CheckDirection(int newKeyIndex, int minBoundary, int maxBoundary, List<Vector2> keys, List<MapSquare> targetSquares)
     {
-        if (newKeyIndex < boundary && newKeyIndex >= 0)
+        if ((newKeyIndex >= minBoundary && newKeyIndex < keys.Count) && (newKeyIndex <= maxBoundary && newKeyIndex >= 0))
         {
             var newKey = keys[newKeyIndex];
             var newSquare = GetCurrentMapSquare(newKey);

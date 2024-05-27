@@ -3,6 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PawnType
+{
+    Pawn,
+    Queen,
+    King,
+}
+
 public abstract class Pawn : MonoBehaviour
 {
     public bool _isPlayerPawn;
@@ -12,7 +19,9 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected int _defense;
     [SerializeField] protected int _movementRange;
     [SerializeField] protected int _attackRange;
+    [SerializeField] protected PawnType _pawnType;
     protected MapSquare _curMapSquare;
+    public PawnType PawnType => _pawnType;
     public MapSquare CurMapSquare
     {
         set
