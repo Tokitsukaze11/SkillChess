@@ -12,4 +12,8 @@ public class GameManager : Singleton<GameManager>
     {
         OnTurnEnd!.Invoke();
     }
+    private void Awake()
+    {
+        Cursor.lockState = CursorLockMode.Confined;
+    }
 }

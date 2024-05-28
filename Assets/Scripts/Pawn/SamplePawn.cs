@@ -55,6 +55,7 @@ public class SamplePawn : Pawn
         _curMapSquare = _moveTargetSquare;
         _moveTargetSquare.CurPawn = this;
         OnPawnClicked?.Invoke(false,null);
+        _curDefense = 0;
         GameManager.Instance.TurnEnd();
     }
     public override IEnumerator Co_EnemyMove()
@@ -96,11 +97,14 @@ public class SamplePawn : Pawn
 
         targetPawn.TakeDamage(_damage);
         OnPawnClicked?.Invoke(false, null);
+        _curDefense = 0;
         GameManager.Instance.TurnEnd();
     }
     public override void Defend()
     {
-        
+        _curDefense = _defense;
+        OnPawnClicked?.Invoke(false, null);
+        GameManager.Instance.TurnEnd();
     }
     public override void UseSkill()
     {
@@ -108,6 +112,7 @@ public class SamplePawn : Pawn
     }
     public override void TakeDamage(int damage)
     {
+        damage -= _curDefense;
         _curHealth -= damage;
         var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
         damParticle.transform.position = this.transform.position;
@@ -120,6 +125,7 @@ public class SamplePawn : Pawn
         { 
             ObjectManager.Instance.RemoveObject(damParticle, StringKeys.DAMAGE, true);
         });
+        _curDefense = 0;
         if (_curHealth <= 0)
             Die();
     }

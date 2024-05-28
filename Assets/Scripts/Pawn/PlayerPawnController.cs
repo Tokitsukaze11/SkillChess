@@ -53,9 +53,13 @@ public class PlayerPawnController : MonoBehaviour
     }
     private void PawnBehaviorUIPanelActive(bool active, Pawn curPawn = null)
     {
-        pawnBehaviorUIPanel.SetActive(active);
-        if(active)
-            BehaviorButtonHandle(curPawn);
+        Action uiAction = () =>
+        {
+            pawnBehaviorUIPanel.SetActive(active);
+            if(active)
+                BehaviorButtonHandle(curPawn);
+        };
+        UIManager.Instance.UpdateUI(uiAction);
     }
     private void BehaviorButtonHandle(Pawn curPawn)
     {
@@ -63,7 +67,12 @@ public class PlayerPawnController : MonoBehaviour
             throw new System.Exception("When UI is active, curPawn must not be null");
         moveButton.onClick.RemoveAllListeners();
         moveButton.onClick.AddListener(curPawn.ShowMoveRange);
+        moveButton.gameObject.GetComponent<PopupObject>().InitDescription(curPawn._descriptObjects[0]);
         attackButton.onClick.RemoveAllListeners();
         attackButton.onClick.AddListener(curPawn.ShowAttackRange);
+        attackButton.gameObject.GetComponent<PopupObject>().InitDescription(curPawn._descriptObjects[1]);
+        defendButton.onClick.RemoveAllListeners();
+        defendButton.onClick.AddListener(curPawn.Defend);
+        defendButton.gameObject.GetComponent<PopupObject>().InitDescription(curPawn._descriptObjects[2]);
     }
 }

@@ -17,9 +17,11 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected int _curHealth;
     [SerializeField] protected int _damage;
     [SerializeField] protected int _defense;
+    protected int _curDefense = 0;
     [SerializeField] protected int _movementRange;
     [SerializeField] protected int _attackRange;
     [SerializeField] protected PawnType _pawnType;
+    public DescriptObject[] _descriptObjects;
     protected MapSquare _curMapSquare;
     public PawnType PawnType => _pawnType;
     public MapSquare CurMapSquare

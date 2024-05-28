@@ -122,7 +122,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isPlayerPawn: 0
   _health: 100
+  _curHealth: 0
   _damage: 10
-  _defense: 0
+  _defense: 2
   _movementRange: 2
   _attackRange: 1
+  _pawnType: 0
+  _descriptObjects:
+  - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
+  - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
+  - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
