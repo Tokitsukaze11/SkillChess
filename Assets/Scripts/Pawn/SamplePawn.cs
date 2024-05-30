@@ -14,9 +14,10 @@ public class SamplePawn : Pawn
             _curMapSquare.OnMouseDown();
             return;
         }
-        if (!_isPlayerPawn || !GameManager.Instance.IsPlayerTurn.Invoke())
+        if (!_isPlayerPawn || !_isCanClick)
             return;
         OnPawnClicked?.Invoke(true, this);
+        PawnManager.Instance.ResetSquaresColor();
     }
     public override void ShowMoveRange()
     {
@@ -29,7 +30,7 @@ public class SamplePawn : Pawn
         var keys = mapSquareDic.Keys.ToList(); // 64개의 키값을 리스트로 변환 8x8
         var curKeyIndex = keys.IndexOf(nowKey); // 현재 키값의 인덱스
         // Check target squares
-        PawnManager.Instance.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares);
+        PawnManager.Instance.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares,true);
         targetSquares.Where(x => x.IsCanMove()).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);

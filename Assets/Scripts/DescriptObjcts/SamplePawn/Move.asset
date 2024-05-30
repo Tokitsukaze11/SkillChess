@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f695e1df5f7fadc448676886079aabaf, type: 3}
   m_Name: Move
   m_EditorClassIdentifier: 
-  description: "<color=orange>2</color>\uAC70\uB9AC \uB9CC\uD07C \uC774\uB3D9\uD569\uB2C8\uB2E4"
+  description: "<color=orange>2</color>\uAC70\uB9AC\uC758 <color=orange>\uC9C1\uC120
+    \uBC29\uD5A5</color>\uC73C\uB85C \uC774\uB3D9\uD569\uB2C8\uB2E4"

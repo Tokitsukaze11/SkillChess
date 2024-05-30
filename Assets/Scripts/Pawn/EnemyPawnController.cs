@@ -33,6 +33,10 @@ public class EnemyPawnController : MonoBehaviour
     {
         
     }
+    public void TurnChange(bool isEnemyTurn)
+    {
+        _enemyPawns.ForEach(x => x._isCanClick = isEnemyTurn);
+    }
     private void PawnDie(Pawn diedPawn)
     {
         _enemyPawns.Remove(diedPawn);

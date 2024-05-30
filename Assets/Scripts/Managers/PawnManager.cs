@@ -46,21 +46,23 @@ public class PawnManager : Singleton<PawnManager>
     {
         
     }
+    public void TurnChange(bool isPlayerTurn)
+    {
+        _playerPawnController.TurnChange(isPlayerTurn);
+        //_enemyPawnController.TurnChange(!isPlayerTurn);
+    }
     public void ResetSquaresColor()
     {
         _mapSquareDic.Values.ToList().ForEach(x => x.ResetColor());
     }
     #region Check Target Squares
-    public void CheckTargetSquares(int movementRange, int curKeyIndex, List<MapSquare> targetSquares)
+    public void CheckTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
     {
         var keys = _mapSquareDic.Keys.ToList();
-        for (int i = 1; i <= movementRange; i++)
-        {
-            GetVerticalMoves(i, curKeyIndex, targetSquares);
-            GetHorizontalMoves(i,curKeyIndex, targetSquares);
-        }
+        GetVerticalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles);
+        GetHorizontalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles);
     }
-    private void GetVerticalMoves(int moveRange, int curKeyIndex, List<MapSquare> targetSquares)
+    private void GetVerticalCheck(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
     {
         int n = 8;
         int m = 8;
@@ -70,24 +72,46 @@ public class PawnManager : Singleton<PawnManager>
         int maxBoundary = n * (nowCol + 1) - 1;
         int minBoundary = n * nowCol;
         
-        // Check Up Direction
-        for(int i = 1; i <= moveRange; i++)
+        /*// Check Up Direction
+        for(int i = 1; i <= targetRange; i++)
         {
             int newKeyIndex = curKeyIndex + i;
             CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
+            if(isMove && IsOverlapped(i, targetRange, targetSquares))
+                break;
         }
         // Check Down Direction
-        for(int i = 1; i <= moveRange; i++)
+        for(int i = 1; i <= targetRange; i++)
         {
             int newKeyIndex = curKeyIndex - i;
             CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
-        }
+            if(isMove && IsOverlapped(i, targetRange, targetSquares))
+                break;
+        }*/
+        
+        // Make Less Cognitive Complexity
+        int[] directions = { 1, -1 }; // 위, 아래 방향
 
+        foreach (int direction in directions)
+        {
+            int currentIndex = 0;
+            while (currentIndex < targetRange)
+            {
+                int newKeyIndex = curKeyIndex + (currentIndex + 1) * direction;
+                CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
+
+                if (isConsideringObstacles && IsOverlapped(currentIndex + 1, targetRange, targetSquares))
+                    break;
+
+                currentIndex++;
+            }
+        }
+        
         // n*m (n 행 m 열)
         // 나의 열에서의 최대 값 : n*(현재 열+1)-1
         // 나의 열에서의 최소 값 : n*현재 열
     }
-    private void GetHorizontalMoves(int moveRange, int curKeyIndex, List<MapSquare> targetSquares)
+    private void GetHorizontalCheck(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
     {
         int n = 8;
         int m = 8;
@@ -95,19 +119,41 @@ public class PawnManager : Singleton<PawnManager>
         int nowRow = curKeyIndex % n;
         
         int minBoundary = nowRow;
-        int maxBoundary = curKeyIndex + (n * moveRange);
+        int maxBoundary = curKeyIndex + (n * targetRange);
         
-        // Check Right Direction
-        for(int i = 1; i <= moveRange; i++)
+        /*// Check Right Direction
+        for(int i = 1; i <= targetRange; i++)
         {
             int newKeyIndex = curKeyIndex + (i * n);
             CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
+            if(isMove && IsOverlapped(i, targetRange, targetSquares))
+                break;
         }
         // Check Left Direction
-        for(int i = 1; i <= moveRange; i++)
+        for(int i = 1; i <= targetRange; i++)
         {
             int newKeyIndex = curKeyIndex - (i * n);
             CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
+            if(isMove && IsOverlapped(i, targetRange, targetSquares))
+                break;
+        }*/
+        
+        // Make Less Cognitive Complexity
+        int[] directions = { n, -n }; // 오른쪽, 왼쪽 방향
+
+        foreach (int direction in directions)
+        {
+            int currentIndex = 0;
+            while (currentIndex < targetRange)
+            {
+                int newKeyIndex = curKeyIndex + (currentIndex + 1) * direction;
+                CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
+
+                if (isConsideringObstacles && IsOverlapped(currentIndex + 1, targetRange, targetSquares))
+                    break;
+
+                currentIndex++;
+            }
         }
 
         // n*m (n 행 m 열)
@@ -123,6 +169,15 @@ public class PawnManager : Singleton<PawnManager>
             if (newSquare != null)
                 targetSquares.Add(newSquare);
         }
+    }
+    private bool IsOverlapped(int curIndex, int range, List<MapSquare> targetSquares)
+    {
+        if (curIndex < range)
+        {
+            if (targetSquares.Count > 0)
+                return !targetSquares[^1].IsCanMove();
+        }
+        return false;
     }
   #endregion
 }

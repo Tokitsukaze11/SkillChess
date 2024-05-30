@@ -13,6 +13,7 @@ public class PlayerPawnController : MonoBehaviour
     public Button attackButton;
     public Button defendButton;
     public Button skillButton;
+    private List<Pawn> _playerPawns = new List<Pawn>();
     private void Awake()
     {
         ObjectManager.Instance.MakePool(playerPawnPrefab, "PlayerPawn");
@@ -36,15 +37,23 @@ public class PlayerPawnController : MonoBehaviour
             curMapSquare.CurPawn = pawn;
             pawn.CurMapSquare = curMapSquare;
             pawn.OnDie += PawnDie;
+            _playerPawns.Add(pawn);
+            pawn._isCanClick = true; // TODO : If random player turn, change this
         }
     }
     public void DespawnPlayerPawn()
     {
-        
+        _playerPawns.ForEach(x => ObjectManager.Instance.RemoveObject(x.gameObject, "PlayerPawn", true));
+        _playerPawns.Clear();
+    }
+    public void TurnChange(bool isPlayerTurn)
+    {
+        _playerPawns.ForEach(x => x._isCanClick = isPlayerTurn);
     }
     private void PawnDie(Pawn diedPawn)
     {
-        ObjectManager.Instance.RemoveObject(diedPawn.gameObject, "PlayerPawn",true);
+        ObjectManager.Instance.RemoveObject(diedPawn.gameObject, "PlayerPawn", true);
+        _playerPawns.Remove(diedPawn);
         if(diedPawn.PawnType == PawnType.King)
         {
             Debug.Log("Game Over");

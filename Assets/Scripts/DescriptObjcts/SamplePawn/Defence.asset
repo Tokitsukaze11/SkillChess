@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f695e1df5f7fadc448676886079aabaf, type: 3}
   m_Name: Defence
   m_EditorClassIdentifier: 
-  description: "<color=orange>2</color>\uB9CC\uD07C\uC758 \uB370\uBBF8\uC9C0\uB97C
-    \uBC29\uC5B4\uD569\uB2C8\uB2E4"
+  description: "<color=orange>2</color>\uC758 \uB370\uBBF8\uC9C0\uB97C \uBC29\uC5B4\uD569\uB2C8\uB2E4"

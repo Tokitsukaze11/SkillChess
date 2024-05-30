@@ -19,12 +19,13 @@ public class TurnManager : MonoBehaviour
     }
     private void PlayerTurn()
     {
+        PawnManager.Instance.TurnChange(true);
         Debug.Log("<color=green>Player Turn</color>");
     }
     private void EnemyTurn()
     {
-        Debug.Log("Enemy Turn");
-        Debug.Log("<color=red>3초후 플레이어 턴으로 전환합니다.</color>");
+        PawnManager.Instance.TurnChange(false);
+        Debug.Log("Enemy Turn\n<color=red>3초후 플레이어 턴으로 전환합니다.</color>");
         StartCoroutine(Co_EnemySample());
     }
     private IEnumerator Co_EnemySample()

@@ -13,6 +13,7 @@ public enum PawnType
 public abstract class Pawn : MonoBehaviour
 {
     public bool _isPlayerPawn;
+    public bool _isCanClick = false;
     [SerializeField] protected int _health;
     [SerializeField] protected int _curHealth;
     [SerializeField] protected int _damage;
