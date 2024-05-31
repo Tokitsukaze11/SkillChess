@@ -26,6 +26,7 @@ public class MapViewController : MonoBehaviour
     }
     private void KeyCheck()
     {
+        if(GameManager.Instance.GameState != GameState.Play) return;
         HeightMove();
         RotationMove();
         CameraMove();
