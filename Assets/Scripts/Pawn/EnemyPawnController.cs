@@ -16,13 +16,15 @@ public class EnemyPawnController : MonoBehaviour
         {
             var obj = ObjectManager.Instance.SpawnObject(enemyPawnPrefab, "EnemyPawn", true);
             // 적은 플레이어와 반대편에 배치
-            obj.transform.position = new Vector3(spawnPoints[i*8].x, 1, spawnPoints[7].y);
+            int targetRow = i*8*2;
+            obj.transform.position = new Vector3(spawnPoints[targetRow].x, 1, spawnPoints[7].y);
             obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
             obj.gameObject.name = $"EnemyPawn_{i}";
             obj.GetComponent<MeshRenderer>().material.color = Color.magenta;
             var pawn = obj.GetComponent<SamplePawn>();
             pawn._isPlayerPawn = false;
-            var curMapSquare = PawnManager.Instance.GetCurrentMapSquare(new Vector2(spawnPoints[i*8].x, spawnPoints[7].y));
+            pawn._sortingGroup.sortingOrder = i; //TODO : 열을 기준으로 정렬
+            var curMapSquare = PawnManager.Instance.GetCurrentMapSquare(new Vector2(spawnPoints[targetRow].x, spawnPoints[7].y));
             curMapSquare.CurPawn = pawn;
             pawn.CurMapSquare = curMapSquare;
             _enemyPawns.Add(pawn);

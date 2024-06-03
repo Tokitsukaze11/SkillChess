@@ -17,18 +17,29 @@ public class SettingManager : MonoBehaviour
     public Button _cameraResetButton;
     public RectTransform _camResetDesc;
     public TextMeshProUGUI _camResetDescText;
-    private Coroutine _panelAnimCoroutine = null;
+    public Button _surrenderButton;
     
     [Header("Scripts")]
     public MapViewController _mapViewController;
     
     private Action<GameState> _onGameStateChange;
-
+    
+    private Coroutine _panelAnimCoroutine = null;
+    
+    private List<RectTransform> _buttonsRect = new List<RectTransform>();
+    private List<TextMeshProUGUI> _buttonsText = new List<TextMeshProUGUI>();
+    private const int CAMERA_RESET_BUTTON = 0;
+    private const int SURRENDER_BUTTON = 1;
+    
     private void Awake()
     {
         UpdateManager.Instance.OnUpdate += MenuUpInGame;
         _cameraResetButton.GetComponent<PopupObject>().OnMouseOverPopup += CameraResetDescription;
         _onGameStateChange += GameManager.Instance.GameStateChange;
+        _buttonsRect.Add(_cameraResetButton.GetComponent<RectTransform>());
+        _buttonsRect.Add(_surrenderButton.GetComponent<RectTransform>());
+        _buttonsText.Add(_cameraResetButton.GetComponentInChildren<TextMeshProUGUI>());
+        _buttonsText.Add(_surrenderButton.GetComponentInChildren<TextMeshProUGUI>());
     }
     private void Start()
     {
@@ -41,14 +52,26 @@ public class SettingManager : MonoBehaviour
         _inGameMenuPanel.SetActive(false);
         _panelBackImage.color = Color.clear;
         _cameraResetButton.onClick.AddListener(CameraReset);
+        _surrenderButton.onClick.AddListener(Surrender);
         _camResetDesc.gameObject.SetActive(false);
         _camResetDesc.sizeDelta = new Vector2(600, 0);
+        _buttonsRect[CAMERA_RESET_BUTTON].sizeDelta = new Vector2(300, 0);
+        _buttonsRect[SURRENDER_BUTTON].sizeDelta = new Vector2(300, 0);
+        var curColor = _buttonsText[CAMERA_RESET_BUTTON].color;
+        curColor.a = 0;
+        _buttonsText[CAMERA_RESET_BUTTON].color = curColor;
+        _buttonsText[SURRENDER_BUTTON].color = curColor;
     }
     private void InGameMenuPanelActive(bool isActive)
     {
+        if(isActive) _inGameMenuPanel.SetActive(true);
         _onGameStateChange.Invoke(isActive ? GameState.Pause : GameState.Play);
-        _inGameMenuPanel.SetActive(isActive);
-        _panelBackImage.DOFade(isActive ? 0.5f : 0, 0.5f);
+        //_inGameMenuPanel.SetActive(isActive);
+        _panelBackImage.DOFade(isActive ? 0.5f : 0, 0.5f).onComplete += () => _inGameMenuPanel.SetActive(isActive);
+        _buttonsRect[CAMERA_RESET_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
+        _buttonsRect[SURRENDER_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
+        _buttonsText[CAMERA_RESET_BUTTON].DOFade(isActive ? 1 : 0, 0.3f);
+        _buttonsText[SURRENDER_BUTTON].DOFade(isActive ? 1 : 0, 0.3f);
     }
     private void MenuUpInGame()
     {
@@ -58,6 +81,11 @@ public class SettingManager : MonoBehaviour
     private void CameraReset()
     {
         _mapViewController.CameraReset();
+    }
+    private void Surrender()
+    {
+        // TODO : Surrender
+        Debug.Log("Surrender");
     }
     private void CameraResetDescription(bool isOn, string description = null)
     {
@@ -87,44 +115,6 @@ public class SettingManager : MonoBehaviour
         };
         UIManager.Instance.UpdateUI(UIAction);
     }
-    /*private IEnumerator Co_PanelAnim(bool isOn)
-    {
-        Vector2 targetSize = isOn ? new Vector2(600, 100) : new Vector2(600, 0);
-
-        float time = 0;
-        int frame = GameManager.Instance.TargetFPS;
-        float duration = isOn ? 2f * (frame/60f) : 1f * (frame/60f);
-
-        while (true)
-        {
-            time += Time.deltaTime;
-            _camResetDesc.sizeDelta = Vector2.Lerp(_camResetDesc.sizeDelta, targetSize, time/duration);
-            if (Vector2.Distance(_camResetDesc.sizeDelta, targetSize) < 0.1f)
-            {
-                _camResetDesc.sizeDelta = targetSize;
-                if (!isOn)
-                {
-                    _camResetDesc.gameObject.SetActive(false);
-                    _camResetDescText.color = Color.clear;
-                    yield break;
-                }
-                float time2 = 0;
-                float duration2 = 1f * (frame/60f);
-                while (true)
-                {
-                    time2 += Time.deltaTime;
-                    _camResetDescText.color = Color.Lerp(_camResetDescText.color, Color.white, time2/duration2);
-                    if (Vector4.Distance(_camResetDescText.color, Color.white) < 0.1f)
-                    {
-                        _camResetDescText.color = Color.white;
-                        yield break;
-                    }
-                    yield return null;
-                }
-            }
-            yield return null;
-        }
-    }*/
     private IEnumerator Co_PanelAnim(bool isOn)
     {
         // 목표 패널 크기 설정

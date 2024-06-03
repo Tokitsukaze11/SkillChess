@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public enum PawnType
 {
@@ -23,6 +24,9 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected int _attackRange;
     [SerializeField] protected PawnType _pawnType;
     public DescriptObject[] _descriptObjects;
+    [SerializeField] protected SpriteRenderer _hpBar;
+    [SerializeField] protected SpriteRenderer _hpBarRed;
+    public SortingGroup _sortingGroup;
     protected MapSquare _curMapSquare;
     public PawnType PawnType => _pawnType;
     public MapSquare CurMapSquare
@@ -38,6 +42,7 @@ public abstract class Pawn : MonoBehaviour
     protected void Awake()
     {
         _curHealth = _health;
+        _hpBar.gameObject.transform.localScale = Vector3.one;
     }
     protected abstract void OnMouseDown();
     public virtual void ShowMoveRange()
