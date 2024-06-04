@@ -116,19 +116,11 @@ public class SamplePawn : Pawn
         damage -= _curDefense;
         _curHealth -= damage;
         var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
-        damParticle.transform.position = this.transform.position;
-        damParticle.transform.position += new Vector3(0, 1, 0);
-        Vector3 rotate = GameManager.Instance.mainCamera.transform.rotation.eulerAngles;
-        damParticle.transform.rotation = Quaternion.Euler(rotate.x, rotate.y, rotate.z);
-        float carY = damParticle.transform.position.y;
-        damParticle.GetComponent<TextMeshPro>().text = damage.ToString();
-        damParticle.transform.DOMoveY(carY+1, 1).OnComplete(() =>
-        { 
-            ObjectManager.Instance.RemoveObject(damParticle, StringKeys.DAMAGE, true);
-        });
+        var damageText = damParticle.GetComponent<DamageText>();
+        var spawnPosition = this.transform.position;
+        damageText.SetText(damage, spawnPosition, false);
         _curDefense = 0;
-        _hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
-        _hpBarRed.transform.DOScaleX((float)_curHealth / _health, 0.5f).SetDelay(3f);
+        UpdateHpBar();
         
         if (_curHealth <= 0)
             Die();

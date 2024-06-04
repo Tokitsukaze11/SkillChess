@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 30c8e3e159c9a034fa1ab65f06cd9fc9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -135,6 +135,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
   - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
   - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
+  _hpBarTransform: {fileID: 6599719260032626664}
   _hpBar: {fileID: 6322851727353111986}
   _hpBarRed: {fileID: 1375253841213824663}
   _sortingGroup: {fileID: 5733916626283817159}

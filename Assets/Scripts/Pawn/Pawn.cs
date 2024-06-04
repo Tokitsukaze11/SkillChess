@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -24,9 +25,11 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected int _attackRange;
     [SerializeField] protected PawnType _pawnType;
     public DescriptObject[] _descriptObjects;
+    [SerializeField] protected Transform _hpBarTransform;
     [SerializeField] protected SpriteRenderer _hpBar;
     [SerializeField] protected SpriteRenderer _hpBarRed;
     public SortingGroup _sortingGroup;
+    private Camera _mainCamera;
     protected MapSquare _curMapSquare;
     public PawnType PawnType => _pawnType;
     public MapSquare CurMapSquare
@@ -43,6 +46,12 @@ public abstract class Pawn : MonoBehaviour
     {
         _curHealth = _health;
         _hpBar.gameObject.transform.localScale = Vector3.one;
+        _mainCamera = GameManager.Instance.mainCamera;
+    }
+    protected void Update()
+    {
+        var camRotation = _mainCamera.transform.rotation.eulerAngles;
+        _hpBarTransform.rotation = Quaternion.Euler(camRotation.x, camRotation.y, camRotation.z);
     }
     protected abstract void OnMouseDown();
     public virtual void ShowMoveRange()
@@ -60,4 +69,9 @@ public abstract class Pawn : MonoBehaviour
     public abstract void UseSkill();
     public abstract void TakeDamage(int damage);
     protected abstract void Die();
+    protected void UpdateHpBar()
+    {
+        _hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
+        _hpBarRed.transform.DOScaleX((float)_curHealth / _health, 0.5f).SetDelay(1f);
+    }
 }
