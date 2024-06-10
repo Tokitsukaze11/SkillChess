@@ -31,6 +31,7 @@ public abstract class Pawn : MonoBehaviour
     public SortingGroup _sortingGroup;
     private Camera _mainCamera;
     protected MapSquare _curMapSquare;
+    protected SkillDecorator _skill;
     public PawnType PawnType => _pawnType;
     public MapSquare CurMapSquare
     {

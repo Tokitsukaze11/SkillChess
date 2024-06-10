@@ -74,14 +74,21 @@ public class PlayerPawnController : MonoBehaviour
     {
         if(curPawn == null)
             throw new System.Exception("When UI is active, curPawn must not be null");
+        
         moveButton.onClick.RemoveAllListeners();
         moveButton.onClick.AddListener(curPawn.ShowMoveRange);
         moveButton.gameObject.GetComponent<PopupObject>().InitDescription(curPawn._descriptObjects[0]);
+        
         attackButton.onClick.RemoveAllListeners();
         attackButton.onClick.AddListener(curPawn.ShowAttackRange);
         attackButton.gameObject.GetComponent<PopupObject>().InitDescription(curPawn._descriptObjects[1]);
+        
         defendButton.onClick.RemoveAllListeners();
         defendButton.onClick.AddListener(curPawn.Defend);
         defendButton.gameObject.GetComponent<PopupObject>().InitDescription(curPawn._descriptObjects[2]);
+        
+        skillButton.onClick.RemoveAllListeners();
+        skillButton.onClick.AddListener(curPawn.UseSkill);
+        skillButton.gameObject.GetComponent<PopupObject>().InitDescription(curPawn._descriptObjects[3]);
     }
 }

@@ -129,12 +129,13 @@ MonoBehaviour:
   _damage: 10
   _defense: 2
   _movementRange: 2
-  _attackRange: 1
+  _attackRange: 3
   _pawnType: 0
   _descriptObjects:
   - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
   - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
   - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
+  - {fileID: 11400000, guid: ca7dc394dee528c41a13f81a01cf2d76, type: 2}
   _hpBarTransform: {fileID: 6599719260032626664}
   _hpBar: {fileID: 6322851727353111986}
   _hpBarRed: {fileID: 1375253841213824663}

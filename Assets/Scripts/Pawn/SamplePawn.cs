@@ -7,6 +7,17 @@ using TMPro;
 
 public class SamplePawn : Pawn
 {
+    private new void Awake()
+    {
+        base.Awake();
+        _skill = new AttackDecorator(this,20,5,AttackType.SingleTarget);
+        (_skill as AttackDecorator)!.OnSkillEnd += () =>
+        {
+            OnPawnClicked?.Invoke(false, null);
+            _curDefense = 0;
+            GameManager.Instance.TurnEnd();
+        };
+    }
     protected override void OnMouseDown()
     {
         if(_curMapSquare.IsCanClick()) // MapSquare을 누를 수 있게 보정
@@ -55,6 +66,9 @@ public class SamplePawn : Pawn
         _curMapSquare.CurPawn = null;
         _curMapSquare = _moveTargetSquare;
         _moveTargetSquare.CurPawn = this;
+        Vector2 curKey = PawnManager.Instance.MapSquareDic.FirstOrDefault(x => x.Value == _curMapSquare).Key;
+        int curKeyIndexInt = PawnManager.Instance.MapSquareDic.Keys.ToList().IndexOf(curKey);
+        _skill.UpdateCurIndex(curKeyIndexInt);
         OnPawnClicked?.Invoke(false,null);
         _curDefense = 0;
         GameManager.Instance.TurnEnd();
@@ -109,7 +123,7 @@ public class SamplePawn : Pawn
     }
     public override void UseSkill()
     {
-        
+        _skill.UseSkill();
     }
     public override void TakeDamage(int damage)
     {

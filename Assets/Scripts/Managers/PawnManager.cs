@@ -56,6 +56,13 @@ public class PawnManager : Singleton<PawnManager>
         _mapSquareDic.Values.ToList().ForEach(x => x.ResetColor());
     }
     #region Check Target Squares
+    /// <summary>
+    /// Check squares that can something be done
+    /// </summary>
+    /// <param name="targetRange">Range of do something</param>
+    /// <param name="curKeyIndex">Current key index</param>
+    /// <param name="targetSquares">List of target squares</param>
+    /// <param name="isConsideringObstacles">Is considering obstacles to do. If true, try to stop when obstacle is found</param>
     public void CheckTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
     {
         var keys = _mapSquareDic.Keys.ToList();

@@ -172,7 +172,7 @@ MonoBehaviour:
   moveButton: {fileID: 2103672295}
   attackButton: {fileID: 1933408651}
   defendButton: {fileID: 685860724}
-  skillButton: {fileID: 0}
+  skillButton: {fileID: 1826654581}
 --- !u!1 &35548081
 GameObject:
   m_ObjectHideFlags: 0
