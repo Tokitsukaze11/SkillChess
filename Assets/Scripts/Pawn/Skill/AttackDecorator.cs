@@ -65,7 +65,7 @@ public class AttackDecorator : SkillDecorator
             x.SetColor(Color.yellow);
             x.OnClickSquare += (mapSquare) =>
             {
-                SkillEffect();
+                SkillEffect(new List<MapSquare>(){mapSquare});
             };
         });
         _targetSquares.AddRange(targetSquares);
@@ -89,20 +89,20 @@ public class AttackDecorator : SkillDecorator
             x.SetColor(Color.yellow);
             x.OnClickSquare += (mapSquare) =>
             {
-                SkillEffect();
+                SkillEffect(targetSquares);
             };
         });
         _targetSquares.AddRange(targetSquares);
     }
-    protected override void SkillEffect()
+    protected override void SkillEffect(List<MapSquare> targetSquare)
     {
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
-        // TODO : Animation
+        // TODO : Animation and Effect
         
-        foreach(var targetSquare in _targetSquares)
+        foreach(var square in targetSquare)
         {
-            targetSquare.CurPawn.TakeDamage(_damage);
+            square.CurPawn?.TakeDamage(_damage);
         }
         OnSkillEnd?.Invoke();
     }

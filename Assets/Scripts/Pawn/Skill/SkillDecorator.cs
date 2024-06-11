@@ -13,5 +13,5 @@ public abstract class SkillDecorator
     }
     public abstract void UseSkill();
     protected abstract void SkillPreview();
-    protected abstract void SkillEffect();
+    protected abstract void SkillEffect(List<MapSquare> targetSquare);
 }
