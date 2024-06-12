@@ -69,6 +69,72 @@ public class PawnManager : Singleton<PawnManager>
         GetVerticalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles);
         GetHorizontalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles);
     }
+    public void CheckDiagonalTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
+    {
+        var keys = _mapSquareDic.Keys.ToList();
+        int n = 8;
+        int m = 8;
+        
+        int nowRow = curKeyIndex % n;
+        int nowCol = curKeyIndex / n;
+        
+        /*// Check Right Up Direction
+        for(int i = 1; i <= targetRange; i++)
+        {
+            int newKeyIndex = curKeyIndex + (i * n) + i;
+            CheckDirection(newKeyIndex, nowRow, n * (nowCol + 1) - 1, keys, targetSquares);
+            if(isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
+                break;
+        }
+        // Check Right Down Direction
+        for(int i = 1; i <= targetRange; i++)
+        {
+            int newKeyIndex = curKeyIndex - (i * n) + i;
+            CheckDirection(newKeyIndex, nowRow, n * (nowCol + 1) - 1, keys, targetSquares);
+            if(isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
+                break;
+        }
+        // Check Left Up Direction
+        for(int i = 1; i <= targetRange; i++)
+        {
+            int newKeyIndex = curKeyIndex + (i * n) - i;
+            CheckDirection(newKeyIndex, n * nowCol, nowRow, keys, targetSquares);
+            if(isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
+                break;
+        }
+        // Check Left Down Direction
+        for(int i = 1; i <= targetRange; i++)
+        {
+            int newKeyIndex = curKeyIndex - (i * n) - i;
+            CheckDirection(newKeyIndex, n * nowCol, nowRow, keys, targetSquares);
+            if(isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
+                break;
+        }*/
+        
+        int[] dx = { 1, 1, -1, -1 };
+        int[] dy = { 1, -1, 1, -1 };
+
+        for (int dir = 0; dir < 4; dir++)
+        {
+            int newRow = nowRow;
+            int newCol = nowCol;
+
+            for (int i = 1; i <= targetRange; i++)
+            {
+                newRow += dx[dir];
+                newCol += dy[dir];
+
+                if (newRow < 0 || newRow >= n || newCol < 0 || newCol >= m)
+                    break;
+
+                int newKeyIndex = newRow + newCol * n;
+                CheckDirection(newKeyIndex, newRow, newCol, keys, targetSquares);
+
+                if (isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
+                    break;
+            }
+        }
+    }
     private void GetVerticalCheck(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
     {
         int n = 8;
