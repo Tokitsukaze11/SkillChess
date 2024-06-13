@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,18 +23,24 @@ public class PlayerPawnController : MonoBehaviour
     {
         pawnBehaviorUIPanel.SetActive(false);
     }
-    public void SpawnPlayerPawn(Vector2[] spawnPoints)
+    public void SpawnPlayerPawn()
     {
         for(int i = 0; i < 3; i++)
         {
             var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, "PlayerPawn", true);
-            obj.transform.position = new Vector3(spawnPoints[i*8].x, 1, spawnPoints[0].y);
+            
+            int targetColumn = i*GlobalValues.ROW;
+            int targetRow = 0;
+            int targetIndex = targetRow + targetColumn;
+            var curMapSquare = SquareCalculator.CurrentMapSquare(targetIndex);
+            Vector2 curKey = SquareCalculator.CurrentKey(targetIndex);
+            
+            obj.transform.position = new Vector3(curKey.x, 1, curKey.y);
             obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
             obj.gameObject.name = $"PlayerPawn_{i}";
             var pawn = obj.GetComponent<SamplePawn>();
             pawn._isPlayerPawn = true;
             pawn.OnPawnClicked += PawnBehaviorUIPanelActive;
-            var curMapSquare = PawnManager.Instance.GetCurrentMapSquare(new Vector2(spawnPoints[i*8].x, spawnPoints[0].y));
             curMapSquare.CurPawn = pawn;
             pawn.CurMapSquare = curMapSquare;
             pawn.OnDie += PawnDie;

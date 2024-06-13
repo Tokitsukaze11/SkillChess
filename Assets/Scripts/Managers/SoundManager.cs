@@ -26,9 +26,9 @@ public class SoundManager : Singleton<SoundManager>
 
     private void Awake()
     {
-        _masterSlider.onValueChanged.AddListener(SetMasterVolume);
+        /*_masterSlider.onValueChanged.AddListener(SetMasterVolume);
         _sfxSlider.onValueChanged.AddListener(SetSfxVolume);
-        _bgmSlider.onValueChanged.AddListener(SetBgmVolume);
+        _bgmSlider.onValueChanged.AddListener(SetBgmVolume);*/
     }
     private void SetMasterVolume(float volume)
     {

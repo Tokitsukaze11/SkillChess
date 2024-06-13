@@ -5238,6 +5238,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   place: {fileID: 1663969383}
+  squareSize: 1.5
+  row: 8
+  col: 8
 --- !u!1 &1857783035
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ public class SamplePawn : Pawn
     {
         base.Awake();
         _skill = new AttackDecorator(this,20,5,AttackType.SingleTarget);
+        _skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
             OnPawnClicked?.Invoke(false, null);
@@ -36,12 +37,13 @@ public class SamplePawn : Pawn
         PawnManager.Instance.ResetSquaresColor();
         // Check now values
         var targetSquares = new List<MapSquare>();
-        var mapSquareDic = PawnManager.Instance.MapSquareDic;
+        /*var mapSquareDic = PawnManager.Instance.MapSquareDic;
         Vector2 nowKey = mapSquareDic.FirstOrDefault(x => x.Value == _curMapSquare).Key;
         var keys = mapSquareDic.Keys.ToList(); // 64개의 키값을 리스트로 변환 8x8
-        var curKeyIndex = keys.IndexOf(nowKey); // 현재 키값의 인덱스
+        var curKeyIndex = keys.IndexOf(nowKey); // 현재 키값의 인덱스*/
+        int curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
         // Check target squares
-        PawnManager.Instance.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares,true);
+        SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares,true);
         targetSquares.Where(x => x.IsCanMove()).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
@@ -59,15 +61,16 @@ public class SamplePawn : Pawn
         
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
-        this.transform.position = new Vector3(_moveTargetSquare.transform.position.x, 1, _moveTargetSquare.transform.position.z);
+        Vector2 curKey = SquareCalculator.CurrentKey(_moveTargetSquare);
+        
+        this.transform.position = new Vector3(curKey.x, 1, curKey.y);
         // 위 코드는 애니메이션으로 대체되어야 함
         
         // 아래 코드는 이동이 끝나면 실행되어야 함 (일단 지금은 기능만 구현)
         _curMapSquare.CurPawn = null;
         _curMapSquare = _moveTargetSquare;
         _moveTargetSquare.CurPawn = this;
-        Vector2 curKey = PawnManager.Instance.MapSquareDic.FirstOrDefault(x => x.Value == _curMapSquare).Key;
-        int curKeyIndexInt = PawnManager.Instance.MapSquareDic.Keys.ToList().IndexOf(curKey);
+        int curKeyIndexInt = SquareCalculator.CurrentIndex(_curMapSquare);
         _skill.UpdateCurIndex(curKeyIndexInt);
         OnPawnClicked?.Invoke(false,null);
         _curDefense = 0;
@@ -87,13 +90,10 @@ public class SamplePawn : Pawn
 
         // Check now values
         var targetSquares = new List<MapSquare>();
-        var mapSquareDic = PawnManager.Instance.MapSquareDic;
-        Vector2 nowKey = mapSquareDic.FirstOrDefault(x => x.Value == _curMapSquare).Key;
-        var keys = mapSquareDic.Keys.ToList(); // 64개의 키값을 리스트로 변환 8x8
-        var curKeyIndex = keys.IndexOf(nowKey); // 현재 키값의 인덱스
+        var curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
 
         // Check target squares
-        PawnManager.Instance.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
+        SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
         targetSquares.Where(x => !x.IsCanMove()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);

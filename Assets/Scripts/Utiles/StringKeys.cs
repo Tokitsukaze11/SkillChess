@@ -7,3 +7,8 @@ public static class StringKeys
     public static readonly string MAP_PLACE = "MAP_PLACE";
     public static readonly string DAMAGE = "DAMAGE";
 }
+public static class GlobalValues
+{
+    public static int ROW;
+    public static int COL;
+}

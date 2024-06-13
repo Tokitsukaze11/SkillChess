@@ -53,13 +53,9 @@ public class AttackDecorator : SkillDecorator
 
         // Check now values
         var targetSquares = new List<MapSquare>();
-        var mapSquareDic = PawnManager.Instance.MapSquareDic;
-        var keys = mapSquareDic.Keys.ToList(); // 64개의 키값을 리스트로 변환 8x8
-        Vector2 nowKey = keys[_curMapSquareIndex];
-        var curKeyIndex = keys.IndexOf(nowKey); // 현재 키값의 인덱스
 
         // Check target squares
-        PawnManager.Instance.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
+        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares);
         targetSquares.Where(x => !x.IsCanMove()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
@@ -77,13 +73,9 @@ public class AttackDecorator : SkillDecorator
 
         // Check now values
         var targetSquares = new List<MapSquare>();
-        var mapSquareDic = PawnManager.Instance.MapSquareDic;
-        var keys = mapSquareDic.Keys.ToList(); // 64개의 키값을 리스트로 변환 8x8
-        Vector2 nowKey = keys[_curMapSquareIndex];
-        var curKeyIndex = keys.IndexOf(nowKey); // 현재 키값의 인덱스
 
         // Check target squares
-        PawnManager.Instance.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
+        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares);
         targetSquares.Where(x => !x.IsCanMove()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
