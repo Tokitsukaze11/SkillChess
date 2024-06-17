@@ -19,6 +19,9 @@ public class PopupDescriptController : MonoBehaviour
     public Image _descriptionPopupImage;
     private Coroutine _panelAnimCoroutine = null;
     private RectTransform _panelRectTransform;
+    
+    public EventableText _eventableText;
+    
     private void Awake()
     {
         _movePopup.OnMouseOverPopup += PopupControl;

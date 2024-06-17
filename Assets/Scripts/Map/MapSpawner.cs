@@ -11,8 +11,8 @@ public class MapSpawner : MonoBehaviour
     public GameObject place;
     public float squareSize = 1.5f;
 
-    [ReadOnly] public int row;
-    [ReadOnly] public int col;
+    [ReadOnly] public int row = 8;
+    [ReadOnly] public int col = 8;
     
     private Dictionary<Vector2,MapSquare> _mapSquareDic = new Dictionary<Vector2, MapSquare>();
     

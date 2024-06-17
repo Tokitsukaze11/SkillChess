@@ -11,6 +11,7 @@ public class SamplePawn : Pawn
     {
         base.Awake();
         _skill = new AttackDecorator(this,20,5,AttackType.SingleTarget);
+        //_skill = new HowitzerDecorator(this, 20, 5, 5);
         _skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
@@ -18,6 +19,12 @@ public class SamplePawn : Pawn
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };
+        /*(_skill as HowitzerDecorator)!.OnSkillEnd += () =>
+        {
+            OnPawnClicked?.Invoke(false, null);
+            _curDefense = 0;
+            GameManager.Instance.TurnEnd();
+        };*/
     }
     protected override void OnMouseDown()
     {
