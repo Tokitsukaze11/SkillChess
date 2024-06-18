@@ -6,7 +6,7 @@ using UnityEngine;
 public class UpdateManager : Singleton<UpdateManager>
 {
     public event Action OnUpdate;
-    void Update()
+    private void Update()
     {
         OnUpdate?.Invoke();
     }

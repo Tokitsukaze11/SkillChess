@@ -19,6 +19,7 @@ public class GameManager : Singleton<GameManager>
     private int _targetFPS = 60;
     public int TargetFPS => _targetFPS;
     public event Action<GameState> OnGameStateChanged;
+    public Texture2D[] _cursorTextures;
     public void TurnEnd()
     {
         OnTurnEnd!.Invoke();
@@ -28,6 +29,8 @@ public class GameManager : Singleton<GameManager>
         Cursor.lockState = CursorLockMode.Confined;
         Application.targetFrameRate = _targetFPS;
         _eGameState = GameState.Play; // TODO : Change to GameState.Idle
+        UnLockController.Init();
+        CursorController.InitCursor(_cursorTextures);
     }
     public void GameStateChange(GameState gameState)
     {

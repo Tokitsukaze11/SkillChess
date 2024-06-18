@@ -11,6 +11,8 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField] private TextMeshProUGUI _textMeshProUGUI;
     private Camera _renderCamera;
     private Coroutine _mouseOverCoroutine;
+    private string _linkId = null;
+    private bool _isPanelLock = false;
     private void Awake()
     {
         _renderCamera = UIManager.Instance.renderCamera;
@@ -25,25 +27,43 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
     private IEnumerator CO_MouseOver()
     {
+        float time = 0;
         while (true)
         {
-            int linkIndex = TMP_TextUtilities.FindIntersectingLink(_textMeshProUGUI, Input.mousePosition, _renderCamera);
-            if (linkIndex != -1)
+            time += Time.deltaTime;
+            if (_linkId == null)
             {
-                var linkInfo = _textMeshProUGUI.textInfo.linkInfo[linkIndex];
-                var linkId = linkInfo.GetLinkID(); // Link ID
-                var linkText = _textMeshProUGUI.textInfo.linkInfo[linkIndex].GetLinkText();
-                Debug.Log($"Link Index : {linkIndex}, Link ID : {linkId}, Link Text : {linkText}");
+                int linkIndex = TMP_TextUtilities.FindIntersectingLink(_textMeshProUGUI, Input.mousePosition, _renderCamera);
+                if (linkIndex != -1)
+                {
+                    MouseChange(true);
+                    var linkInfo = _textMeshProUGUI.textInfo.linkInfo[linkIndex];
+                    var linkId = linkInfo.GetLinkID(); // Link ID
+                    _linkId = linkId;
+                    var linkText = _textMeshProUGUI.textInfo.linkInfo[linkIndex].GetLinkText();
+                    //Debug.Log($"Link Index : {linkIndex}, Link ID : {linkId}, Link Text : {linkText}");
+                    LinkManager.Instance.LinkEvent(linkId);
+                }
             }
+            /*if (time > 3)
+            {
+                yield break;
+            }*/
             yield return null;
         }
         yield break;
     }
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (_mouseOverCoroutine != null)
-        {
-            StopCoroutine(_mouseOverCoroutine);
-        }
+        MouseChange(false);
+        if (_mouseOverCoroutine == null)
+            return;
+        StopCoroutine(_mouseOverCoroutine);
+        if(_linkId != null)
+            LinkManager.Instance.LinkEvent(_linkId, false);
+    }
+    private void MouseChange(bool isOn)
+    {
+        CursorController.SetPopupCursor(isOn);
     }
 }

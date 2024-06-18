@@ -24,7 +24,7 @@ public class InGameSettingController : MonoBehaviour
     public MapViewController _mapViewController;
     public SettingManager _settingManager;
     
-    private Action<GameState> _onGameStateChange;
+    private event Action<GameState> _onGameStateChange;
     
     private Coroutine _panelAnimCoroutine = null;
     
@@ -68,7 +68,7 @@ public class InGameSettingController : MonoBehaviour
     private void InGameMenuPanelActive(bool isActive)
     {
         if(isActive) _inGameMenuPanel.SetActive(true);
-        _onGameStateChange.Invoke(isActive ? GameState.Pause : GameState.Play);
+        _onGameStateChange!.Invoke(isActive ? GameState.Pause : GameState.Play);
         //_inGameMenuPanel.SetActive(isActive);
         _panelBackImage.DOFade(isActive ? 0.5f : 0, 0.5f).onComplete += () => _inGameMenuPanel.SetActive(isActive);
         _buttonsRect[CAMERA_RESET_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
@@ -78,7 +78,7 @@ public class InGameSettingController : MonoBehaviour
     }
     private void MenuUpInGame()
     {
-        if(Input.GetKeyUp(KeyCode.Escape))
+        if(Input.GetKeyUp(KeyCode.Escape)) // TODO : Need to not conflict with UnLockController
             InGameMenuPanelActive(true);
     }
     private void CameraReset()

@@ -20,7 +20,10 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if(_isPanelLock)
+            return;
         OnMouseOverPopup?.Invoke(true,description);
+        _timeSlider.fillAmount = 0;
         if (_mouseOverCoroutine != null)
         {
             StopCoroutine(_mouseOverCoroutine);
@@ -33,10 +36,11 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         while (true)
         {
             time += Time.deltaTime;
-            //_timeSlider.fillAmount = time / 3;
+            _timeSlider.fillAmount = time / 3;
             if (time > 3)
             {
                 _isPanelLock = true;
+                UnLockController.LockedPopup(this);
                 yield break;
             }
             yield return null;
@@ -46,10 +50,19 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void OnPointerExit(PointerEventData eventData)
     {
         if(!_isPanelLock)
-            OnMouseOverPopup?.Invoke(false,null);
+        {
+            OnMouseOverPopup?.Invoke(false, null);
+            _timeSlider.fillAmount = 0;
+        }
         if (_mouseOverCoroutine != null)
         {
             StopCoroutine(_mouseOverCoroutine);
         }
+    }
+    public void UnlockPopup()
+    {
+        _isPanelLock = false;
+        OnMouseOverPopup!.Invoke(false, null);
+        _timeSlider.fillAmount = 0;
     }
 }
