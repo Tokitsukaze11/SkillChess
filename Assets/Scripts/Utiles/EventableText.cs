@@ -27,28 +27,31 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
     private IEnumerator CO_MouseOver()
     {
-        float time = 0;
         while (true)
         {
-            time += Time.deltaTime;
-            if (_linkId == null)
+            int linkIndex = TMP_TextUtilities.FindIntersectingLink(_textMeshProUGUI, Input.mousePosition, _renderCamera);
+            if (linkIndex != -1)
             {
-                int linkIndex = TMP_TextUtilities.FindIntersectingLink(_textMeshProUGUI, Input.mousePosition, _renderCamera);
-                if (linkIndex != -1)
+                MouseChange(true);
+                var linkInfo = _textMeshProUGUI.textInfo.linkInfo[linkIndex];
+                var linkId = linkInfo.GetLinkID(); // Link ID
+                //var linkText = _textMeshProUGUI.textInfo.linkInfo[linkIndex].GetLinkText();
+                //Debug.Log($"Link Index : {linkIndex}, Link ID : {linkId}, Link Text : {linkText}");
+                if (_linkId != linkId)
                 {
-                    MouseChange(true);
-                    var linkInfo = _textMeshProUGUI.textInfo.linkInfo[linkIndex];
-                    var linkId = linkInfo.GetLinkID(); // Link ID
                     _linkId = linkId;
-                    var linkText = _textMeshProUGUI.textInfo.linkInfo[linkIndex].GetLinkText();
-                    //Debug.Log($"Link Index : {linkIndex}, Link ID : {linkId}, Link Text : {linkText}");
                     LinkManager.Instance.LinkEvent(linkId);
                 }
             }
-            /*if (time > 3)
+            else
             {
-                yield break;
-            }*/
+                MouseChange(false);
+                if (_linkId != null)
+                {
+                    LinkManager.Instance.LinkEvent(_linkId, false);
+                    _linkId = null;
+                }
+            }
             yield return null;
         }
         yield break;

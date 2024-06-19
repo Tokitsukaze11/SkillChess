@@ -23,6 +23,7 @@ public class InGameSettingController : MonoBehaviour
     [Header("Scripts")]
     public MapViewController _mapViewController;
     public SettingManager _settingManager;
+    public KeyManager _keyManager;
     
     private event Action<GameState> _onGameStateChange;
     
@@ -33,9 +34,12 @@ public class InGameSettingController : MonoBehaviour
     private const int CAMERA_RESET_BUTTON = 0;
     private const int SURRENDER_BUTTON = 1;
     
+    private bool _currentPanelActive = false;
+    
     private void Awake()
     {
-        UpdateManager.Instance.OnUpdate += MenuUpInGame;
+        _keyManager.AttachKeyEvent(KeyCode.Escape, MenuUpInGame);
+        UnLockController.OnKeyAction += _keyManager.AttachKeyEvent;
         _cameraResetButton.GetComponent<PopupObject>().OnMouseOverPopup += CameraResetDescription;
         _onGameStateChange += GameManager.Instance.GameStateChange;
         _buttonsRect.Add(_cameraResetButton.GetComponent<RectTransform>());
@@ -68,6 +72,7 @@ public class InGameSettingController : MonoBehaviour
     private void InGameMenuPanelActive(bool isActive)
     {
         if(isActive) _inGameMenuPanel.SetActive(true);
+        _currentPanelActive = isActive;
         _onGameStateChange!.Invoke(isActive ? GameState.Pause : GameState.Play);
         //_inGameMenuPanel.SetActive(isActive);
         _panelBackImage.DOFade(isActive ? 0.5f : 0, 0.5f).onComplete += () => _inGameMenuPanel.SetActive(isActive);
@@ -78,8 +83,7 @@ public class InGameSettingController : MonoBehaviour
     }
     private void MenuUpInGame()
     {
-        if(Input.GetKeyUp(KeyCode.Escape)) // TODO : Need to not conflict with UnLockController
-            InGameMenuPanelActive(true);
+        InGameMenuPanelActive(!_currentPanelActive);
     }
     private void CameraReset()
     {

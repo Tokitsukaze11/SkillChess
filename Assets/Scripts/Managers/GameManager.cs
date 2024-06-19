@@ -29,7 +29,6 @@ public class GameManager : Singleton<GameManager>
         Cursor.lockState = CursorLockMode.Confined;
         Application.targetFrameRate = _targetFPS;
         _eGameState = GameState.Play; // TODO : Change to GameState.Idle
-        UnLockController.Init();
         CursorController.InitCursor(_cursorTextures);
     }
     public void GameStateChange(GameState gameState)

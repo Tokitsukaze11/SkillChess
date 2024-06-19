@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,13 +6,11 @@ using UnityEngine;
 public static class UnLockController
 {
     private static HashSet<PopupObject> _popupObjects = new HashSet<PopupObject>();
-    public static void Init()
-    {
-        UpdateManager.Instance.OnUpdate += OnUpdate;
-    }
+    public static event Action<KeyCode,Action> OnKeyAction;
     public static void LockedPopup(PopupObject popupObject)
     {
         _popupObjects.Add(popupObject);
+        OnKeyAction?.Invoke(KeyCode.Escape,UnLockPopup);
     }
     private static void TryUnlockPopup()
     {
@@ -21,11 +20,8 @@ public static class UnLockController
         }
         _popupObjects.Clear();
     }
-    private static void OnUpdate()
+    private static void UnLockPopup()
     {
-        if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
-        {
-            TryUnlockPopup();
-        }
+        TryUnlockPopup();
     }
 }

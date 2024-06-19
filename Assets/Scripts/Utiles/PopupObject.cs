@@ -11,6 +11,7 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 {
     public string description;
     public event Action<bool,string> OnMouseOverPopup;
+    public event Action<PopupObject> OnMouseOverNew;
     private Coroutine _mouseOverCoroutine;
     private bool _isPanelLock = false;
     [SerializeField] private Image _timeSlider;
@@ -23,6 +24,7 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if(_isPanelLock)
             return;
         OnMouseOverPopup?.Invoke(true,description);
+        OnMouseOverNew?.Invoke(this);
         _timeSlider.fillAmount = 0;
         if (_mouseOverCoroutine != null)
         {
@@ -36,8 +38,8 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         while (true)
         {
             time += Time.deltaTime;
-            _timeSlider.fillAmount = time / 3;
-            if (time > 3)
+            _timeSlider.fillAmount = time / 1;
+            if (time > 1)
             {
                 _isPanelLock = true;
                 UnLockController.LockedPopup(this);
@@ -63,6 +65,11 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         _isPanelLock = false;
         OnMouseOverPopup!.Invoke(false, null);
+        _timeSlider.fillAmount = 0;
+    }
+    public void UnlockAsForce()
+    {
+        _isPanelLock = false;
         _timeSlider.fillAmount = 0;
     }
 }

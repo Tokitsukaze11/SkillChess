@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -28,6 +29,12 @@ public class PopupDescriptController : MonoBehaviour
         _attackPopup.OnMouseOverPopup += PopupControl;
         _defendPopup.OnMouseOverPopup += PopupControl;
         _skillPopup.OnMouseOverPopup += PopupControl;
+        
+        _movePopup.OnMouseOverNew += UnlockOtherPopUp;
+        _attackPopup.OnMouseOverNew += UnlockOtherPopUp;
+        _defendPopup.OnMouseOverNew += UnlockOtherPopUp;
+        _skillPopup.OnMouseOverNew += UnlockOtherPopUp;
+        
         _panelRectTransform = _descriptionPopupImage.rectTransform;
     }
     private void Start()
@@ -85,5 +92,16 @@ public class PopupDescriptController : MonoBehaviour
             }
             yield return null;
         }
+    }
+    private void UnlockOtherPopUp(PopupObject popupObject)
+    {
+        List<PopupObject> popupObjects = new List<PopupObject>
+        {
+            _movePopup,
+            _attackPopup,
+            _defendPopup,
+            _skillPopup
+        };
+        popupObjects.Where(popup => popup != popupObject).ToList().ForEach(popup => popup.UnlockAsForce());
     }
 }
