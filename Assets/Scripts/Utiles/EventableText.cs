@@ -40,7 +40,8 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 if (_linkId != linkId)
                 {
                     _linkId = linkId;
-                    LinkManager.Instance.LinkEvent(linkId);
+                    Vector3 mousePos = _renderCamera.ScreenToWorldPoint(Input.mousePosition);
+                    LinkManager.Instance.LinkEvent(linkId,true, mousePos);
                 }
             }
             else
@@ -48,7 +49,7 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 MouseChange(false);
                 if (_linkId != null)
                 {
-                    LinkManager.Instance.LinkEvent(_linkId, false);
+                    LinkManager.Instance.LinkEvent(_linkId, false, default);
                     _linkId = null;
                 }
             }
