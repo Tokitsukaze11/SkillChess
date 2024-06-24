@@ -25,7 +25,7 @@ public class LinkEventContainer : MonoBehaviour
             popup = ObjectManager.Instance.SpawnObject(_popupObject, StringKeys.LINK_EVENT_POPUP_OBJECT);
             popup.transform.SetParent(UIManager.Instance._mainCanvas.transform, false);
             _popupObjects.Add(StringKeys.LINK_EVENT_POPUP_OBJECT, popup);
-            string description = "직선 방향";
+            string description = "어떠한 물체나 장애물이 만날 때까지의 상하좌우 4개의 방향을 의미합니다.\n이는 기물을 가로막는 장애물을 만나면 장애물 뒤가 목표된 반경임에도 목표된 행동을 할 수 없다는 의미입니다.";
             popup.GetComponent<LinkEventPopup>().Init(description, position);
         }
         else

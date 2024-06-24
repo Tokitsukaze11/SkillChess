@@ -8,6 +8,7 @@ public class UIManager : Singleton<UIManager>
 {
     public Camera renderCamera;
     public GameObject _mainCanvas;
+    public RectTransform _masterPanel;
     public void UpdateUI([NotNull] Action uiAction)
     {
         if (uiAction == null)

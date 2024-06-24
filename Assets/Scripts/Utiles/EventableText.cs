@@ -40,7 +40,9 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 if (_linkId != linkId)
                 {
                     _linkId = linkId;
-                    Vector3 mousePos = _renderCamera.ScreenToWorldPoint(Input.mousePosition);
+                    //Vector3 mousePos = _renderCamera.ScreenToWorldPoint(Input.mousePosition);
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(UIManager.Instance._masterPanel, Input.mousePosition, _renderCamera, out var mousePos);
+                    mousePos.y += _textMeshProUGUI.fontSize * 2;
                     LinkManager.Instance.LinkEvent(linkId,true, mousePos);
                 }
             }
