@@ -5,20 +5,20 @@ using UnityEngine;
 
 public static class UnLockController
 {
-    private static HashSet<PopupObject> _popupObjects = new HashSet<PopupObject>();
+    private static PopupObject _popupObject;
     public static event Action<KeyCode,Action> OnKeyAction;
     public static void LockedPopup(PopupObject popupObject)
     {
-        _popupObjects.Add(popupObject);
-        OnKeyAction?.Invoke(KeyCode.Escape,UnLockPopup);
+        if(ReferenceEquals(_popupObject,null))
+            OnKeyAction?.Invoke(KeyCode.Escape,UnLockPopup);
+        _popupObject = popupObject;
     }
     private static void TryUnlockPopup()
     {
-        foreach (var popupObject in _popupObjects)
-        {
-            popupObject.UnlockPopup();
-        }
-        _popupObjects.Clear();
+        if(ReferenceEquals(_popupObject,null))
+            return;
+        _popupObject.UnlockPopup();
+        _popupObject = null;
     }
     private static void UnLockPopup()
     {

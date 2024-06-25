@@ -12,7 +12,6 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Camera _renderCamera;
     private Coroutine _mouseOverCoroutine;
     private string _linkId = null;
-    private bool _isPanelLock = false;
     private void Awake()
     {
         _renderCamera = UIManager.Instance.renderCamera;

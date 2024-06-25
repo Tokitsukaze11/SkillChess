@@ -24,6 +24,7 @@ public class InGameSettingController : MonoBehaviour
     public MapViewController _mapViewController;
     public SettingManager _settingManager;
     public KeyManager _keyManager;
+    public PostProcessController _postProcessController;
     
     private event Action<GameState> _onGameStateChange;
     
@@ -33,6 +34,7 @@ public class InGameSettingController : MonoBehaviour
     private List<TextMeshProUGUI> _buttonsText = new List<TextMeshProUGUI>();
     private const int CAMERA_RESET_BUTTON = 0;
     private const int SURRENDER_BUTTON = 1;
+    private const int SETTING_BUTTON = 2;
     
     private bool _currentPanelActive = false;
     
@@ -44,8 +46,10 @@ public class InGameSettingController : MonoBehaviour
         _onGameStateChange += GameManager.Instance.GameStateChange;
         _buttonsRect.Add(_cameraResetButton.GetComponent<RectTransform>());
         _buttonsRect.Add(_surrenderButton.GetComponent<RectTransform>());
+        _buttonsRect.Add(_settingButton.GetComponent<RectTransform>());
         _buttonsText.Add(_cameraResetButton.GetComponentInChildren<TextMeshProUGUI>());
         _buttonsText.Add(_surrenderButton.GetComponentInChildren<TextMeshProUGUI>());
+        _buttonsText.Add(_settingButton.GetComponentInChildren<TextMeshProUGUI>());
     }
     private void Start()
     {
@@ -63,23 +67,28 @@ public class InGameSettingController : MonoBehaviour
         _camResetDesc.sizeDelta = new Vector2(600, 0);
         _buttonsRect[CAMERA_RESET_BUTTON].sizeDelta = new Vector2(300, 0);
         _buttonsRect[SURRENDER_BUTTON].sizeDelta = new Vector2(300, 0);
+        _buttonsRect[SETTING_BUTTON].sizeDelta = new Vector2(300, 0);
         var curColor = _buttonsText[CAMERA_RESET_BUTTON].color;
         curColor.a = 0;
         _buttonsText[CAMERA_RESET_BUTTON].color = curColor;
         _buttonsText[SURRENDER_BUTTON].color = curColor;
+        _buttonsText[SETTING_BUTTON].color = curColor;
         _settingButton.onClick.AddListener(() => SettingPanelActive(true));
     }
     private void InGameMenuPanelActive(bool isActive)
     {
         if(isActive) _inGameMenuPanel.SetActive(true);
         _currentPanelActive = isActive;
+        _postProcessController.ControllerDepthOfField(isActive);
         _onGameStateChange!.Invoke(isActive ? GameState.Pause : GameState.Play);
         //_inGameMenuPanel.SetActive(isActive);
         _panelBackImage.DOFade(isActive ? 0.5f : 0, 0.5f).onComplete += () => _inGameMenuPanel.SetActive(isActive);
         _buttonsRect[CAMERA_RESET_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
         _buttonsRect[SURRENDER_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
+        _buttonsRect[SETTING_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
         _buttonsText[CAMERA_RESET_BUTTON].DOFade(isActive ? 1 : 0, 0.3f);
         _buttonsText[SURRENDER_BUTTON].DOFade(isActive ? 1 : 0, 0.3f);
+        _buttonsText[SETTING_BUTTON].DOFade(isActive ? 1 : 0, 0.3f);
     }
     private void MenuUpInGame()
     {

@@ -15,6 +15,8 @@ public class SettingManager : MonoBehaviour
     
     public void ShowSettingPanelFromOther(bool active)
     {
+        Debug.Log("Not working now");
+        return;
         _settingPanel.SetActive(active);
         _backPanel.DOColor(active ? new Color(0, 0, 0, 0.9f) : Color.clear, 0.5f);
     }
