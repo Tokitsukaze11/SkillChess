@@ -27,6 +27,7 @@ public class PostProcessController : MonoBehaviour
     }
     public void ControllerDepthOfField(bool value)
     {
+        return;
         if (!_isDepthOfField)
             return;
         _depthOfField.active = value;

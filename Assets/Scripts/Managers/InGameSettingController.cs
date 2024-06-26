@@ -60,7 +60,7 @@ public class InGameSettingController : MonoBehaviour
         _inGameMenuButton.onClick.AddListener(() => InGameMenuPanelActive(true));
         _inGameMenuCloseButton.onClick.AddListener(() => InGameMenuPanelActive(false));
         _inGameMenuPanel.SetActive(false);
-        _panelBackImage.color = Color.clear;
+        _panelBackImage.color = new Color(255,255,255,0);
         _cameraResetButton.onClick.AddListener(CameraReset);
         _surrenderButton.onClick.AddListener(Surrender);
         _camResetDesc.gameObject.SetActive(false);
@@ -82,7 +82,8 @@ public class InGameSettingController : MonoBehaviour
         _postProcessController.ControllerDepthOfField(isActive);
         _onGameStateChange!.Invoke(isActive ? GameState.Pause : GameState.Play);
         //_inGameMenuPanel.SetActive(isActive);
-        _panelBackImage.DOFade(isActive ? 0.5f : 0, 0.5f).onComplete += () => _inGameMenuPanel.SetActive(isActive);
+        //_panelBackImage.DOFade(isActive ? 0.9f : 0, 0.5f).onComplete += () => _inGameMenuPanel.SetActive(isActive);
+        _panelBackImage.DOColor(isActive ? new Color(255, 255, 255, 0.9f) : new Color(255,255,255,0), 0.5f).onComplete += () => _inGameMenuPanel.SetActive(isActive);
         _buttonsRect[CAMERA_RESET_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
         _buttonsRect[SURRENDER_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
         _buttonsRect[SETTING_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
