@@ -10,9 +10,9 @@ public class SamplePawn : Pawn
     private new void Awake()
     {
         base.Awake();
-        _skill = new AttackDecorator(this,20,5,AttackType.SingleTarget);
+        _skill = new AttackDecorator(this,20,5,AttackType.SelectAttackTarget);
         //_skill = new HowitzerDecorator(this, 20, 5, 5);
-        _skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
+        //_skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
             OnPawnClicked?.Invoke(false, null);
@@ -130,6 +130,7 @@ public class SamplePawn : Pawn
     }
     public override void UseSkill()
     {
+        _skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
         _skill.UseSkill();
     }
     public override void TakeDamage(int damage)

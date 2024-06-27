@@ -227,7 +227,8 @@ public static class SquareCalculator
     }
     public static MapSquare CurrentMapSquare(int curKeyIndex)
     {
-        return _mapSquareDic.FirstOrDefault(x => x.Key == CurrentKey(curKeyIndex)).Value;
+        //return _mapSquareDic.FirstOrDefault(x => x.Key == CurrentKey(curKeyIndex)).Value;
+        return _mapSquareDic.Values.ToList()[curKeyIndex];
     }
     public static Vector2 CurrentKey(MapSquare curMapSquare)
     {

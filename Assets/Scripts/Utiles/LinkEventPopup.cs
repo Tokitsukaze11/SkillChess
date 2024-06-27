@@ -21,6 +21,7 @@ public class LinkEventPopup : MonoBehaviour
         int width = max * FONT_WIDTH > MAX_WIDTH ? MAX_WIDTH : max * FONT_WIDTH;
         // 세로 길이 계산
         int paragraph = description.Count(x => x == '\n') + 1;
+        
         var longestParagraph = description.Split('\n').OrderByDescending(x => x.Length).First();
         int byteCount = System.Text.Encoding.UTF8.GetByteCount(longestParagraph);
         int fullWidthCount = longestParagraph.Count(c => c > '\u1FFF');
@@ -30,14 +31,16 @@ public class LinkEventPopup : MonoBehaviour
         // 모든 글자를 전각 기준으로 바꾸어 몇 글짜인지 체크
         int totalCharCount = fullWidthCount + (halfWidthCount/2);
         // 전각과 반각을 전부 더해서 가로 길이 1000에 비해 얼마나 긴지 계산
-        float ratio = (float)totalCharCount / 37;
+        int ratio = totalCharCount / 37;
         // 가로 길이 1000에 비해 얼마나 긴지 계산한 비율을 세로 길이에 적용
-        paragraph = (int)(paragraph + ratio);
+        paragraph += ratio;
         // 최종 세로 길이 계산
-        float height = FONT_HEIGHT * paragraph;
+        int height = FONT_HEIGHT * paragraph;
         // 계산된 가로 세로 길이로 팝업 크기 조정
-        position.y += height * 0.5f; // 팝업이 마우스 위로 나타나도록 위치 조정
         _popupRect.sizeDelta = new Vector2(width, height);
+        
+        position.y += height * 0.5f; // 팝업이 마우스 위로 나타나도록 위치 조정
+        
         /*if (position.x + width * 0.5f > Screen.width)
         {
             position.x = Screen.width - width * 0.5f;

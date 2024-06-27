@@ -8,7 +8,6 @@ using UnityEngine.Rendering;
 public enum PawnType
 {
     Pawn,
-    Queen,
     King,
 }
 

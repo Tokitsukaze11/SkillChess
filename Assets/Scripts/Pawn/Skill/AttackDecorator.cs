@@ -6,8 +6,8 @@ using System.Linq;
 
 public enum AttackType
 {
-    SingleTarget,
-    AreaTarget,
+    SelectAttackTarget,
+    AllAttackTarget,
 }
 public class AttackDecorator : SkillDecorator
 {
@@ -33,55 +33,27 @@ public class AttackDecorator : SkillDecorator
     }
     protected override void SkillPreview()
     {
-        switch (_attackType)
-        {
-            case AttackType.SingleTarget:
-                SinglePreview();
-                break;
-            case AttackType.AreaTarget:
-                AreaPreview();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+        AttackPreview();
         // TODO : UI disable except cancel button
     }
-    private void SinglePreview()
+    private void AttackPreview()
     {
         // Reset color
         PawnManager.Instance.ResetSquaresColor();
 
         // Check now values
         var targetSquares = new List<MapSquare>();
+        
+        bool isSelectAttack = _attackType == AttackType.SelectAttackTarget;
 
         // Check target squares
-        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares);
+        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares, isSelectAttack);
         targetSquares.Where(x => !x.IsCanMove()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
             x.OnClickSquare += (mapSquare) =>
             {
                 SkillEffect(new List<MapSquare>(){mapSquare});
-            };
-        });
-        _targetSquares.AddRange(targetSquares);
-    }
-    private void AreaPreview()
-    {
-        // Reset color
-        PawnManager.Instance.ResetSquaresColor();
-
-        // Check now values
-        var targetSquares = new List<MapSquare>();
-
-        // Check target squares
-        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares);
-        targetSquares.Where(x => !x.IsCanMove()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
-        {
-            x.SetColor(Color.yellow);
-            x.OnClickSquare += (mapSquare) =>
-            {
-                SkillEffect(targetSquares);
             };
         });
         _targetSquares.AddRange(targetSquares);
