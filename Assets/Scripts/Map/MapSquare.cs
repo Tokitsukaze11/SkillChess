@@ -24,6 +24,10 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     {
         return !_isOccupied;
     }
+    public bool IsObstacle()
+    {
+        return false; // TODO : Will be changed after add Obstacle
+    }
     public void SetColor(Color color)
     {
         _meshRenderer.material.color = color;
