@@ -69,7 +69,9 @@ public class SamplePawn : Pawn
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
         Vector2 curKey = SquareCalculator.CurrentKey(_moveTargetSquare);
-        
+        MoveNavigation.FindNavigation(_curMapSquare, _moveTargetSquare);
+        Debug.Log("BFS Test");
+        return;
         this.transform.position = new Vector3(curKey.x, 1, curKey.y);
         // 위 코드는 애니메이션으로 대체되어야 함
         

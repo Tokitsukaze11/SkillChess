@@ -7,8 +7,9 @@ using UnityEngine;
 public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
 {
     [SerializeField] private MeshRenderer _meshRenderer;
-    private bool _isOccupied;
+    private bool _isOccupied; // 다른 Pawn이 차지하고 있는지 여부
     private bool _isChoosen;
+    private bool _isObstacle; // 장애물이 있는지 여부, Pawn 제외
     public event Action<MapSquare> OnClickSquare;
     private Pawn _curPawn;
     public Pawn CurPawn
@@ -24,9 +25,10 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     {
         return !_isOccupied;
     }
-    public bool IsObstacle()
+    public bool IsObstacle
     {
-        return false; // TODO : Will be changed after add Obstacle
+        get => _isObstacle;
+        set => _isObstacle = value;
     }
     public void SetColor(Color color)
     {

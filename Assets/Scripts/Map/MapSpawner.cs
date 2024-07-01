@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
@@ -40,7 +41,18 @@ public class MapSpawner : MonoBehaviour
                 _mapSquareDic.Add(spawnPoint, obj.GetComponent<MapSquare>());
             }
         }
+        // 1행의 마지막 열을 제외하고 모두 장애물이 있게 임시로 설정.
+        for (int i = 0; i < col; i++)
+        {
+            if (i == col - 1)
+                continue;
+            int index = i * row + 1;
+            _mapSquareDic.Values.ToList()[index].IsObstacle = true;
+            _mapSquareDic.Values.ToList()[index].SetColor(Color.black); // Temp;
+        }
+        
         PawnManager.Instance.SetMapSquareDic(_mapSquareDic);
         PawnManager.Instance.SpawnPawn();
+        MoveNavigation.InitMapSquare(_mapSquareDic);
     }
 }

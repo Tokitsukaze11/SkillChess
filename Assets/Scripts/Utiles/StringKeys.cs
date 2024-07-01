@@ -10,6 +10,12 @@ public static class StringKeys
 }
 public static class GlobalValues
 {
+    /// <summary>
+    /// 행
+    /// </summary>
     public static int ROW;
+    /// <summary>
+    /// 열
+    /// </summary>
     public static int COL;
 }
