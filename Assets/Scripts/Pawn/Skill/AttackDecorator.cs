@@ -47,8 +47,8 @@ public class AttackDecorator : SkillDecorator
         bool isSelectAttack = _attackType == AttackType.SelectAttackTarget;
 
         // Check target squares
-        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares, isSelectAttack);
-        targetSquares.Where(x => !x.IsCanMove()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares, false, isSelectAttack);
+        targetSquares.Where(x => !x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
             x.OnClickSquare += (mapSquare) =>

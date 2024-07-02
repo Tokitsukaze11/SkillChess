@@ -21,7 +21,7 @@ public static class SquareCalculator
     /// <param name="curKeyIndex">Current key index</param>
     /// <param name="targetSquares">List of target squares</param>
     /// <param name="isConsideringObstacles">Is considering obstacles to do. If true, try to stop when obstacle is found</param>
-    public static void CheckTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
+    public static void CheckTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false, bool isConsideringAnyPawn = false)
     {
         var keys = _mapSquareDic.Keys.ToList();
         GetVerticalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles);
@@ -95,8 +95,11 @@ public static class SquareCalculator
                 int newKeyIndex = newRow + newCol * row;
                 CheckDirection(newKeyIndex, newRow, newCol, keys, targetSquares);
 
-                if (isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
+                if (isConsideringObstacles && IsOverlapped(targetSquares))
+                {
+                    targetSquares.RemoveAt(targetSquares.Count - 1);
                     break;
+                }
             }
         }
     }
@@ -132,16 +135,19 @@ public static class SquareCalculator
 
         foreach (int direction in directions)
         {
-            int currentIndex = 0;
-            while (currentIndex < targetRange)
+            int curRange = 0;
+            while (curRange < targetRange)
             {
-                int newKeyIndex = curKeyIndex + (currentIndex + 1) * direction;
+                int newKeyIndex = curKeyIndex + (curRange + 1) * direction;
                 CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
-
-                if (isConsideringObstacles && IsOverlapped(currentIndex + 1, targetRange, targetSquares))
+                
+                if (isConsideringObstacles && IsOverlapped(targetSquares))
+                {
+                    targetSquares.RemoveAt(targetSquares.Count - 1);
                     break;
+                }
 
-                currentIndex++;
+                curRange++;
             }
         }
         
@@ -181,16 +187,19 @@ public static class SquareCalculator
 
         foreach (int direction in directions)
         {
-            int currentIndex = 0;
-            while (currentIndex < targetRange)
+            int curRange = 0;
+            while (curRange < targetRange)
             {
-                int newKeyIndex = curKeyIndex + (currentIndex + 1) * direction;
+                int newKeyIndex = curKeyIndex + (curRange + 1) * direction;
                 CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
-
-                if (isConsideringObstacles && IsOverlapped(currentIndex + 1, targetRange, targetSquares))
+                
+                if (isConsideringObstacles && IsOverlapped(targetSquares))
+                {
+                    targetSquares.RemoveAt(targetSquares.Count - 1);
                     break;
-
-                currentIndex++;
+                }
+                
+                curRange++;
             }
         }
 
@@ -207,14 +216,9 @@ public static class SquareCalculator
                 targetSquares.Add(newSquare);
         }
     }
-    private static bool IsOverlapped(int curIndex, int range, List<MapSquare> targetSquares)
+    private static bool IsOverlapped(List<MapSquare> targetSquares)
     {
-        if (curIndex < range)
-        {
-            if (targetSquares.Count > 0)
-                return !targetSquares[^1].IsCanMove();
-        }
-        return false;
+        return targetSquares.Any(x => !x.IsAnyPawn() || x.IsObstacle);
     }
 #endregion
     public static int CurrentIndex(MapSquare curMapSquare)

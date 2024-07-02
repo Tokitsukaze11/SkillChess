@@ -59,6 +59,7 @@ public abstract class Pawn : MonoBehaviour
         
     }
     public abstract void Move();
+    public abstract IEnumerator Co_Move(Queue<Vector2> path, Action callback);
     public abstract IEnumerator Co_EnemyMove();
     public virtual void ShowAttackRange()
     {

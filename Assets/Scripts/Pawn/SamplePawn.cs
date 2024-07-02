@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,7 +52,7 @@ public class SamplePawn : Pawn
         int curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
         // Check target squares
         SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares,true);
-        targetSquares.Where(x => x.IsCanMove()).ToList().ForEach(x =>
+        targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
             x.OnClickSquare += (mapSquare) =>
@@ -69,21 +70,62 @@ public class SamplePawn : Pawn
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
         Vector2 curKey = SquareCalculator.CurrentKey(_moveTargetSquare);
-        MoveNavigation.FindNavigation(_curMapSquare, _moveTargetSquare);
-        Debug.Log("BFS Test");
-        return;
-        this.transform.position = new Vector3(curKey.x, 1, curKey.y);
-        // 위 코드는 애니메이션으로 대체되어야 함
+        var path = MoveNavigation.FindNavigation(_curMapSquare, _moveTargetSquare);
         
-        // 아래 코드는 이동이 끝나면 실행되어야 함 (일단 지금은 기능만 구현)
-        _curMapSquare.CurPawn = null;
-        _curMapSquare = _moveTargetSquare;
-        _moveTargetSquare.CurPawn = this;
-        int curKeyIndexInt = SquareCalculator.CurrentIndex(_curMapSquare);
-        _skill.UpdateCurIndex(curKeyIndexInt);
-        OnPawnClicked?.Invoke(false,null);
-        _curDefense = 0;
-        GameManager.Instance.TurnEnd();
+        Queue<Vector2> pathKeys = new Queue<Vector2>();
+        foreach (var mapSquare in path)
+        {
+            var key = SquareCalculator.CurrentKey(mapSquare);
+            pathKeys.Enqueue(key);
+        }
+        
+        Action callBack = () =>
+        {
+            _curMapSquare.CurPawn = null;
+            _curMapSquare = _moveTargetSquare;
+            _moveTargetSquare.CurPawn = this;
+            int curKeyIndexInt = SquareCalculator.CurrentIndex(_curMapSquare);
+            _skill.UpdateCurIndex(curKeyIndexInt);
+            OnPawnClicked?.Invoke(false,null);
+            _curDefense = 0;
+            GameManager.Instance.TurnEnd();
+        };
+        
+        if (pathKeys.Count > 0)
+        {
+            StartCoroutine(Co_Move(pathKeys, callBack));
+        }
+        return;
+    }
+    public override  IEnumerator Co_Move(Queue<Vector2> path, Action callback)
+    {
+        List<Vector2> pathList = path.ToList();
+        // 이동 경로에서 각각의 꼭지점을 찾기.
+        Queue<Vector2> vertex = new Queue<Vector2>();
+        var curPath = pathList[0];
+        vertex.Enqueue(curPath);
+        for (int i = 0; i < pathList.Count; i++)
+        {
+            var key = pathList[i];
+            float x = key.x;
+            float y = key.y;
+            if (Mathf.Approximately(x, curPath.x) || Mathf.Approximately(y, curPath.y))
+                continue;
+            vertex.Enqueue(pathList[i - 1]);
+            curPath = pathList[i];
+        }
+        if(!vertex.Contains(pathList[^1]))
+            vertex.Enqueue(pathList[^1]);
+        while (vertex.Count > 0)
+        {
+            var key = vertex.Dequeue();
+            var target = new Vector3(key.x, 1, key.y);
+            this.transform.DOMove(target, 0.5f);
+            // TODO : 이동 애니메이션 추가
+            yield return new WaitForSeconds(0.5f);
+        }
+        callback!();
+        yield break;
     }
     public override IEnumerator Co_EnemyMove()
     {
@@ -103,7 +145,7 @@ public class SamplePawn : Pawn
 
         // Check target squares
         SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
-        targetSquares.Where(x => !x.IsCanMove()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+        targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
             x.OnClickSquare += (mapSquare) =>

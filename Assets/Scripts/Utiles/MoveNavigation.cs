@@ -8,11 +8,32 @@ public static class MoveNavigation
     private static  List<List<int>> _convertedIndex = new List<List<int>>();
     private static Dictionary<Vector2, MapSquare> _convertedMapSquareDic = new Dictionary<Vector2, MapSquare>();
     
+    static bool[,] _obstacles; // 장애물 배열
+    static int[,] _directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; // 상하좌우 이동
+    
     public static void InitMapSquare(Dictionary<Vector2, MapSquare> mapSquareDic)
     {
         _convertedIndex.Clear();
         _convertedMapSquareDic.Clear();
         Converter1DTo2D(mapSquareDic);
+        bool[,] isObstacle = new bool[GlobalValues.ROW, GlobalValues.COL];
+        for (int i = 0; i < GlobalValues.ROW; i++)
+        {
+            for (int j = 0; j < GlobalValues.COL; j++)
+            {
+                isObstacle[i, j] = false;
+            }
+        }
+        foreach(var mapSquare in _convertedMapSquareDic.Values)
+        {
+            if (!mapSquare.IsObstacle)
+                continue;
+            int index = _convertedMapSquareDic.Values.ToList().IndexOf(mapSquare);
+            int row = index / GlobalValues.COL;
+            int col = index % GlobalValues.COL;
+            isObstacle[row, col] = true;
+        }
+        _obstacles = isObstacle;
     }
     private static void Converter1DTo2D(Dictionary<Vector2, MapSquare> mapSquareDic)
     {
@@ -56,71 +77,116 @@ public static class MoveNavigation
         }
         // 이로 2차원 배열로 변환 완료.
     }
-    public static void FindNavigation(MapSquare start, MapSquare end)
+    public static Queue<MapSquare> FindNavigation(MapSquare start, MapSquare end)
     {
         var mapList = _convertedMapSquareDic.Values.ToList();
         int startIndex = mapList.IndexOf(start);
         int endIndex = mapList.IndexOf(end);
-        // _convertedIndex를 바탕으로 BFS를 진행. 단, _convertedIndex는 장애물의 존재 여부를 포함하지 않음. 또한, _convertedIndex를 수정하지 않고 BFS를 진행해야 함.
-        // 장애물의 존재 여부를 확인하는 방법은 MapSquare의 !IsObstacle을 통해 확인.
-        // 장애물의 존재 여부를 포함하는 배열을 만들어야 함.
-        bool[,] isObstacle = new bool[GlobalValues.ROW, GlobalValues.COL];
-        for (int i = 0; i < GlobalValues.ROW; i++)
+        
+        Queue<int> path = FindShortestPath(startIndex, endIndex);
+        /*foreach (var index in path)
         {
-            for (int j = 0; j < GlobalValues.COL; j++)
-            {
-                isObstacle[i, j] = false;
-            }
-        }
-        foreach(var mapSquare in _convertedMapSquareDic.Values)
+            var mapSquare = mapList[index];
+            mapSquare.SetColor(Color.white);
+        }*/
+        if(path.Count == 0)
+            throw new System.Exception("경로를 찾을 수 없습니다.");
+        Queue<MapSquare> pathMapSquare = new Queue<MapSquare>();
+        foreach (var index in path)
         {
-            if (!mapSquare.IsObstacle)
-                continue;
-            int index = _convertedMapSquareDic.Values.ToList().IndexOf(mapSquare);
-            int row = index / GlobalValues.COL;
-            int col = index % GlobalValues.COL;
-            isObstacle[row, col] = true;
+            pathMapSquare.Enqueue(mapList[index]);
         }
-        // 쉬운 진행을 위해 _convertedIndex를 바탕으로 행렬을 만듦.
-        List<List<int>> matrix = new List<List<int>>(_convertedIndex);
-        // 위 행렬을 기준으로 BFS를 진행.
-        bool[,] visited = new bool[GlobalValues.ROW, GlobalValues.COL];
-        for (int i = 0; i < GlobalValues.ROW; i++)
-        {
-            for (int j = 0; j < GlobalValues.COL; j++)
-            {
-                visited[i, j] = false;
-            }
-        }
-        int[] dx = {0, -1, 0, 1}; // 행렬 중 x값 => 열
-        int[] dy = {-1, 0, 1, 0}; // 행렬 중 y값 => 행
+        return pathMapSquare;
+    }
+    private static Queue<int> FindShortestPath(int startIndex, int endIndex, bool isForwardTracking = true)
+    {
+        int row = GlobalValues.ROW;
+        int col = GlobalValues.COL;
+        
+        bool[,] visited = new bool[row, col];
+        int[,] parent = new int[row, col];
         Queue<int> queue = new Queue<int>();
+
+        int startRow = startIndex / col;
+        int startCol = startIndex % col;
+        int endRow = endIndex / col;
+        int endCol = endIndex % col;
+
         queue.Enqueue(startIndex);
-        var curIndex = matrix.FirstOrDefault(x => x.Contains(startIndex));
-        if (curIndex != null)
-            visited[curIndex.IndexOf(startIndex), curIndex.IndexOf(startIndex)] = true;
+        visited[startRow, startCol] = true;
+        for (int i = 0; i < row; i++)
+            for (int j = 0; j < col; j++)
+                parent[i, j] = -1;
+
         while (queue.Count > 0)
         {
-            int now = queue.Dequeue();
-            if (now == endIndex)
-                break;
-            int nowRow = now / GlobalValues.COL;
-            int nowCol = now % GlobalValues.COL;
+            int currentIndex = queue.Dequeue();
+            int currentRow = currentIndex / col;
+            int currentCol = currentIndex % col;
+
+            if (currentIndex == endIndex)
+            {
+                return ReconstructPath(parent, startIndex, endIndex, isForwardTracking);
+            }
+
             for (int i = 0; i < 4; i++)
             {
-                int nextRow = nowRow + dy[i];
-                int nextCol = nowCol + dx[i];
-                if (nextRow < 0 || nextRow >= GlobalValues.ROW || nextCol < 0 || nextCol >= GlobalValues.COL)
-                    continue;
-                if (visited[nextRow, nextCol] || isObstacle[nextRow, nextCol])
-                    continue;
-                visited[nextRow, nextCol] = true;
-                queue.Enqueue(nextRow * GlobalValues.COL + nextCol);
+                int newRow = currentRow + _directions[i, 0];
+                int newCol = currentCol + _directions[i, 1];
+                int newIndex = newRow * col + newCol;
+
+                if (IsValid(newRow, newCol) && !visited[newRow, newCol] && !_obstacles[newRow, newCol])
+                {
+                    queue.Enqueue(newIndex);
+                    visited[newRow, newCol] = true;
+                    parent[newRow, newCol] = currentIndex;
+                }
             }
         }
-        // BFS 종료
-        // TODO : 정상적으로 작동하는지 확인 필요.
-        // 정상 작동을 확인하기 위해 이동 경로의 MapSquare의 색을 하얀색으로 바꿈
+
+        return new Queue<int>(); // 경로를 찾지 못한 경우
+    }
+    private static Queue<int> ReconstructPath(int[,] parent, int startIndex, int endIndex, bool isForwardTracking)
+    {
+        int row = GlobalValues.ROW;
+        int col = GlobalValues.COL;
         
+        Queue<int> path = new Queue<int>();
+
+        if (isForwardTracking)
+        {
+            // 정방향 추적
+            Stack<int> stack = new Stack<int>();
+            int current = endIndex;
+            while (current != -1)
+            {
+                stack.Push(current);
+                int parentRow = current / col;
+                int parentCol = current % col;
+                current = parent[parentRow, parentCol];
+            }
+            while (stack.Count > 0)
+            {
+                path.Enqueue(stack.Pop());
+            }
+        }
+        else
+        {
+            // 역방향 추적
+            int current = endIndex;
+            while (current != -1)
+            {
+                path.Enqueue(current);
+                int parentRow = current / col;
+                int parentCol = current % col;
+                current = parent[parentRow, parentCol];
+            }
+        }
+
+        return path;
+    }
+    private static bool IsValid(int row, int col)
+    {
+        return row >= 0 && row < GlobalValues.ROW && col >= 0 && col < GlobalValues.COL;
     }
 }

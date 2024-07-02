@@ -48,9 +48,8 @@ public class MapSpawner : MonoBehaviour
                 continue;
             int index = i * row + 1;
             _mapSquareDic.Values.ToList()[index].IsObstacle = true;
-            _mapSquareDic.Values.ToList()[index].SetColor(Color.black); // Temp;
+            _mapSquareDic.Values.ToList()[index].gameObject.SetActive(false);
         }
-        
         PawnManager.Instance.SetMapSquareDic(_mapSquareDic);
         PawnManager.Instance.SpawnPawn();
         MoveNavigation.InitMapSquare(_mapSquareDic);
