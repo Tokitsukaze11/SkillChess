@@ -30,9 +30,9 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         {
             StopCoroutine(_mouseOverCoroutine);
         }
-        _mouseOverCoroutine = StartCoroutine(CO_MouseOver());
+        _mouseOverCoroutine = StartCoroutine(Co_MouseOver());
     }
-    private IEnumerator CO_MouseOver()
+    private IEnumerator Co_MouseOver()
     {
         float time = 0;
         while (true)

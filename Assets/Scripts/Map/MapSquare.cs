@@ -12,6 +12,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     private bool _isObstacle; // 장애물이 있는지 여부, Pawn 제외
     public event Action<MapSquare> OnClickSquare;
     private Pawn _curPawn;
+    private Coroutine _mouseOverCoroutine;
     public Pawn CurPawn
     {
         set
@@ -39,7 +40,39 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     {
         if (!_isChoosen)
             return;
+        if(_mouseOverCoroutine != null)
+        {
+            StopCoroutine(_mouseOverCoroutine);
+            _mouseOverCoroutine = null;
+        }
         OnClickSquare?.Invoke(this);
+    }
+    public void OnMouseEnter()
+    {
+        if(_isChoosen)
+            _mouseOverCoroutine = StartCoroutine(Co_ColourFade());
+    }
+    public void OnMouseExit()
+    {
+        if (!_isChoosen)
+            return;
+        if (_mouseOverCoroutine == null)
+            return;
+        StopCoroutine(_mouseOverCoroutine);
+        _mouseOverCoroutine = null;
+        SetColor(Color.yellow);
+    }
+    private IEnumerator Co_ColourFade()
+    {
+        yield return new WaitForSeconds(0.5f);
+        float time = 0;
+        while (true)
+        {
+            time += Time.deltaTime;
+            _meshRenderer.material.color = Color.Lerp(Color.yellow, Color.red, Mathf.PingPong(time, 1));
+            yield return null;
+        }
+        yield break;
     }
     public bool IsCanClick()
     {

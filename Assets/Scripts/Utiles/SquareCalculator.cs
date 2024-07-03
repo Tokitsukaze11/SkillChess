@@ -21,9 +21,9 @@ public static class SquareCalculator
     /// <param name="curKeyIndex">Current key index</param>
     /// <param name="targetSquares">List of target squares</param>
     /// <param name="isConsideringObstacles">Is considering obstacles to do. If true, try to stop when obstacle is found</param>
+    /// <param name="isConsideringAnyPawn">Is considering any pawn to do. If true, try to stop when any pawn is found</param>
     public static void CheckTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false, bool isConsideringAnyPawn = false)
     {
-        var keys = _mapSquareDic.Keys.ToList();
         GetVerticalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles);
         GetHorizontalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles);
     }
@@ -94,16 +94,13 @@ public static class SquareCalculator
 
                 int newKeyIndex = newRow + newCol * row;
                 CheckDirection(newKeyIndex, newRow, newCol, keys, targetSquares);
-
-                if (isConsideringObstacles && IsOverlapped(targetSquares))
-                {
-                    targetSquares.RemoveAt(targetSquares.Count - 1);
+                
+                if(CheckBool(isConsideringObstacles, false, targetSquares))
                     break;
-                }
             }
         }
     }
-    private static void GetVerticalCheck(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
+    private static void GetVerticalCheck(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false, bool isConsideringAnyPawn = false)
     {
         int row = GlobalValues.ROW; // n
         int col = GlobalValues.COL; // m
@@ -141,21 +138,17 @@ public static class SquareCalculator
                 int newKeyIndex = curKeyIndex + (curRange + 1) * direction;
                 CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
                 
-                if (isConsideringObstacles && IsOverlapped(targetSquares))
-                {
-                    targetSquares.RemoveAt(targetSquares.Count - 1);
+                if(CheckBool(isConsideringObstacles, isConsideringAnyPawn, targetSquares))
                     break;
-                }
 
                 curRange++;
             }
         }
-        
         // n*m (n 행 m 열)
         // 나의 열에서의 최대 값 : n*(현재 열+1)-1
         // 나의 열에서의 최소 값 : n*현재 열
     }
-    private static void GetHorizontalCheck(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
+    private static void GetHorizontalCheck(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false, bool isConsideringAnyPawn = false)
     {
         int row = GlobalValues.ROW; // n
         int col = GlobalValues.COL; // m
@@ -193,11 +186,8 @@ public static class SquareCalculator
                 int newKeyIndex = curKeyIndex + (curRange + 1) * direction;
                 CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
                 
-                if (isConsideringObstacles && IsOverlapped(targetSquares))
-                {
-                    targetSquares.RemoveAt(targetSquares.Count - 1);
+                if(CheckBool(isConsideringObstacles, isConsideringAnyPawn, targetSquares))
                     break;
-                }
                 
                 curRange++;
             }
@@ -219,6 +209,21 @@ public static class SquareCalculator
     private static bool IsOverlapped(List<MapSquare> targetSquares)
     {
         return targetSquares.Any(x => !x.IsAnyPawn() || x.IsObstacle);
+    }
+    private static bool CheckBool(bool isConsideringObstacles, bool isConsideringAnyPawn, List<MapSquare> targetSquares)
+    {
+        if (isConsideringAnyPawn && targetSquares.Any(x => x.IsAnyPawn()))
+        {
+            if(targetSquares.Any(x => x.CurPawn._isPlayerPawn))
+                targetSquares.RemoveAt(targetSquares.Count - 1);
+            return true;
+        }
+        if (isConsideringObstacles && IsOverlapped(targetSquares))
+        {
+            targetSquares.RemoveAt(targetSquares.Count - 1);
+            return true;
+        }
+        return false;
     }
 #endregion
     public static int CurrentIndex(MapSquare curMapSquare)

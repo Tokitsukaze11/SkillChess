@@ -6,8 +6,8 @@ using System.Linq;
 
 public enum AttackType
 {
-    SelectAttackTarget,
-    AllAttackTarget,
+    ConsiderOtherPawnTarget,
+    AllPawnsInRange,
 }
 public class AttackDecorator : SkillDecorator
 {
@@ -44,10 +44,10 @@ public class AttackDecorator : SkillDecorator
         // Check now values
         var targetSquares = new List<MapSquare>();
         
-        bool isSelectAttack = _attackType == AttackType.SelectAttackTarget;
+        bool isConsideringAnyPawn = _attackType == AttackType.ConsiderOtherPawnTarget;
 
         // Check target squares
-        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares, false, isSelectAttack);
+        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares, false, isConsideringAnyPawn);
         targetSquares.Where(x => !x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);

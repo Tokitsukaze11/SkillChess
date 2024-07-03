@@ -22,9 +22,9 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         {
             StopCoroutine(_mouseOverCoroutine);
         }
-        _mouseOverCoroutine = StartCoroutine(CO_MouseOver());
+        _mouseOverCoroutine = StartCoroutine(Co_MouseOver());
     }
-    private IEnumerator CO_MouseOver()
+    private IEnumerator Co_MouseOver()
     {
         while (true)
         {

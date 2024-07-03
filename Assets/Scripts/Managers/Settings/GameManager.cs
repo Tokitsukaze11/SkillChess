@@ -16,7 +16,7 @@ public class GameManager : Singleton<GameManager>
     public Camera mainCamera;
     public event Action OnTurnEnd;
     public Func<bool> IsPlayerTurn;
-    private int _targetFPS = 60;
+    private int _targetFPS = 120;
     public int TargetFPS => _targetFPS;
     public event Action<GameState> OnGameStateChanged;
     public Texture2D[] _cursorTextures;

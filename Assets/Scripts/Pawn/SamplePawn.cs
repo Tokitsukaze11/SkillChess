@@ -11,7 +11,7 @@ public class SamplePawn : Pawn
     private new void Awake()
     {
         base.Awake();
-        _skill = new AttackDecorator(this,20,5,AttackType.SelectAttackTarget);
+        _skill = new AttackDecorator(this,20,5,AttackType.ConsiderOtherPawnTarget);
         //_skill = new HowitzerDecorator(this, 20, 5, 5);
         //_skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
@@ -97,7 +97,7 @@ public class SamplePawn : Pawn
         }
         return;
     }
-    public override  IEnumerator Co_Move(Queue<Vector2> path, Action callback)
+    public override IEnumerator Co_Move(Queue<Vector2> path, Action callback)
     {
         List<Vector2> pathList = path.ToList();
         // 이동 경로에서 각각의 꼭지점을 찾기.
@@ -116,13 +116,16 @@ public class SamplePawn : Pawn
         }
         if(!vertex.Contains(pathList[^1]))
             vertex.Enqueue(pathList[^1]);
+        vertex.Dequeue(); // 시작점 제거
+        float time = 0.5f + Math.Clamp((vertex.Count - 1) * 0.1f, 0, 0.5f);
+        yield return new WaitForSeconds(0.3f);
         while (vertex.Count > 0)
         {
             var key = vertex.Dequeue();
             var target = new Vector3(key.x, 1, key.y);
-            this.transform.DOMove(target, 0.5f);
+            this.transform.DOMove(target, time);
             // TODO : 이동 애니메이션 추가
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(time);
         }
         callback!();
         yield break;
