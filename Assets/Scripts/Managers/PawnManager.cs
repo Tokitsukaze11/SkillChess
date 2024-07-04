@@ -10,6 +10,7 @@ public class PawnManager : Singleton<PawnManager>
     private Dictionary<Vector2, MapSquare> _mapSquareDic;
     [SerializeField] private PlayerPawnController _playerPawnController;
     [SerializeField] private EnemyPawnController _enemyPawnController;
+    public event Action OnPlayerTurn;
     private void Awake()
     {
         ObjectManager.Instance.MakePool(_damageTextParticle, StringKeys.DAMAGE);
@@ -30,6 +31,7 @@ public class PawnManager : Singleton<PawnManager>
     }
     public void TurnChange(bool isPlayerTurn)
     {
+        if (isPlayerTurn) OnPlayerTurn?.Invoke();
         _playerPawnController.TurnChange(isPlayerTurn);
         //_enemyPawnController.TurnChange(!isPlayerTurn);
     }

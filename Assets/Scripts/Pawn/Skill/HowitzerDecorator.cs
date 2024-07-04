@@ -28,31 +28,21 @@ public class HowitzerDecorator : SkillDecorator
     }
     protected override void SkillPreview()
     {
-        // Reset color
-        PawnManager.Instance.ResetSquaresColor();
-        
-        // Check now values
-        var targetSquares = new List<MapSquare>();
-
-        // Check target squares
-        SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares);
-        // 범위 안에 있는 모든 칸이 타겟임 (방사 피해기 때문)
-        targetSquares.ForEach(x =>
+        var targetSquares = DefaultSkillPreview(_attackRange);
+        targetSquares.Where(x => !x.IsAnyPawn()).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
-            x.OnClickSquare += (mapSquare) =>
-            {
-                SkillEffect(new List<MapSquare>(){mapSquare});
-            };
+            x.OnClickSquare += SkillEffect;
         });
+        // TODO : AddRange가 아닌 깊은 복사로 변경
         _targetSquares.AddRange(targetSquares);
     }
-    protected override void SkillEffect(List<MapSquare> targetSquare)
+    protected override void SkillEffect(MapSquare targetSquare)
     {
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
         var radial = new List<MapSquare>();
-        var selectedIndex = SquareCalculator.CurrentIndex(targetSquare[0]);
+        var selectedIndex = SquareCalculator.CurrentIndex(targetSquare);
         
         // Check target squares
         // 상하좌우는 _areaRange만큼, 대각선은 _areaRange/2 만큼 단, 소숫점 이하는 버림

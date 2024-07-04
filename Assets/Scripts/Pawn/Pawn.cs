@@ -68,11 +68,41 @@ public abstract class Pawn : MonoBehaviour
     public abstract void Attack(Pawn targetPawn);
     public abstract void Defend();
     public abstract void UseSkill();
-    public abstract void TakeDamage(int damage);
+    public virtual void TakeDamage(int damage)
+    {
+        damage -= _curDefense;
+        _curHealth -= damage;
+        _curDefense = 0;
+        var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
+        var damageText = damParticle.GetComponent<DamageText>();
+        var spawnPosition = this.transform.position;
+        damageText.SetText(damage, spawnPosition, false);
+        UpdateHpBar();
+    }
     protected abstract void Die();
     protected void UpdateHpBar()
     {
-        _hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
-        _hpBarRed.transform.DOScaleX((float)_curHealth / _health, 0.5f).SetDelay(1f);
+        var curHpBarX = _hpBar.transform.localScale.x;
+        var targetHpBarX = (float)_curHealth / _health;
+        if(curHpBarX > targetHpBarX) // 데미지를 받은 경우
+        {
+            _hpBar.transform.localScale = new Vector3(targetHpBarX, 1, 1);
+            _hpBarRed.transform.DOScaleX(targetHpBarX, 0.5f).SetDelay(1f);
+        }
+        else // 힐을 받은 경우
+        {
+            _hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
+            _hpBarRed.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
+        }
+        
+        /*_hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
+        _hpBarRed.transform.DOScaleX((float)_curHealth / _health, 0.5f).SetDelay(1f);*/
+    }
+    public void Heal(int healAmount)
+    {
+        _curHealth += healAmount;
+        if (_curHealth > _health)
+            _curHealth = _health;
+        UpdateHpBar();
     }
 }

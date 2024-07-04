@@ -51,23 +51,16 @@ public class AttackDecorator : SkillDecorator
         targetSquares.Where(x => !x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
-            x.OnClickSquare += (mapSquare) =>
-            {
-                SkillEffect(new List<MapSquare>(){mapSquare});
-            };
+            x.OnClickSquare += SkillEffect;
         });
         _targetSquares.AddRange(targetSquares);
     }
-    protected override void SkillEffect(List<MapSquare> targetSquare)
+    protected override void SkillEffect(MapSquare targetSquare)
     {
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
         // TODO : Animation and Effect
-        
-        foreach(var square in targetSquare)
-        {
-            square.CurPawn?.TakeDamage(_damage);
-        }
+        targetSquare.CurPawn?.TakeDamage(_damage);
         OnSkillEnd?.Invoke();
     }
 }
