@@ -24,7 +24,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     }
     public bool IsAnyPawn()
     {
-        return !_isAnyPawn;
+        return _isAnyPawn;
     }
     public bool IsObstacle
     {

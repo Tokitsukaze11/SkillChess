@@ -9,18 +9,16 @@ public class HowitzerDecorator : SkillDecorator
     private int _damage;
     private int _attackRange;
     private int _areaRange;
-    private List<MapSquare> _targetSquares = new List<MapSquare>();
+    private List<MapSquare> _targetSquares;
+    private bool _isIgnorePlayerPawn = false;
     public event Action OnSkillEnd;
-    public HowitzerDecorator(Pawn pawn, int damage, int attackRange, int areaRange)
+    public HowitzerDecorator(Pawn pawn, int damage, int attackRange, int areaRange, bool isIgnorePlayerPawn = false)
     {
         _curPawn = pawn;
         _damage = damage;
         _attackRange = attackRange;
         _areaRange = areaRange;
-    }
-    public override void Initialize()
-    {
-        
+        _isIgnorePlayerPawn = isIgnorePlayerPawn;
     }
     public override void UseSkill()
     {
@@ -29,13 +27,12 @@ public class HowitzerDecorator : SkillDecorator
     protected override void SkillPreview()
     {
         var targetSquares = DefaultSkillPreview(_attackRange);
-        targetSquares.Where(x => !x.IsAnyPawn()).ToList().ForEach(x =>
+        targetSquares.Where(x => x.IsAnyPawn()).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
             x.OnClickSquare += SkillEffect;
         });
-        // TODO : AddRange가 아닌 깊은 복사로 변경
-        _targetSquares.AddRange(targetSquares);
+        _targetSquares = targetSquares;
     }
     protected override void SkillEffect(MapSquare targetSquare)
     {
@@ -49,13 +46,14 @@ public class HowitzerDecorator : SkillDecorator
         SquareCalculator.CheckTargetSquares(_areaRange, selectedIndex, radial);
         SquareCalculator.CheckDiagonalTargetSquares(_areaRange/2, selectedIndex, radial);
         // TODO : Animation
-        // TODO : Need to check ignore player pawn or not
-        _targetSquares[0].CurPawn?.TakeDamage(_damage);
+        targetSquare.CurPawn?.TakeDamage(_damage);
+        //_targetSquares[0].CurPawn?.TakeDamage(_damage);
         // 방사 피해는 50% 감소
-        foreach(var square in radial)
-        {
-            square.CurPawn?.TakeDamage(_damage/2);
-        }
+        var pawnSquares = radial.Where(x => x.IsAnyPawn() && x.CurPawn != null).ToList();
+        if (_isIgnorePlayerPawn)
+            pawnSquares.ForEach(x => x.CurPawn.TakeDamage(_damage / 2));
+        else
+            pawnSquares.Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x => x.CurPawn.TakeDamage(_damage / 2));
         OnSkillEnd?.Invoke();
     }
 }

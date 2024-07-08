@@ -39,4 +39,8 @@ public class PawnManager : Singleton<PawnManager>
     {
         _mapSquareDic.Values.ToList().ForEach(x => x.ResetColor());
     }
+    public List<Pawn> GetPawns(bool isPlayerPawn)
+    {
+        return isPlayerPawn ? _playerPawnController.GetPawns() : _enemyPawnController.GetPawns();
+    } 
 }

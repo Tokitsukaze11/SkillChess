@@ -19,13 +19,27 @@ public class SamplePawn : Pawn
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };*/
-        _skill = new HowitzerDecorator(this, 20, 5, 5);
+        /*_skill = new HowitzerDecorator(this, 20, 5, 5);
         (_skill as HowitzerDecorator)!.OnSkillEnd += () =>
         {
             OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
+        };*/
+        _skill = new HealDecorator(this, 10, 5,HealType.Single);
+        (_skill as HealDecorator)!.OnSkillEnd += () =>
+        {
+            OnPawnClicked?.Invoke(false, null);
+            _curDefense = 0;
+            GameManager.Instance.TurnEnd();
         };
+        /*_skill = new DefendDecorator(this, 5);
+        (_skill as DefendDecorator)!.OnSkillEnd += () =>
+        {
+            OnPawnClicked?.Invoke(false, null);
+            _curDefense = 0;
+            GameManager.Instance.TurnEnd();
+        };*/
     }
     protected override void OnMouseDown()
     {
@@ -38,6 +52,12 @@ public class SamplePawn : Pawn
             return;
         OnPawnClicked?.Invoke(true, this);
         PawnManager.Instance.ResetSquaresColor();
+        //this.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Toon/Toon Complete"));
+        /*var curRenderer = this.GetComponent<Renderer>();
+        _materials.Clear();
+        _materials.AddRange(curRenderer.sharedMaterials);
+        _materials.Add(new Material(Shader.Find("Hidden/Outline")));
+        curRenderer.materials = _materials.ToArray();*/
     }
     public override void ShowMoveRange()
     {
@@ -52,7 +72,7 @@ public class SamplePawn : Pawn
         int curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
         // Check target squares
         SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares,true);
-        targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
+        targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
             x.OnClickSquare += (mapSquare) =>
@@ -148,7 +168,7 @@ public class SamplePawn : Pawn
 
         // Check target squares
         SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
-        targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+        targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
             x.OnClickSquare += (mapSquare) =>

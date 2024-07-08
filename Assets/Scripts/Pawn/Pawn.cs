@@ -13,12 +13,14 @@ public enum PawnType
 
 public abstract class Pawn : MonoBehaviour
 {
+    //protected List<Material> _materials = new List<Material>();
     public bool _isPlayerPawn;
     public bool _isCanClick = false;
     [SerializeField] protected int _health;
     [SerializeField] protected int _curHealth;
     [SerializeField] protected int _damage;
     [SerializeField] protected int _defense;
+    [SerializeField] protected int _shield = 0;
     protected int _curDefense = 0;
     [SerializeField] protected int _movementRange;
     [SerializeField] protected int _attackRange;
@@ -27,6 +29,7 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected Transform _hpBarTransform;
     [SerializeField] protected SpriteRenderer _hpBar;
     [SerializeField] protected SpriteRenderer _hpBarRed;
+    [SerializeField] protected SpriteRenderer _hpBarShield;
     public SortingGroup _sortingGroup;
     private Camera _mainCamera;
     protected MapSquare _curMapSquare;
@@ -37,6 +40,10 @@ public abstract class Pawn : MonoBehaviour
         set
         {
             _curMapSquare = value;
+        }
+        get
+        {
+            return _curMapSquare;
         }
     }
     public Action<bool,Pawn> OnPawnClicked;
@@ -71,6 +78,7 @@ public abstract class Pawn : MonoBehaviour
     public virtual void TakeDamage(int damage)
     {
         damage -= _curDefense;
+        // TODO : Shield
         _curHealth -= damage;
         _curDefense = 0;
         var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
@@ -80,10 +88,12 @@ public abstract class Pawn : MonoBehaviour
         UpdateHpBar();
     }
     protected abstract void Die();
-    protected void UpdateHpBar()
+    private void UpdateHpBar()
     {
         var curHpBarX = _hpBar.transform.localScale.x;
         var targetHpBarX = (float)_curHealth / _health;
+        var shieldBarX = Mathf.Clamp01((float)_shield / _health);
+        _hpBarShield.transform.localScale = new Vector3(shieldBarX, 1, 1);
         if(curHpBarX > targetHpBarX) // 데미지를 받은 경우
         {
             _hpBar.transform.localScale = new Vector3(targetHpBarX, 1, 1);
@@ -103,6 +113,18 @@ public abstract class Pawn : MonoBehaviour
         _curHealth += healAmount;
         if (_curHealth > _health)
             _curHealth = _health;
+        var healParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
+        var healText = healParticle.GetComponent<DamageText>();
+        healText.SetColour(Color.green);
+        var spawnPosition = this.transform.position;
+        healText.SetText(healAmount, spawnPosition);
+        // TODO : Change text and animation for heal only
+        Debug.Log("힐 전용 텍스트 및 애니메이션으로 변경 예정");
+        UpdateHpBar();
+    }
+    public void GetShield(int shieldAmount)
+    {
+        _shield += shieldAmount;
         UpdateHpBar();
     }
 }

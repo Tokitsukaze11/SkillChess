@@ -24,8 +24,8 @@ public static class SquareCalculator
     /// <param name="isConsideringAnyPawn">Is considering any pawn to do. If true, try to stop when any pawn is found</param>
     public static void CheckTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false, bool isConsideringAnyPawn = false)
     {
-        GetVerticalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles);
-        GetHorizontalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles);
+        GetVerticalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles, isConsideringAnyPawn);
+        GetHorizontalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles, isConsideringAnyPawn);
     }
     /// <summary>
     /// Check squares that can something be done in diagonal direction
@@ -208,13 +208,13 @@ public static class SquareCalculator
     }
     private static bool IsOverlapped(List<MapSquare> targetSquares)
     {
-        return targetSquares.Any(x => !x.IsAnyPawn() || x.IsObstacle);
+        return targetSquares.Any(x => x.IsAnyPawn() || x.IsObstacle);
     }
     private static bool CheckBool(bool isConsideringObstacles, bool isConsideringAnyPawn, List<MapSquare> targetSquares)
     {
         if (isConsideringAnyPawn && targetSquares.Any(x => x.IsAnyPawn()))
         {
-            if(targetSquares.Any(x => x.CurPawn._isPlayerPawn))
+            if(targetSquares[^1].CurPawn!._isPlayerPawn)
                 targetSquares.RemoveAt(targetSquares.Count - 1);
             return true;
         }

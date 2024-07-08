@@ -25,6 +25,10 @@ public class DamageText : MonoBehaviour
             ObjectManager.Instance.RemoveObject(this.gameObject, StringKeys.DAMAGE, true);
         });
     }
+    public void SetColour(Color color)
+    {
+        _damageText.color = color;
+    }
     private IEnumerator Co_UpdateRotation()
     {
         while (true)

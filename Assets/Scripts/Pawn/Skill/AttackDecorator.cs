@@ -23,10 +23,6 @@ public class AttackDecorator : SkillDecorator
         _attackRange = attackRange;
         _attackType = attackType;
     }
-    public override void Initialize()
-    {
-        
-    }
     public override void UseSkill()
     {
         SkillPreview();
@@ -48,7 +44,7 @@ public class AttackDecorator : SkillDecorator
 
         // Check target squares
         SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares, false, isConsideringAnyPawn);
-        targetSquares.Where(x => !x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+        targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);
             x.OnClickSquare += SkillEffect;

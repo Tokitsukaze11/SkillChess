@@ -53,6 +53,10 @@ public class PlayerPawnController : MonoBehaviour
         _playerPawns.ForEach(x => ObjectManager.Instance.RemoveObject(x.gameObject, "PlayerPawn", true));
         _playerPawns.Clear();
     }
+    public List<Pawn> GetPawns()
+    {
+        return _playerPawns;
+    }
     public void TurnChange(bool isPlayerTurn)
     {
         _playerPawns.ForEach(x => x._isCanClick = isPlayerTurn);

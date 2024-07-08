@@ -20,6 +20,7 @@ public class HealDecorator : SkillDecorator
     private bool _isTickHeal = false;
     private List<MapSquare> _targetSquares = new List<MapSquare>();
     private event Action TickHealHandler;
+    public event Action OnSkillEnd;
     public HealDecorator(Pawn pawn, int healAmount, int healRange, HealType healType, int tickCount = 0)
     {
         _curPawn = pawn;
@@ -30,10 +31,6 @@ public class HealDecorator : SkillDecorator
         _curTick = _tickCount;
         _isTickHeal = _tickCount > 0;
     }
-    public override void Initialize()
-    {
-        
-    }
     public override void UseSkill()
     {
         SkillPreview();
@@ -41,9 +38,9 @@ public class HealDecorator : SkillDecorator
     protected override void SkillPreview()
     {
         var targetSquares = DefaultSkillPreview(_healRange);
-        targetSquares.Where(x => x.IsAnyPawn() && x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+        targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
-            x.SetColor(Color.green);
+            x.SetColor(Color.yellow);
             x.OnClickSquare += SkillEffect;
         });
     }
@@ -70,6 +67,7 @@ public class HealDecorator : SkillDecorator
     private void HealSingle(MapSquare targetSquare)
     {
         targetSquare.CurPawn?.Heal(_healAmount);
+        OnSkillEnd?.Invoke();
     }
     private void HealArea(MapSquare targetSquare)
     {
@@ -85,6 +83,7 @@ public class HealDecorator : SkillDecorator
         {
             square.CurPawn.Heal(_healAmount/2);
         }
+        OnSkillEnd?.Invoke();
     }
     private void TickHeal(int healType, MapSquare targetSquare)
     {

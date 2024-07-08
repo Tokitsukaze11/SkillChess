@@ -39,6 +39,10 @@ public class EnemyPawnController : MonoBehaviour
     {
         
     }
+    public List<Pawn> GetPawns()
+    {
+        return _enemyPawns;
+    }
     public void TurnChange(bool isEnemyTurn)
     {
         _enemyPawns.ForEach(x => x._isCanClick = isEnemyTurn);
