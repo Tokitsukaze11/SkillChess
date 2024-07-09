@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.Rendering.Universal;
 
 public class SamplePawn : Pawn
 {
@@ -29,6 +30,7 @@ public class SamplePawn : Pawn
         _skill = new HealDecorator(this, 10, 5,HealType.Single);
         (_skill as HealDecorator)!.OnSkillEnd += () =>
         {
+            _outlineFx.enabled = false;
             OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
@@ -52,6 +54,7 @@ public class SamplePawn : Pawn
             return;
         OnPawnClicked?.Invoke(true, this);
         PawnManager.Instance.ResetSquaresColor();
+        _outlineFx.enabled = true;
         //this.GetComponent<MeshRenderer>().material = new Material(Shader.Find("Toon/Toon Complete"));
         /*var curRenderer = this.GetComponent<Renderer>();
         _materials.Clear();
@@ -88,6 +91,8 @@ public class SamplePawn : Pawn
             StartCoroutine(Co_EnemyMove());
         
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
+        
+        _outlineFx.enabled = false;
         
         Vector2 curKey = SquareCalculator.CurrentKey(_moveTargetSquare);
         var path = MoveNavigation.FindNavigation(_curMapSquare, _moveTargetSquare);
@@ -183,6 +188,8 @@ public class SamplePawn : Pawn
             StartCoroutine(Co_EnemyMove());
         
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
+        
+        _outlineFx.enabled = false;
 
         targetPawn.TakeDamage(_damage);
         OnPawnClicked?.Invoke(false, null);
@@ -191,6 +198,7 @@ public class SamplePawn : Pawn
     }
     public override void Defend()
     {
+        _outlineFx.enabled = false;
         _curDefense = _defense;
         OnPawnClicked?.Invoke(false, null);
         GameManager.Instance.TurnEnd();

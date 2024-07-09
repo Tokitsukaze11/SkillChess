@@ -5835,6 +5835,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42b59e8826204ec4e8fca75395dc0cf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _universalRendererData: {fileID: 11400000, guid: 4cbc8654332762748b8b5e5f028bc58c, type: 2}
+  _outlineFxFeature: {fileID: 0}
 --- !u!4 &1857783037
 Transform:
   m_ObjectHideFlags: 0
@@ -6974,14 +6976,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1641280009560685997, guid: 91c664f17a7e87d4c928ee6850d5f796, type: 3}
-      propertyPath: m_Materials.Array.size
-      value: 1
+    - target: {fileID: 7064091069763309725, guid: 91c664f17a7e87d4c928ee6850d5f796, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1641280009560685997, guid: 91c664f17a7e87d4c928ee6850d5f796, type: 3}
-      propertyPath: m_Materials.Array.data[1]
-      value: 
-      objectReference: {fileID: 2100000, guid: 30c8e3e159c9a034fa1ab65f06cd9fc9, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

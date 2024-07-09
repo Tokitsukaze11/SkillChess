@@ -34,6 +34,7 @@ public abstract class Pawn : MonoBehaviour
     private Camera _mainCamera;
     protected MapSquare _curMapSquare;
     protected SkillDecorator _skill;
+    [SerializeField] protected OutlineFx.OutlineFx _outlineFx;
     public PawnType PawnType => _pawnType;
     public MapSquare CurMapSquare
     {
