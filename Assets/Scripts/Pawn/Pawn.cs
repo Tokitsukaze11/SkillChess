@@ -107,8 +107,12 @@ public abstract class Pawn : MonoBehaviour
         }
         else // 힐을 받은 경우
         {
-            _hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
-            _hpBarRed.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
+            //_hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
+            //_hpBarRed.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
+            _hpBar.transform.DOScaleX(targetHpBarX, 0.5f).SetDelay(0.5f).onComplete = () =>
+            {
+                _hpBarRed.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
+            };
         }
         
         /*_hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
@@ -119,13 +123,10 @@ public abstract class Pawn : MonoBehaviour
         _curHealth += healAmount;
         if (_curHealth > _health)
             _curHealth = _health;
-        var healParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
-        var healText = healParticle.GetComponent<DamageText>();
-        healText.SetColour(Color.green);
+        var healParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._healTextParticle, StringKeys.HEAL, true);
+        var healText = healParticle.GetComponent<HealText>();
         var spawnPosition = this.transform.position;
         healText.SetText(healAmount, spawnPosition);
-        // TODO : Change text and animation for heal only
-        Debug.Log("힐 전용 텍스트 및 애니메이션으로 변경 예정");
         UpdateHpBar();
     }
     public void GetShield(int shieldAmount)

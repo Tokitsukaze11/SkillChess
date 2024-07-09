@@ -7,6 +7,7 @@ using System.Linq;
 public class PawnManager : Singleton<PawnManager>
 {
     public GameObject _damageTextParticle;
+    public GameObject _healTextParticle;
     private Dictionary<Vector2, MapSquare> _mapSquareDic;
     [SerializeField] private PlayerPawnController _playerPawnController;
     [SerializeField] private EnemyPawnController _enemyPawnController;
@@ -14,6 +15,7 @@ public class PawnManager : Singleton<PawnManager>
     private void Awake()
     {
         ObjectManager.Instance.MakePool(_damageTextParticle, StringKeys.DAMAGE);
+        ObjectManager.Instance.MakePool(_healTextParticle, StringKeys.HEAL);
     }
     public void SetMapSquareDic(Dictionary<Vector2, MapSquare> mapSquareDic)
     {
