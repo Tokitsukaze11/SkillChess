@@ -78,7 +78,12 @@ public abstract class Pawn : MonoBehaviour
     public virtual void TakeDamage(int damage)
     {
         damage -= _curDefense;
-        // TODO : Shield
+        damage -= _shield;
+        if(damage < 0)
+        {
+            damage = 0;
+            _shield = 0;
+        }
         _curHealth -= damage;
         _curDefense = 0;
         var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);

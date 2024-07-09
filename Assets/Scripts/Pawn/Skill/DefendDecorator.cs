@@ -25,7 +25,7 @@ public class DefendDecorator : SkillDecorator
         if (isRange)
         {
             var targetSquares = DefaultSkillPreview(_defendRange);
-            targetSquares.Where(x => x.IsAnyPawn() && x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+            targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
             {
                 x.SetColor(Color.yellow);
                 x.OnClickSquare += SkillEffect;
