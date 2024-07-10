@@ -15,6 +15,7 @@ public class PlayerPawnController : MonoBehaviour
     public Button defendButton;
     public Button skillButton;
     private List<Pawn> _playerPawns = new List<Pawn>();
+    public event Action PlayerTickHandler;
     private void Awake()
     {
         ObjectManager.Instance.MakePool(playerPawnPrefab, "PlayerPawn");
@@ -60,6 +61,8 @@ public class PlayerPawnController : MonoBehaviour
     public void TurnChange(bool isPlayerTurn)
     {
         _playerPawns.ForEach(x => x._isCanClick = isPlayerTurn);
+        if(isPlayerTurn)
+            PlayerTickHandler?.Invoke();
     }
     private void PawnDie(Pawn diedPawn)
     {
@@ -73,6 +76,8 @@ public class PlayerPawnController : MonoBehaviour
     }
     private void PawnBehaviorUIPanelActive(bool active, Pawn curPawn = null)
     {
+        if(active)
+            _playerPawns.Where(x => x != curPawn).ToList().ForEach(x => x.UnSelected());
         Action uiAction = () =>
         {
             pawnBehaviorUIPanel.SetActive(active);

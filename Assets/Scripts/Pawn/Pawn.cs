@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -61,21 +62,160 @@ public abstract class Pawn : MonoBehaviour
         var camRotation = _mainCamera.transform.rotation.eulerAngles;
         _hpBarTransform.rotation = Quaternion.Euler(camRotation.x, camRotation.y, camRotation.z);
     }
-    protected abstract void OnMouseDown();
+    protected virtual void OnMouseDown()
+    {
+        if(_curMapSquare.IsCanClick()) // MapSquare을 누를 수 있게 보정
+        {
+            _curMapSquare.OnMouseDown();
+            return;
+        }
+        if (!_isPlayerPawn || !_isCanClick)
+            return;
+        OnPawnClicked?.Invoke(true, this);
+        PawnManager.Instance.ResetSquaresColor();
+        _outlineFx.enabled = true;
+    }
+    public void UnSelected()
+    {
+        _outlineFx.enabled = false;
+    }
     public virtual void ShowMoveRange()
     {
-        
+        // Reset color
+        PawnManager.Instance.ResetSquaresColor();
+        // Check now values
+        var targetSquares = new List<MapSquare>();
+        int curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
+        // Check target squares
+        // TODO : There may be pawns that do not consider obstacles when moving
+        SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares,true);
+        targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
+        {
+            x.SetColor(Color.yellow);
+            x.OnClickSquare += (mapSquare) =>
+            {
+                _moveTargetSquare = mapSquare;
+                Move();
+            };
+        });
     }
-    public abstract void Move();
-    public abstract IEnumerator Co_Move(Queue<Vector2> path, Action callback);
-    public abstract IEnumerator Co_EnemyMove();
+    protected virtual void Move()
+    {
+        if(!_isPlayerPawn)
+            StartCoroutine(Co_EnemyMove());
+        
+        PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
+        
+        _outlineFx.enabled = false;
+        
+        Vector2 curKey = SquareCalculator.CurrentKey(_moveTargetSquare);
+        var path = MoveNavigation.FindNavigation(_curMapSquare, _moveTargetSquare);
+        
+        Queue<Vector2> pathKeys = new Queue<Vector2>();
+        foreach (var mapSquare in path)
+        {
+            var key = SquareCalculator.CurrentKey(mapSquare);
+            pathKeys.Enqueue(key);
+        }
+        
+        Action callBack = () =>
+        {
+            _curMapSquare.CurPawn = null;
+            _curMapSquare = _moveTargetSquare;
+            _moveTargetSquare.CurPawn = this;
+            int curKeyIndexInt = SquareCalculator.CurrentIndex(_curMapSquare);
+            _skill.UpdateCurIndex(curKeyIndexInt);
+            _curDefense = 0;
+            GameManager.Instance.TurnEnd();
+        };
+        
+        if (pathKeys.Count > 0)
+        {
+            OnPawnClicked?.Invoke(false,null);
+            StartCoroutine(Co_Move(pathKeys, callBack));
+        }
+        return;
+    }
+    protected virtual IEnumerator Co_Move(Queue<Vector2> path, Action callback)
+    {
+        List<Vector2> pathList = path.ToList();
+        // 이동 경로에서 각각의 꼭지점을 찾기.
+        Queue<Vector2> vertex = new Queue<Vector2>();
+        var curPath = pathList[0];
+        vertex.Enqueue(curPath);
+        for (int i = 0; i < pathList.Count; i++)
+        {
+            var key = pathList[i];
+            float x = key.x;
+            float y = key.y;
+            if (Mathf.Approximately(x, curPath.x) || Mathf.Approximately(y, curPath.y))
+                continue;
+            vertex.Enqueue(pathList[i - 1]);
+            curPath = pathList[i];
+        }
+        if(!vertex.Contains(pathList[^1]))
+            vertex.Enqueue(pathList[^1]);
+        vertex.Dequeue(); // 시작점 제거
+        float time = 0.5f + Math.Clamp((vertex.Count - 1) * 0.1f, 0, 0.5f);
+        yield return new WaitForSeconds(0.3f);
+        while (vertex.Count > 0)
+        {
+            var key = vertex.Dequeue();
+            var target = new Vector3(key.x, 1, key.y);
+            this.transform.DOMove(target, time);
+            // TODO : 이동 애니메이션 추가
+            yield return new WaitForSeconds(time);
+        }
+        callback!();
+        yield break;
+    }
+    protected abstract IEnumerator Co_EnemyMove();
     public virtual void ShowAttackRange()
     {
-        
+        // Reset color
+        PawnManager.Instance.ResetSquaresColor();
+
+        // Check now values
+        var targetSquares = new List<MapSquare>();
+        var curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
+
+        // Check target squares
+        SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
+        targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+        {
+            x.SetColor(Color.yellow);
+            x.OnClickSquare += (mapSquare) =>
+            {
+                Attack(x.CurPawn);
+            };
+        });
     }
-    public abstract void Attack(Pawn targetPawn);
-    public abstract void Defend();
-    public abstract void UseSkill();
+    protected virtual void Attack(Pawn targetPawn)
+    {
+        if(!_isPlayerPawn)
+            StartCoroutine(Co_EnemyMove());
+        
+        PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
+        
+        _outlineFx.enabled = false;
+
+        targetPawn.TakeDamage(_damage);
+        OnPawnClicked?.Invoke(false, null);
+        _curDefense = 0;
+        GameManager.Instance.TurnEnd();
+    }
+    public virtual void Defend()
+    {
+        _outlineFx.enabled = false;
+        _curDefense = _defense;
+        OnPawnClicked?.Invoke(false, null);
+        GameManager.Instance.TurnEnd();
+    }
+    public virtual void UseSkill()
+    {
+        _skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
+        _skill.UseSkill();
+    }
     public virtual void TakeDamage(int damage)
     {
         damage -= _curDefense;

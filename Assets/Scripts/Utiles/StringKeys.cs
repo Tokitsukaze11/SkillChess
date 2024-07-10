@@ -8,6 +8,7 @@ public static class StringKeys
     public static readonly string DAMAGE = "DAMAGE";
     public static readonly string LINK_EVENT_POPUP_OBJECT = "LINK_EVENT_POPUP";
     public static readonly string HEAL = "HEAL";
+    public static readonly string BOX_OBSTACLE = "BOX_OBSTACLE";
 }
 public static class GlobalValues
 {

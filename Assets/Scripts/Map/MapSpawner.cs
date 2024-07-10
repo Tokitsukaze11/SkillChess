@@ -15,7 +15,9 @@ public class MapSpawner : MonoBehaviour
     [ReadOnly] public int row = 8;
     [ReadOnly] public int col = 8;
     
-    private Dictionary<Vector2,MapSquare> _mapSquareDic = new Dictionary<Vector2, MapSquare>();
+    //private Dictionary<Vector2,MapSquare> _mapSquareDic = new Dictionary<Vector2, MapSquare>();
+    
+    [SerializeField] private ObstacleSpawner _obstacleSpawner;
     
     private void Awake()
     {
@@ -27,6 +29,7 @@ public class MapSpawner : MonoBehaviour
     }
     public void MakeMapSquares(int row, int col)
     {
+        Dictionary<Vector2,MapSquare> mapSquareDic = new Dictionary<Vector2, MapSquare>();
         GlobalValues.ROW = row;
         GlobalValues.COL = col;
         for (int i = 0; i < col; i++)
@@ -38,20 +41,12 @@ public class MapSpawner : MonoBehaviour
                 obj.transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
                 obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
                 obj.gameObject.name = $"Place_{i}_{j}";
-                _mapSquareDic.Add(spawnPoint, obj.GetComponent<MapSquare>());
+                mapSquareDic.Add(spawnPoint, obj.GetComponent<MapSquare>());
             }
         }
-        // 1행의 마지막 열을 제외하고 모두 장애물이 있게 임시로 설정.
-        for (int i = 0; i < col; i++)
-        {
-            if (i == col - 1)
-                continue;
-            int index = i * row + 1;
-            _mapSquareDic.Values.ToList()[index].IsObstacle = true;
-            _mapSquareDic.Values.ToList()[index].gameObject.SetActive(false);
-        }
-        PawnManager.Instance.SetMapSquareDic(_mapSquareDic);
+        PawnManager.Instance.SetMapSquareDic(mapSquareDic);
         PawnManager.Instance.SpawnPawn();
-        MoveNavigation.InitMapSquare(_mapSquareDic);
+        _obstacleSpawner.SpawnObstacle();
+        MoveNavigation.InitMapSquare(mapSquareDic);
     }
 }
