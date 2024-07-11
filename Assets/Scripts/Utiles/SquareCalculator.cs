@@ -15,6 +15,16 @@ public static class SquareCalculator
     }
     #region Check Target Squares
     /// <summary>
+    /// Check squares that can something be done as range
+    /// </summary>
+    /// <param name="targetRange">Range of do something</param>
+    /// <param name="curKetIndex">Current key index</param>
+    /// <param name="targetSquares">List of target squares</param>
+    public static void CheckTargetSquaresAsRange(int targetRange, int curKetIndex, List<MapSquare> targetSquares)
+    {
+        
+    }
+    /// <summary>
     /// Check squares that can something be done
     /// </summary>
     /// <param name="targetRange">Range of do something</param>
