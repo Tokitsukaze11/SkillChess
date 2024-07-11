@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Unity.VisualScripting;
 
 public static class SquareCalculator
 {
@@ -18,11 +19,70 @@ public static class SquareCalculator
     /// Check squares that can something be done as range
     /// </summary>
     /// <param name="targetRange">Range of do something</param>
-    /// <param name="curKetIndex">Current key index</param>
+    /// <param name="startSquare">Start square</param>
     /// <param name="targetSquares">List of target squares</param>
-    public static void CheckTargetSquaresAsRange(int targetRange, int curKetIndex, List<MapSquare> targetSquares)
+    /// <param name="isCanLess">Is can less of range</param>
+    public static void CheckTargetSquaresAsRange(int targetRange, MapSquare startSquare, List<MapSquare> targetSquares, bool isCanLess = false)
     {
-        
+        if (!isCanLess)
+        {
+            Queue<MapSquare> target = MoveNavigation.FindReachablePositions(startSquare, targetRange);
+            foreach (var map in target)
+            {
+                targetSquares.Add(map);
+            }
+        }
+        else
+        {
+            HashSet<MapSquare> mapSet = new HashSet<MapSquare>();
+            List<Queue<MapSquare>> target = new List<Queue<MapSquare>>();
+            for (int i = targetRange; i > 0; i--)
+            {
+                int range = i;
+                /*target.Add(MoveNavigation.FindReachablePositions(startSquare, range));*/
+                var targetSquaresList = MoveNavigation.FindReachablePositions(startSquare, range);
+                foreach (var destination in targetSquaresList)
+                {
+                    var path = MoveNavigation.FindNavigation(startSquare, destination);
+                    foreach (var sq in path)
+                        mapSet.Add(sq);
+                }
+            }
+            /*foreach (var destinations in target)
+            {
+                foreach(var destination in destinations)
+                {
+                    var path = MoveNavigation.FindNavigation(startSquare, destination);
+                    foreach (var sq in path)
+                        mapSet.Add(sq);
+                }
+            }*/
+            //targetSquares = mapSet.ToList();
+            foreach (var map in mapSet)
+            {
+                targetSquares.Add(map);
+            }
+        }
+        //var target = MoveNavigation.FindReachablePositions(startSquare, targetRange);
+        /*if(!isCanLess)
+        {
+            foreach (var map in target)
+            {
+                targetSquares.Add(map);
+            }
+        }
+        else
+        {
+            Queue<MapSquare> targets = new Queue<MapSquare>();
+            foreach (var map in target.Select(sq => MoveNavigation.FindNavigation(startSquare, sq)).SelectMany(path => path))
+            {
+                targets.Enqueue(map);
+            }
+            foreach (var map in targets)
+            {
+                targetSquares.Add(map);
+            }
+        }*/
     }
     /// <summary>
     /// Check squares that can something be done

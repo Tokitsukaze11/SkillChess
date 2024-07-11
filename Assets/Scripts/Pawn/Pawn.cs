@@ -87,8 +87,8 @@ public abstract class Pawn : MonoBehaviour
         var targetSquares = new List<MapSquare>();
         int curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
         // Check target squares
-        // TODO : There may be pawns that do not consider obstacles when moving
-        SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares,true);
+        //SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares,true); // 직선 이동
+        SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares,true); // 거리 우선 이동
         targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
         {
             x.SetColor(Color.yellow);

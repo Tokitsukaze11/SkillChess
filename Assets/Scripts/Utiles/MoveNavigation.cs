@@ -77,6 +77,60 @@ public static class MoveNavigation
         }
         // 이로 2차원 배열로 변환 완료.
     }
+    public static Queue<MapSquare> FindReachablePositions(MapSquare startMapSquare, int range)
+    {
+        var mapList = _convertedMapSquareDic.Values.ToList();
+        int[] dx = { -1, 0, 1, 0 };
+        int[] dy = { 0, 1, 0, -1 };
+        
+        int row = GlobalValues.ROW;
+        int col = GlobalValues.COL;
+        
+        int startIndex = mapList.IndexOf(startMapSquare);
+
+        bool[,] visited = new bool[row, col];
+        int[,] distance = new int[row, col];
+
+        Queue<int> queue = new Queue<int>();
+        Queue<int> result = new Queue<int>();
+        
+        int startRow = startIndex / col;
+        int startCol = startIndex % col;
+        
+        queue.Enqueue(startIndex);
+
+        while (queue.Count > 0)
+        {
+            int currentIndex = queue.Dequeue();
+            int currentRow = currentIndex / col;
+            int currentCol = currentIndex % col;
+            
+            if(distance[currentRow, currentCol] == range)
+            {
+                result.Enqueue(currentIndex);
+                continue;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                int newRow = currentRow + dx[i];
+                int newCol = currentCol + dy[i];
+                
+                if(IsValid(newRow,newCol) && !visited[newRow,newCol] && !_obstacles[newRow,newCol])
+                {
+                    queue.Enqueue(newRow * col + newCol);
+                    visited[newRow, newCol] = true;
+                    distance[newRow, newCol] = distance[currentRow, currentCol] + 1;
+                }
+            }
+        }
+        Queue<MapSquare> resultSquares = new Queue<MapSquare>();
+        foreach (var index in result)
+        {
+            resultSquares.Enqueue(mapList[index]);
+        }
+        return resultSquares;
+    }
     public static Queue<MapSquare> FindNavigation(MapSquare start, MapSquare end)
     {
         var mapList = _convertedMapSquareDic.Values.ToList();

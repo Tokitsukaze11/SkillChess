@@ -5,7 +5,6 @@ using UnityEngine;
 using System.Linq;
 using DG.Tweening;
 using TMPro;
-using UnityEngine.Rendering.Universal;
 
 public class SamplePawn : Pawn
 {

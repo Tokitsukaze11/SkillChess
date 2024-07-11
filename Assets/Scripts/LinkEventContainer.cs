@@ -12,6 +12,7 @@ public class LinkEventContainer : MonoBehaviour
         LinkManager.Instance.AttachLinkEvent("ID_STRAIGHT", ID_STRAIGHT);
         LinkManager.Instance.AttachLinkEvent("ID_OBSTACLES", ID_OBSTACLES);
         LinkManager.Instance.AttachLinkEvent("ID_IGNORE_OBSTACLES", ID_IGNORE_OBSTACLES);
+        LinkManager.Instance.AttachLinkEvent("ID_RANGE_PREFERENCE",ID_RANGE_PREFERENCE);
     }
     private void CreateAndInitPopup(string description, Vector3 position)
     {
@@ -70,6 +71,16 @@ public class LinkEventContainer : MonoBehaviour
         {
             RemovePopup();
         }
+    }
+    private void ID_RANGE_PREFERENCE(bool isOn, Vector3 position)
+    {
+        if (isOn)
+        {
+            string description = "반경 이내의 모든 ";
+            CreateAndInitPopup(description, position);
+        }
+        else
+            RemovePopup();
     }
     #endregion
 }
