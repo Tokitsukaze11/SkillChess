@@ -8,10 +8,11 @@ using TMPro;
 
 public class SamplePawn : Pawn
 {
-    private new void Awake()
+    protected override void Awake()
     {
         base.Awake();
-        _moveType = MoveType.Straight; // TODO : Not implemented
+        _moveType = MoveType.Straight;
+        _isConsiderObstacle = true;
         _isHowitzerAttack = false;
         //_skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
         /*_skill = new AttackDecorator(this,20,5,AttackType.ConsiderOtherPawnTarget);

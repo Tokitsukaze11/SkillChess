@@ -45,6 +45,7 @@ public abstract class Pawn : MonoBehaviour
     protected bool _isLessMove = false;
     protected bool _isHowitzerAttack = false;
     protected MoveType _moveType;
+    protected bool _isConsiderObstacle = true;
     private Camera _mainCamera;
     private MapSquare _curMapSquare;
     protected SkillDecorator _skill;
@@ -65,7 +66,7 @@ public abstract class Pawn : MonoBehaviour
     // Events
     public Action<bool,Pawn> OnPawnClicked;
     public Action<Pawn> OnDie;
-    protected void Awake()
+    protected virtual void Awake()
     {
         _curHealth = _health;
         _hpBar.gameObject.transform.localScale = Vector3.one;
@@ -102,7 +103,7 @@ public abstract class Pawn : MonoBehaviour
         int curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
         // Check target squares
         if(_moveType == MoveType.Straight)
-            SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares); // 직선 이동
+            SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares, _isConsiderObstacle); // 직선 이동
         else
             SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares, _isLessMove); // 거리 우선 이동
         targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
