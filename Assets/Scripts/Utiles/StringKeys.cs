@@ -20,4 +20,6 @@ public static class GlobalValues
     /// 열
     /// </summary>
     public static int COL;
+    public static Color SELECABLE_COLOUR = Color.yellow;
+    public static Color UNSELECT_COLOUR = Color.red;
 }

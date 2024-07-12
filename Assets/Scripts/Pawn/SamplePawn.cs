@@ -11,6 +11,8 @@ public class SamplePawn : Pawn
     private new void Awake()
     {
         base.Awake();
+        _moveType = MoveType.Straight; // TODO : Not implemented
+        _isHowitzerAttack = false;
         //_skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
         /*_skill = new AttackDecorator(this,20,5,AttackType.ConsiderOtherPawnTarget);
         (_skill as AttackDecorator)!.OnSkillEnd += () =>

@@ -11,12 +11,18 @@ public enum PawnType
     Pawn,
     King,
 }
+public enum MoveType
+{
+    Straight,
+    Range,
+}
 
 public abstract class Pawn : MonoBehaviour
 {
     //protected List<Material> _materials = new List<Material>();
     public bool _isPlayerPawn;
-    public bool _isCanClick = false;
+    [HideInInspector] public bool _isCanClick = false;
+    [Header("Pawn Status")]
     [SerializeField] protected int _health;
     [SerializeField] protected int _curHealth;
     [SerializeField] protected int _damage;
@@ -26,16 +32,24 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected int _movementRange;
     [SerializeField] protected int _attackRange;
     [SerializeField] protected PawnType _pawnType;
+    [Tooltip("0:Move,1:Attack,2:Defend,3:Skill")]
     public DescriptObject[] _descriptObjects;
+    [SerializeField] protected OutlineFx.OutlineFx _outlineFx;
+    [Header("UI")]
     [SerializeField] protected Transform _hpBarTransform;
     [SerializeField] protected SpriteRenderer _hpBar;
     [SerializeField] protected SpriteRenderer _hpBarRed;
     [SerializeField] protected SpriteRenderer _hpBarShield;
     public SortingGroup _sortingGroup;
+    // Variables
+    protected bool _isLessMove = false;
+    protected bool _isHowitzerAttack = false;
+    protected MoveType _moveType;
     private Camera _mainCamera;
-    protected MapSquare _curMapSquare;
+    private MapSquare _curMapSquare;
     protected SkillDecorator _skill;
-    [SerializeField] protected OutlineFx.OutlineFx _outlineFx;
+    private MapSquare _moveTargetSquare;
+    // Properties
     public PawnType PawnType => _pawnType;
     public MapSquare CurMapSquare
     {
@@ -48,9 +62,9 @@ public abstract class Pawn : MonoBehaviour
             return _curMapSquare;
         }
     }
+    // Events
     public Action<bool,Pawn> OnPawnClicked;
     public Action<Pawn> OnDie;
-    protected MapSquare _moveTargetSquare;
     protected void Awake()
     {
         _curHealth = _health;
@@ -87,11 +101,13 @@ public abstract class Pawn : MonoBehaviour
         var targetSquares = new List<MapSquare>();
         int curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
         // Check target squares
-        //SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares,true); // 직선 이동
-        SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares,true); // 거리 우선 이동
+        if(_moveType == MoveType.Straight)
+            SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares); // 직선 이동
+        else
+            SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares, _isLessMove); // 거리 우선 이동
         targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
         {
-            x.SetColor(Color.yellow);
+            x.SetColor(GlobalValues.SELECABLE_COLOUR);
             x.OnClickSquare += (mapSquare) =>
             {
                 _moveTargetSquare = mapSquare;
@@ -180,10 +196,10 @@ public abstract class Pawn : MonoBehaviour
         var curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
 
         // Check target squares
-        SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
+        SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares, _isHowitzerAttack);
         targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
-            x.SetColor(Color.yellow);
+            x.SetColor(GlobalValues.SELECABLE_COLOUR);
             x.OnClickSquare += (mapSquare) =>
             {
                 Attack(x.CurPawn);

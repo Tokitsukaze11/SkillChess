@@ -12,7 +12,10 @@ public class LinkEventContainer : MonoBehaviour
         LinkManager.Instance.AttachLinkEvent("ID_STRAIGHT", ID_STRAIGHT);
         LinkManager.Instance.AttachLinkEvent("ID_OBSTACLES", ID_OBSTACLES);
         LinkManager.Instance.AttachLinkEvent("ID_IGNORE_OBSTACLES", ID_IGNORE_OBSTACLES);
-        LinkManager.Instance.AttachLinkEvent("ID_RANGE_PREFERENCE",ID_RANGE_PREFERENCE);
+        LinkManager.Instance.AttachLinkEvent("ID_RANGE_PREFERENCE_LESS",ID_RANGE_PREFERENCE_LESS);
+        LinkManager.Instance.AttachLinkEvent("ID_RANGE_PREFERENCE", ID_RANGE_PREFERENCE);
+        LinkManager.Instance.AttachLinkEvent("ID_HOWITZER", ID_HOWITZER);
+        LinkManager.Instance.AttachLinkEvent("ID_TICK", ID_TICK);
     }
     private void CreateAndInitPopup(string description, Vector3 position)
     {
@@ -40,7 +43,7 @@ public class LinkEventContainer : MonoBehaviour
     {
         if (isOn)
         {
-            string description = "기물의 위치를 중심으로 한 상하좌우 4개의 방향을 의미합니다.\n대각선은 고려하지 않습니다.";
+            string description = "기물의 위치를 중심으로 한 상하좌우 4개의 방향을 의미합니다.\n거리는 상하좌우 방향으로만 계산되며, 대각선 방향은 직접적으로 고려되지 않습니다.";
             CreateAndInitPopup(description, position);
         }
         else
@@ -72,11 +75,41 @@ public class LinkEventContainer : MonoBehaviour
             RemovePopup();
         }
     }
+    private void ID_RANGE_PREFERENCE_LESS(bool isOn, Vector3 position)
+    {
+        if (isOn)
+        {
+            string description = "지정된 범위 이하의 거리에 있는 칸을 선택할 수 있습니다.\n거리는 상하좌우 방향으로만 계산되며, 대각선 방향은 직접적으로 고려되지 않습니다.";
+            CreateAndInitPopup(description, position);
+        }
+        else
+            RemovePopup();
+    }
     private void ID_RANGE_PREFERENCE(bool isOn, Vector3 position)
     {
         if (isOn)
         {
-            string description = "반경 이내의 모든 ";
+            string description = "지정된 범위와 정확히 일치하는 거리에 있는 칸만 선택할 수 있습니다.\n거리는 상하좌우 방향으로만 계산되며, 대각선 방향은 직접적으로 고려되지 않습니다.";
+            CreateAndInitPopup(description, position);
+        }
+        else
+            RemovePopup();
+    }
+    private void ID_HOWITZER(bool isOn, Vector3 position)
+    {
+        if (isOn)
+        {
+            string description = "지정된 범위 이하의 거리에 있는 칸 중 타겟이 있는 칸만 선택할 수 있습니다.\n장애물의 존재를 무시하며, 거리는 상하좌우 방향으로만 계산됩니다.\n대각선 방향은 직접적으로 고려되지 않습니다.";
+            CreateAndInitPopup(description, position);
+        }
+        else
+            RemovePopup();
+    }
+    private void ID_TICK(bool isOn, Vector3 position)
+    {
+        if (isOn)
+        {
+            string description = "각 플레이어의 턴이 돌아오는 주기를 의미하며, 주로 시전자의 다음 턴 시작을 기준으로 합니다.\n효과의 지속 시간 등이 이 단위로 측정됩니다.";
             CreateAndInitPopup(description, position);
         }
         else

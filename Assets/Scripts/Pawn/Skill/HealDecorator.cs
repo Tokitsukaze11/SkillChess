@@ -40,7 +40,7 @@ public class HealDecorator : SkillDecorator
         var targetSquares = DefaultSkillPreview(_healRange);
         targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
-            x.SetColor(Color.yellow);
+            x.SetColor(GlobalValues.SELECABLE_COLOUR);
             x.OnClickSquare += SkillEffect;
         });
     }

@@ -29,7 +29,7 @@ public class HowitzerDecorator : SkillDecorator
         var targetSquares = DefaultSkillPreview(_attackRange);
         targetSquares.Where(x => x.IsAnyPawn()).ToList().ForEach(x =>
         {
-            x.SetColor(Color.yellow);
+            x.SetColor(GlobalValues.SELECABLE_COLOUR);
             x.OnClickSquare += SkillEffect;
         });
         _targetSquares = targetSquares;

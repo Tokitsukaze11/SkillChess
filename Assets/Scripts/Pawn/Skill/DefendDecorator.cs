@@ -27,7 +27,7 @@ public class DefendDecorator : SkillDecorator
             var targetSquares = DefaultSkillPreview(_defendRange);
             targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
             {
-                x.SetColor(Color.yellow);
+                x.SetColor(GlobalValues.SELECABLE_COLOUR);
                 x.OnClickSquare += SkillEffect;
             });
         }
@@ -36,7 +36,7 @@ public class DefendDecorator : SkillDecorator
             var playerPawns = PawnManager.Instance.GetPawns(true);
             playerPawns.Select(x => x?.CurMapSquare).ToList().ForEach(x =>
             {
-                x.SetColor(Color.yellow);
+                x.SetColor(GlobalValues.SELECABLE_COLOUR);
                 x.OnClickSquare += SkillEffect;
             });
         }

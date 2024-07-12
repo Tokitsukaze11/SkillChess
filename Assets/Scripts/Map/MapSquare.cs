@@ -33,8 +33,11 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     }
     public void SetColor(Color color)
     {
-        _meshRenderer.material.color = color;
-        _isChoosen = color == Color.yellow;
+        if (color == GlobalValues.SELECABLE_COLOUR)
+            _meshRenderer.material.DOColor(color, 0.3f);
+        else
+            _meshRenderer.material.color = color;
+        _isChoosen = color == GlobalValues.SELECABLE_COLOUR;
     }
     public void OnMouseDown()
     {
@@ -60,7 +63,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
             return;
         StopCoroutine(_mouseOverCoroutine);
         _mouseOverCoroutine = null;
-        SetColor(Color.yellow);
+        SetColor(GlobalValues.SELECABLE_COLOUR);
     }
     private IEnumerator Co_ColourFade()
     {
@@ -80,7 +83,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     }
     public void ResetColor()
     {
-        SetColor(Color.red);
+        SetColor(GlobalValues.UNSELECT_COLOUR);
         OnClickSquare = null;
     }
 }

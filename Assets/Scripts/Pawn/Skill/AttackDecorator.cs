@@ -46,7 +46,7 @@ public class AttackDecorator : SkillDecorator
         SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares, false, isConsideringAnyPawn);
         targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
-            x.SetColor(Color.yellow);
+            x.SetColor(GlobalValues.SELECABLE_COLOUR);
             x.OnClickSquare += SkillEffect;
         });
         _targetSquares.AddRange(targetSquares);
