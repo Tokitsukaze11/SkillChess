@@ -31,6 +31,18 @@ public class ObjectManager : Singleton<ObjectManager>
     {
         return isPooling ? _objectPool.CreateObject(obj, objectCode) : Instantiate(obj);
     }
+    public void RemoveObject(GameObject obj)
+    {
+        bool isPooling = _objectPool.IsPoolingObject(obj);
+        if(isPooling)
+        {
+            _objectPool.TryRemoveObject(obj);
+        }
+        else
+        {
+            Destroy(obj);
+        }
+    }
     public void RemoveObject(GameObject obj, string objectCode, bool isPooling = true)
     {
         if(isPooling)

@@ -32,7 +32,7 @@ public class SamplePawn : Pawn
         _skill = new HealDecorator(this, 10, 5,HealType.Single);
         (_skill as HealDecorator)!.OnSkillEnd += () =>
         {
-            _outlineFx.enabled = false;
+            _outlineFx.ToList().ForEach(x => x.enabled = false);
             OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
@@ -51,16 +51,5 @@ public class SamplePawn : Pawn
         // 임시로 3초 대기 후 턴 종료
         GameManager.Instance.TurnEnd();
         yield break;
-    }
-    public override void TakeDamage(int damage)
-    {
-        base.TakeDamage(damage);
-        if (_curHealth <= 0)
-            Die();
-    }
-    protected override void Die()
-    {
-        Debug.Log($"{this.gameObject.name} is dead");
-        OnDie?.Invoke(this);
     }
 }

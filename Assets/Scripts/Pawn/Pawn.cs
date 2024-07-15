@@ -34,7 +34,9 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected PawnType _pawnType;
     [Tooltip("0:Move,1:Attack,2:Defend,3:Skill")]
     public DescriptObject[] _descriptObjects;
-    [SerializeField] protected OutlineFx.OutlineFx _outlineFx;
+    [SerializeField] protected OutlineFx.OutlineFx[] _outlineFx;
+    [SerializeField] protected Animator _animator;
+    [SerializeField] protected ObjectTriggerAnimation _objectTriggerAnimation;
     [Header("UI")]
     [SerializeField] protected Transform _hpBarTransform;
     [SerializeField] protected SpriteRenderer _hpBar;
@@ -66,11 +68,15 @@ public abstract class Pawn : MonoBehaviour
     // Events
     public Action<bool,Pawn> OnPawnClicked;
     public Action<Pawn> OnDie;
+    private static readonly int Run = Animator.StringToHash("Run");
+    private static readonly int Attack1 = Animator.StringToHash("Attack");
     protected virtual void Awake()
     {
         _curHealth = _health;
         _hpBar.gameObject.transform.localScale = Vector3.one;
         _mainCamera = GameManager.Instance.mainCamera;
+        var outLines = GetComponentsInChildren<OutlineFx.OutlineFx>();
+        _outlineFx = outLines;
     }
     protected void Update()
     {
@@ -88,11 +94,11 @@ public abstract class Pawn : MonoBehaviour
             return;
         OnPawnClicked?.Invoke(true, this);
         PawnManager.Instance.ResetSquaresColor();
-        _outlineFx.enabled = true;
+        _outlineFx.ToList().ForEach(x => x.enabled = true);
     }
     public void UnSelected()
     {
-        _outlineFx.enabled = false;
+        _outlineFx.ToList().ForEach(x => x.enabled = false);
     }
     public virtual void ShowMoveRange()
     {
@@ -123,7 +129,7 @@ public abstract class Pawn : MonoBehaviour
         
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
-        _outlineFx.enabled = false;
+        _outlineFx.ToList().ForEach(x => x.enabled = false);
         
         Vector2 curKey = SquareCalculator.CurrentKey(_moveTargetSquare);
         var path = MoveNavigation.FindNavigation(_curMapSquare, _moveTargetSquare);
@@ -174,13 +180,19 @@ public abstract class Pawn : MonoBehaviour
             vertex.Enqueue(pathList[^1]);
         vertex.Dequeue(); // 시작점 제거
         float time = 0.5f + Math.Clamp((vertex.Count - 1) * 0.1f, 0, 0.5f);
+        //this.transform.rotation = Quaternion.LookRotation(new Vector3(curPath.x, 0, curPath.y) - this.transform.position);
         yield return new WaitForSeconds(0.3f);
         while (vertex.Count > 0)
         {
             var key = vertex.Dequeue();
-            var target = new Vector3(key.x, 1, key.y);
-            this.transform.DOMove(target, time);
-            // TODO : 이동 애니메이션 추가
+            var target = new Vector3(key.x, 0, key.y);
+            this.transform.rotation = Quaternion.LookRotation(target - this.transform.position);
+            _animator.SetBool(Run, true);
+            this.transform.DOMove(target, time).onComplete = () =>
+            {
+                _animator.SetBool(Run, false);
+                this.transform.rotation = Quaternion.Euler(0, 0, 0);
+            };
             yield return new WaitForSeconds(time);
         }
         callback!();
@@ -214,16 +226,21 @@ public abstract class Pawn : MonoBehaviour
         
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
-        _outlineFx.enabled = false;
+        _outlineFx.ToList().ForEach(x => x.enabled = false);
 
-        targetPawn.TakeDamage(_damage);
-        OnPawnClicked?.Invoke(false, null);
-        _curDefense = 0;
-        GameManager.Instance.TurnEnd();
+        _objectTriggerAnimation.OnAnimationTrigger += () =>
+        {
+            targetPawn.TakeDamage(_damage);
+            OnPawnClicked?.Invoke(false, null);
+            _curDefense = 0;
+            GameManager.Instance.TurnEnd();
+            _objectTriggerAnimation.ResetTrigger();
+        };
+        _animator.SetTrigger(Attack1);
     }
     public virtual void Defend()
     {
-        _outlineFx.enabled = false;
+        _outlineFx.ToList().ForEach(x => x.enabled = false);
         _curDefense = _defense;
         OnPawnClicked?.Invoke(false, null);
         GameManager.Instance.TurnEnd();
@@ -247,16 +264,26 @@ public abstract class Pawn : MonoBehaviour
         var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
         var damageText = damParticle.GetComponent<DamageText>();
         var spawnPosition = this.transform.position;
+        //Vector3 spawnPosition = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
         damageText.SetText(damage, spawnPosition, false);
         UpdateHpBar();
     }
-    protected abstract void Die();
+    protected virtual void Die()
+    {
+        Debug.Log($"{this.gameObject.name} is dead");
+        OnDie?.Invoke(this);
+    }
     private void UpdateHpBar()
     {
         var curHpBarX = _hpBar.transform.localScale.x;
         var targetHpBarX = (float)_curHealth / _health;
         var shieldBarX = Mathf.Clamp01((float)_shield / _health);
         _hpBarShield.transform.localScale = new Vector3(shieldBarX, 1, 1);
+        if (_curHealth <= 0)
+        {
+            Die();
+            return;
+        }
         if(curHpBarX > targetHpBarX) // 데미지를 받은 경우
         {
             _hpBar.transform.localScale = new Vector3(targetHpBarX, 1, 1);

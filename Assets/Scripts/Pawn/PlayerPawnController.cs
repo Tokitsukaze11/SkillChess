@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class PlayerPawnController : MonoBehaviour
 {
     public GameObject playerPawnPrefab;
+    public GameObject playerKingPrefab;
     [Header("Pawn Behavior UI Elements")]
     public GameObject pawnBehaviorUIPanel;
     public Button moveButton;
@@ -18,7 +19,7 @@ public class PlayerPawnController : MonoBehaviour
     public event Action PlayerTickHandler;
     private void Awake()
     {
-        ObjectManager.Instance.MakePool(playerPawnPrefab, "PlayerPawn");
+        //ObjectManager.Instance.MakePool(playerPawnPrefab, "PlayerPawn");
     }
     private void Start()
     {
@@ -28,7 +29,13 @@ public class PlayerPawnController : MonoBehaviour
     {
         for(int i = 0; i < 3; i++)
         {
-            var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, "PlayerPawn", true);
+            //var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, "PlayerPawn", true);
+            GameObject obj = null;
+            if(i != 1)
+                obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, null, false);
+            else
+                obj = ObjectManager.Instance.SpawnObject(playerKingPrefab, null, false);
+            //var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, null, false);
             
             int targetColumn = i*GlobalValues.ROW;
             int targetRow = 0;
@@ -36,10 +43,11 @@ public class PlayerPawnController : MonoBehaviour
             var curMapSquare = SquareCalculator.CurrentMapSquare(targetIndex);
             Vector2 curKey = SquareCalculator.CurrentKey(targetIndex);
             
-            obj.transform.position = new Vector3(curKey.x, 1, curKey.y);
+            obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
             obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
             obj.gameObject.name = $"PlayerPawn_{i}";
-            var pawn = obj.GetComponent<SamplePawn>();
+            obj.SetActive(true);
+            var pawn = obj.GetComponent<Pawn>();
             pawn._isPlayerPawn = true;
             pawn.OnPawnClicked += PawnBehaviorUIPanelActive;
             curMapSquare.CurPawn = pawn;
@@ -66,13 +74,14 @@ public class PlayerPawnController : MonoBehaviour
     }
     private void PawnDie(Pawn diedPawn)
     {
-        ObjectManager.Instance.RemoveObject(diedPawn.gameObject, "PlayerPawn", true);
+        //ObjectManager.Instance.RemoveObject(diedPawn.gameObject, "PlayerPawn", true);
         _playerPawns.Remove(diedPawn);
         if(diedPawn.PawnType == PawnType.King)
         {
-            Debug.Log("Game Over");
+            Debug.Log("Game Over, Enemy Win");
             // TODO : If pawn is king, game over
         }
+        ObjectManager.Instance.RemoveObject(diedPawn.gameObject);
     }
     private void PawnBehaviorUIPanelActive(bool active, Pawn curPawn = null)
     {

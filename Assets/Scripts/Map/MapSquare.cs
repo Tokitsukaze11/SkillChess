@@ -83,6 +83,8 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     }
     public void ResetColor()
     {
+        if(_mouseOverCoroutine != null)
+            StopCoroutine(_mouseOverCoroutine);
         SetColor(GlobalValues.UNSELECT_COLOUR);
         OnClickSquare = null;
     }

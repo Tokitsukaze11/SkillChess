@@ -54,4 +54,14 @@ public class ObjectPool : MonoBehaviour
             _objectPooling[objectCode].Enqueue(obj);
         }
     }
+    public bool IsPoolingObject(GameObject obj)
+    {
+        return _objectPooling.Values.Any(x => x.Contains(obj));
+    }
+    public void TryRemoveObject(GameObject obj)
+    {
+        
+        var targetKey = _objectPooling.FirstOrDefault(x => x.Value.Contains(obj)).Key;
+        RemoveObject(obj, targetKey);
+    }
 }
