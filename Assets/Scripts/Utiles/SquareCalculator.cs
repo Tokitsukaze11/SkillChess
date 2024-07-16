@@ -90,8 +90,8 @@ public static class SquareCalculator
     /// <param name="targetRange">Range of do something</param>
     /// <param name="curKeyIndex">Current key index</param>
     /// <param name="targetSquares">List of target squares</param>
-    /// <param name="isConsideringObstacles">Is considering obstacles to do. If true, try to stop when obstacle is found</param>
-    /// <param name="isConsideringAnyPawn">Is considering any pawn to do. If true, try to stop when any pawn is found</param>
+    /// <param name="isConsideringObstacles">장애물 영향을 받는지</param>
+    /// <param name="isConsideringAnyPawn">기물 영향을 받는지(타겟 지정일 시)</param>
     public static void CheckTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false, bool isConsideringAnyPawn = false)
     {
         GetVerticalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles, isConsideringAnyPawn);
@@ -282,13 +282,23 @@ public static class SquareCalculator
     }
     private static bool CheckBool(bool isConsideringObstacles, bool isConsideringAnyPawn, List<MapSquare> targetSquares)
     {
-        if (isConsideringAnyPawn && targetSquares.Any(x => x.IsAnyPawn()))
+        if (isConsideringObstacles && isConsideringAnyPawn) // 타겟 지정이고 장애물 영향 있을 때
+        {
+            if (targetSquares.Any(x => x.IsAnyPawn()))
+                return true;
+            if (targetSquares.Any(x => x.IsObstacle))
+            {
+                targetSquares.RemoveAt(targetSquares.Count - 1);
+                return true;
+            }
+        }
+        if (isConsideringAnyPawn && targetSquares.Any(x => x.IsAnyPawn())) // 타겟 지정이고 타겟 영향 있을 때
         {
             if(targetSquares[^1].CurPawn!._isPlayerPawn)
                 targetSquares.RemoveAt(targetSquares.Count - 1);
             return true;
         }
-        if (isConsideringObstacles && IsOverlapped(targetSquares))
+        if (isConsideringObstacles && IsOverlapped(targetSquares)) // 우선 장애물 영향 있고 타겟 영향 없을 때
         {
             targetSquares.RemoveAt(targetSquares.Count - 1);
             return true;

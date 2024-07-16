@@ -209,7 +209,10 @@ public abstract class Pawn : MonoBehaviour
         var curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
 
         // Check target squares
-        SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares, _isHowitzerAttack);
+        if(_isHowitzerAttack)
+            SquareCalculator.CheckTargetSquaresAsRange(_attackRange, _curMapSquare, targetSquares, true);
+        else
+            SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares, true);
         targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(GlobalValues.SELECABLE_COLOUR);
@@ -237,6 +240,11 @@ public abstract class Pawn : MonoBehaviour
             _objectTriggerAnimation.ResetTrigger();
         };
         _animator.SetTrigger(Attack1);
+    }
+    private IEnumerator Co_Attack(Pawn targetPawn)
+    {
+        yield return new WaitForSeconds(0.5f);
+        
     }
     public virtual void Defend()
     {
