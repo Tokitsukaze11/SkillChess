@@ -37,6 +37,7 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected OutlineFx.OutlineFx[] _outlineFx;
     [SerializeField] protected Animator _animator;
     [SerializeField] protected ObjectTriggerAnimation _objectTriggerAnimation;
+    public ObjectTriggerAnimation ObjectTriggerAnimation => _objectTriggerAnimation;
     [Header("UI")]
     [SerializeField] protected Transform _hpBarTransform;
     [SerializeField] protected SpriteRenderer _hpBar;
@@ -70,6 +71,8 @@ public abstract class Pawn : MonoBehaviour
     public Action<Pawn> OnDie;
     private static readonly int Run = Animator.StringToHash("Run");
     private static readonly int Attack1 = Animator.StringToHash("Attack");
+    private static readonly int Skill1 = Animator.StringToHash("Skill");
+    private static readonly int Damage = Animator.StringToHash("Damage");
     protected virtual void Awake()
     {
         _curHealth = _health;
@@ -159,6 +162,10 @@ public abstract class Pawn : MonoBehaviour
         }
         return;
     }
+    public void MoveOrder(Queue<Vector2> path, Action callback)
+    {
+        StartCoroutine(Co_Move(path, callback));
+    }
     protected virtual IEnumerator Co_Move(Queue<Vector2> path, Action callback)
     {
         List<Vector2> pathList = path.ToList();
@@ -198,7 +205,13 @@ public abstract class Pawn : MonoBehaviour
         callback!();
         yield break;
     }
-    protected abstract IEnumerator Co_EnemyMove();
+    protected virtual IEnumerator Co_EnemyMove()
+    {
+        yield return new WaitForSeconds(3); // TODO : AI
+        // 임시로 3초 대기 후 턴 종료
+        GameManager.Instance.TurnEnd();
+        yield break;
+    }
     public virtual void ShowAttackRange()
     {
         // Reset color
@@ -218,11 +231,11 @@ public abstract class Pawn : MonoBehaviour
             x.SetColor(GlobalValues.SELECABLE_COLOUR);
             x.OnClickSquare += (mapSquare) =>
             {
-                Attack(x.CurPawn);
+                Attack(x.CurPawn, x);
             };
         });
     }
-    protected virtual void Attack(Pawn targetPawn)
+    protected virtual void Attack(Pawn targetPawn, MapSquare targetSquare)
     {
         if(!_isPlayerPawn)
             StartCoroutine(Co_EnemyMove());
@@ -239,12 +252,37 @@ public abstract class Pawn : MonoBehaviour
             GameManager.Instance.TurnEnd();
             _objectTriggerAnimation.ResetTrigger();
         };
-        _animator.SetTrigger(Attack1);
+        //_animator.SetTrigger(Attack1);
+        StartCoroutine(Co_Attack(targetSquare));
     }
-    private IEnumerator Co_Attack(Pawn targetPawn)
+    private IEnumerator Co_Attack(MapSquare targetSquare)
     {
         yield return new WaitForSeconds(0.5f);
-        
+        var curSq = _curMapSquare;
+        var attackPath = MoveNavigation.FindNavigation(curSq, targetSquare);
+        var realPath = attackPath.SkipLast(1).ToList();
+        var pathKeys = new Queue<Vector2>();
+        foreach (var mapSquare in realPath)
+        {
+            var key = SquareCalculator.CurrentKey(mapSquare);
+            pathKeys.Enqueue(key);
+        }
+        Queue<Vector2> reversPath = new Queue<Vector2>();
+        pathKeys.Reverse().ToList().ForEach(x => reversPath.Enqueue(x));
+        _objectTriggerAnimation.OnAnimationEndTrigger += () =>
+        {
+            StartCoroutine(Co_Move(reversPath, () =>
+            {
+                _objectTriggerAnimation.ResetEndTrigger();
+                this.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            }));
+        };
+        StartCoroutine(Co_Move(pathKeys, () =>
+        {
+            this.transform.rotation = Quaternion.LookRotation(new Vector3(targetSquare.transform.position.x, 0, targetSquare.transform.position.z) - this.transform.position);
+            _animator.SetTrigger(Attack1);
+        }));
+        yield break;
     }
     public virtual void Defend()
     {
@@ -269,6 +307,7 @@ public abstract class Pawn : MonoBehaviour
         }
         _curHealth -= damage;
         _curDefense = 0;
+        _animator.SetTrigger(Damage);
         var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
         var damageText = damParticle.GetComponent<DamageText>();
         var spawnPosition = this.transform.position;
@@ -325,5 +364,13 @@ public abstract class Pawn : MonoBehaviour
     {
         _shield += shieldAmount;
         UpdateHpBar();
+    }
+    public void SkillAnimation()
+    {
+        _animator.SetTrigger(Skill1);
+    }
+    public void ResetOutline()
+    {
+        _outlineFx.ToList().ForEach(x => x.enabled = false);
     }
 }

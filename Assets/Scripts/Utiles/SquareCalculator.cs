@@ -276,10 +276,6 @@ public static class SquareCalculator
                 targetSquares.Add(newSquare);
         }
     }
-    private static bool IsOverlapped(List<MapSquare> targetSquares)
-    {
-        return targetSquares.Any(x => x.IsAnyPawn() || x.IsObstacle);
-    }
     private static bool CheckBool(bool isConsideringObstacles, bool isConsideringAnyPawn, List<MapSquare> targetSquares)
     {
         if (isConsideringObstacles && isConsideringAnyPawn) // 타겟 지정이고 장애물 영향 있을 때
@@ -294,11 +290,15 @@ public static class SquareCalculator
         }
         if (isConsideringAnyPawn && targetSquares.Any(x => x.IsAnyPawn())) // 타겟 지정이고 타겟 영향 있을 때
         {
+            /*if(targetSquares[^1].CurPawn!._isPlayerPawn)
+                targetSquares.RemoveAt(targetSquares.Count - 1);*/
+            if (targetSquares[^1].CurPawn == null)
+                return false;
             if(targetSquares[^1].CurPawn!._isPlayerPawn)
                 targetSquares.RemoveAt(targetSquares.Count - 1);
             return true;
         }
-        if (isConsideringObstacles && IsOverlapped(targetSquares)) // 우선 장애물 영향 있고 타겟 영향 없을 때
+        if (isConsideringObstacles && targetSquares.Any(x =>x.IsObstacle)) // 장애물 영향 있고 타겟 영향 없을 때
         {
             targetSquares.RemoveAt(targetSquares.Count - 1);
             return true;

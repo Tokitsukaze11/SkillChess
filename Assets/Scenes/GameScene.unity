@@ -174,6 +174,50 @@ MonoBehaviour:
   attackButton: {fileID: 1933408651}
   defendButton: {fileID: 685860724}
   skillButton: {fileID: 1826654581}
+--- !u!1 &33389581
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 33389582}
+  - component: {fileID: 33389583}
+  m_Layer: 0
+  m_Name: CoroutineManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &33389582
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 33389581}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 305920475}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &33389583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 33389581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0fad19a510f0224db588169f115bed5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &35548081
 GameObject:
   m_ObjectHideFlags: 0
@@ -859,6 +903,7 @@ Transform:
   - {fileID: 1956518616}
   - {fileID: 1942664605}
   - {fileID: 559123367}
+  - {fileID: 33389582}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &318619209
@@ -5196,7 +5241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ebeea6bccc72df42bc7b9643f746fbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPawnPrefab: {fileID: 1958679631}
+  enemyPawnPrefab: {fileID: 8097416974163257688}
   enemyKingPrefab: {fileID: 87294826661456804}
 --- !u!1 &1470972123
 GameObject:
@@ -7382,11 +7427,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc3d02eeca6fc0c4bb164ce588720652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1958679631 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 87294826408311260, guid: 91c664f17a7e87d4c928ee6850d5f796, type: 3}
-  m_PrefabInstance: {fileID: 5888615788440736512}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2005671125
 GameObject:
   m_ObjectHideFlags: 0
@@ -8911,7 +8951,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8097416974163560042}
   - component: {fileID: 8097416974170843366}
-  - component: {fileID: 8097416974170843368}
+  - component: {fileID: 8097416974170843372}
   - component: {fileID: 8097416974170843367}
   - component: {fileID: 8097416974170843370}
   - component: {fileID: 8097416974170843371}
@@ -10095,41 +10135,6 @@ SortingGroup:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_SortAtRoot: 0
---- !u!114 &8097416974170843368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8097416974163257688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d3a20a807c42504dba58727ad6a1dcf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _isPlayerPawn: 0
-  _isCanClick: 0
-  _health: 100
-  _curHealth: 0
-  _damage: 10
-  _defense: 2
-  _shield: 0
-  _movementRange: 2
-  _attackRange: 3
-  _pawnType: 0
-  _descriptObjects:
-  - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
-  - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
-  - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
-  - {fileID: 11400000, guid: ca7dc394dee528c41a13f81a01cf2d76, type: 2}
-  _outlineFx: []
-  _animator: {fileID: 8097416974170843366}
-  _objectTriggerAnimation: {fileID: 8097416974170843371}
-  _hpBarTransform: {fileID: 402271436}
-  _hpBar: {fileID: 548585917}
-  _hpBarRed: {fileID: 1433724579}
-  _hpBarShield: {fileID: 936709408}
-  _sortingGroup: {fileID: 8097416974170843367}
 --- !u!136 &8097416974170843370
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -10165,6 +10170,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 302bb1cd2ef95374388bff1e1691e4bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8097416974170843372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8097416974163257688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd90f3e1624576d448c4d5c1d68137c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isPlayerPawn: 0
+  _isCanClick: 0
+  _health: 100
+  _curHealth: 0
+  _damage: 10
+  _defense: 2
+  _shield: 0
+  _movementRange: 2
+  _attackRange: 3
+  _pawnType: 0
+  _descriptObjects:
+  - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
+  - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
+  - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
+  - {fileID: 11400000, guid: ca7dc394dee528c41a13f81a01cf2d76, type: 2}
+  _outlineFx: []
+  _animator: {fileID: 8097416974170843366}
+  _objectTriggerAnimation: {fileID: 8097416974170843371}
+  _hpBarTransform: {fileID: 402271436}
+  _hpBar: {fileID: 548585917}
+  _hpBarRed: {fileID: 1433724579}
+  _hpBarShield: {fileID: 936709408}
+  _sortingGroup: {fileID: 8097416974170843367}
 --- !u!137 &8097416974175037124
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -10275,7 +10315,7 @@ Transform:
   m_Children:
   - {fileID: 8542256465448237207}
   m_Father: {fileID: 8097416974163570408}
-  m_LocalEulerAnglesHint: {x: -1.3428116, y: -0.12132144, z: 179.01779}
+  m_LocalEulerAnglesHint: {x: -0.0036913068, y: 2.7035089, z: 172.67705}
 --- !u!4 &9136299225913092827
 Transform:
   m_ObjectHideFlags: 0

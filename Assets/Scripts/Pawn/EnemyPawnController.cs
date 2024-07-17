@@ -27,10 +27,11 @@ public class EnemyPawnController : MonoBehaviour
             int curIndex = targetCol + targetRow;
             var curKey = SquareCalculator.CurrentKey(curIndex);
             
-            obj.transform.position = new Vector3(curKey.x, 1, curKey.y);
+            obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
             obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
             obj.gameObject.name = $"EnemyPawn_{i}";
-            obj.GetComponent<MeshRenderer>().material.color = Color.magenta;
+            obj.transform.rotation = Quaternion.Euler(0, 180, 0);
+            //obj.GetComponent<MeshRenderer>().material.color = Color.magenta;
             obj.SetActive(true);
             var pawn = obj.GetComponent<Pawn>();
             pawn._isPlayerPawn = false;
