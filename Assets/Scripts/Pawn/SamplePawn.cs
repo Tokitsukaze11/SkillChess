@@ -15,7 +15,7 @@ public class SamplePawn : Pawn
         _isConsiderObstacle = true;
         _isHowitzerAttack = false;
         //_skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
-        _skill = new AttackDecorator(this,20,5,AttackType.ConsiderOtherPawnTarget);
+        _skill = new AttackDecorator(this,20,5,AttackType.ConsiderOtherPawnTarget, null);
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
             OnPawnClicked?.Invoke(false, null);

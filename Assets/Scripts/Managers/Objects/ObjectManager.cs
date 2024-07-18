@@ -65,4 +65,8 @@ public class ObjectManager : Singleton<ObjectManager>
     {
         return _particleSpawner.SpawnParticle(particle, objectCode, isPooling);
     }
+    public GameObject SpawnParticleViaID(string objectCode)
+    {
+        return _particleSpawner.SpawnParticleViaCode(objectCode);
+    }
 }

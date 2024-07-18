@@ -49,6 +49,8 @@ public abstract class Pawn : MonoBehaviour
     protected bool _isHowitzerAttack = false;
     protected MoveType _moveType;
     protected bool _isConsiderObstacle = true;
+    protected string _attackParticleID;
+    protected string _skillParticleID;
     private Camera _mainCamera;
     private MapSquare _curMapSquare;
     protected SkillDecorator _skill;
@@ -246,7 +248,7 @@ public abstract class Pawn : MonoBehaviour
 
         _objectTriggerAnimation.OnAnimationTrigger += () =>
         {
-            targetPawn.TakeDamage(_damage);
+            targetPawn.TakeDamage(_damage,_attackParticleID);
             OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
@@ -296,7 +298,7 @@ public abstract class Pawn : MonoBehaviour
         _skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
         _skill.UseSkill();
     }
-    public virtual void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage, string particleID = null)
     {
         damage -= _curDefense;
         damage -= _shield;
@@ -313,6 +315,10 @@ public abstract class Pawn : MonoBehaviour
         var spawnPosition = this.transform.position;
         //Vector3 spawnPosition = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
         damageText.SetText(damage, spawnPosition, false);
+        var hitParticle = ObjectManager.Instance.SpawnParticleViaID(particleID);
+        Vector3 spawnPoint = spawnPosition + new Vector3(0, 0.2f, 0);
+        hitParticle.transform.position = spawnPoint;
+        hitParticle.SetActive(true);
         UpdateHpBar();
     }
     protected virtual void Die()

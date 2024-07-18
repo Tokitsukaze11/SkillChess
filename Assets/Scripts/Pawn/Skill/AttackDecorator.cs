@@ -16,12 +16,13 @@ public class AttackDecorator : SkillDecorator
     private AttackType _attackType;
     private List<MapSquare> _targetSquares = new List<MapSquare>();
     public event Action OnSkillEnd;
-    public AttackDecorator(Pawn pawn, int damage, int attackRange, AttackType attackType)
+    public AttackDecorator(Pawn pawn, int damage, int attackRange, AttackType attackType, string skillParticleID)
     {
         _curPawn = pawn;
         _damage = damage;
         _attackRange = attackRange;
         _attackType = attackType;
+        _hitParticleID = skillParticleID;
     }
     public override void UseSkill()
     {
@@ -87,7 +88,7 @@ public class AttackDecorator : SkillDecorator
         };
         _curPawn.ObjectTriggerAnimation.OnAnimationTrigger += () =>
         {
-            targetSquare.CurPawn?.TakeDamage(_damage);
+            targetSquare.CurPawn?.TakeDamage(_damage, _hitParticleID);
             OnSkillEnd?.Invoke();
             _curPawn.ObjectTriggerAnimation.ResetTrigger();
         };

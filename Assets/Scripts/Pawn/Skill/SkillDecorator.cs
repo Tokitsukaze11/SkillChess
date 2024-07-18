@@ -8,6 +8,7 @@ public abstract class SkillDecorator
 {
     public Pawn _curPawn;
     protected int _curMapSquareIndex;
+    protected string _hitParticleID;
     public virtual void Initialize(){}
     public void UpdateCurIndex(int index)
     {
