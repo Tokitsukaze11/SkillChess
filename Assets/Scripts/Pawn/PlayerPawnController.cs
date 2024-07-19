@@ -4,10 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class PlayerPawnController : MonoBehaviour
 {
-    public GameObject playerPawnPrefab;
+    public GameObject[] playerPawnPrefab;
     public GameObject playerKingPrefab;
     [Header("Pawn Behavior UI Elements")]
     public GameObject pawnBehaviorUIPanel;
@@ -32,7 +33,7 @@ public class PlayerPawnController : MonoBehaviour
             //var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, "PlayerPawn", true);
             GameObject obj = null;
             if(i != 1)
-                obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, null, false);
+                obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab[Random.Range(0,playerPawnPrefab.Length)], null, false);
             else
                 obj = ObjectManager.Instance.SpawnObject(playerKingPrefab, null, false);
             //var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, null, false);

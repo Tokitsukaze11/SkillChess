@@ -64,6 +64,10 @@ public class HealDecorator : SkillDecorator
                 break;
         }
     }
+    protected override IEnumerator Co_SkillEffect(MapSquare targetSquare)
+    {
+        yield break;
+    }
     private void HealSingle(MapSquare targetSquare)
     {
         targetSquare.CurPawn?.Heal(_healAmount);

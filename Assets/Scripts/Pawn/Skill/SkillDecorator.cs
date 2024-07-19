@@ -17,6 +17,7 @@ public abstract class SkillDecorator
     public abstract void UseSkill();
     protected abstract void SkillPreview();
     protected abstract void SkillEffect(MapSquare targetSquare);
+    protected abstract IEnumerator Co_SkillEffect(MapSquare targetSquare);
     protected List<MapSquare> DefaultSkillPreview(int range)
     {
         // Reset color

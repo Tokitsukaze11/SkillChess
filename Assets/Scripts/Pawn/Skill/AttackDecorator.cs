@@ -63,7 +63,7 @@ public class AttackDecorator : SkillDecorator
         _curPawn.ResetOutline();
         CoroutineManager.Instance.AsyncStartViaCoroutine(Co_SkillEffect(targetSquare));
     }
-    private IEnumerator Co_SkillEffect(MapSquare targetSquare)
+    protected override IEnumerator Co_SkillEffect(MapSquare targetSquare)
     {
         yield return new WaitForSeconds(0.5f);
         var curSq = SquareCalculator.CurrentMapSquare(_curMapSquareIndex);

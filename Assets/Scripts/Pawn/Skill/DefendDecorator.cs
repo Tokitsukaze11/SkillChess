@@ -50,7 +50,7 @@ public class DefendDecorator : SkillDecorator
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         CoroutineManager.Instance.AsyncStartViaCoroutine(Co_SkillEffect(targetSquare));
     }
-    private IEnumerator Co_SkillEffect(MapSquare targetSquare)
+    protected override IEnumerator Co_SkillEffect(MapSquare targetSquare)
     {
         yield return new WaitForSeconds(0.5f);
         var otherParticle = ObjectManager.Instance.SpawnParticleViaID(_skillParticleID);

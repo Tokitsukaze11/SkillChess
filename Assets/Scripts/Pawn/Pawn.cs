@@ -117,6 +117,12 @@ public abstract class Pawn : MonoBehaviour
             SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares, _isConsiderObstacle); // 직선 이동
         else
             SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares, _isLessMove); // 거리 우선 이동
+        if(targetSquares.Count == 0)
+        {
+            Debug.Log("No target square");
+            // TODO : Show message on UI
+            return;
+        }
         targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
         {
             x.SetColor(GlobalValues.SELECABLE_COLOUR);
