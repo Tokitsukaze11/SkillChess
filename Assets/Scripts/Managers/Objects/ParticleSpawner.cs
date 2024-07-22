@@ -10,6 +10,7 @@ public class ParticleSpawner : MonoBehaviour
     public GameObject _attackSkillHitParticle;
     public GameObject _magicMineParticle;
     public GameObject _magicOtherParticle;
+    public GameObject _healParticle;
     Dictionary<string,GameObject> _particleDic = new Dictionary<string, GameObject>();
     private void Awake()
     {
@@ -17,6 +18,7 @@ public class ParticleSpawner : MonoBehaviour
         _particleDic.Add(StringKeys.ATTACK_SKILL_HIT, _attackSkillHitParticle);
         _particleDic.Add(StringKeys.MAGIC_MINE, _magicMineParticle);
         _particleDic.Add(StringKeys.MAGIC_OTHER, _magicOtherParticle);
+        _particleDic.Add(StringKeys.HEAL_PARTICLE, _healParticle);
     }
     private void Start()
     {

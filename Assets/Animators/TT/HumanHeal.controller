@@ -68,7 +68,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 060b6eff5d848974a9fce894b36bc963, type: 2}
+  m_Motion: {fileID: 7400000, guid: 04a438ee704ec9d4abc78d22a0374af6, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -120,7 +120,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 5b41c533e4c5c8f4fbbe7e5064fb4038, type: 2}
+  m_Motion: {fileID: 7400000, guid: 2aa453e434e25fd4abe148d95ed6e339, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -169,7 +169,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: a16376809ab302c478ae78c68881d593, type: 2}
+  m_Motion: {fileID: 7400000, guid: dfc8c4b983e2a864eb9c6b29f3ea2dc8, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -181,7 +181,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Swordman
+  m_Name: HumanHeal
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Run
@@ -320,7 +320,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 690c45970fba5ea4e91d8bab9ec2860c, type: 2}
+  m_Motion: {fileID: 7400000, guid: e5fdad6a52a9dba4b96bfdbdd82f4b74, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -381,7 +381,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 676b0e136b39f344397d76973712f7c5, type: 2}
+  m_Motion: {fileID: 7400000, guid: f31688f47be848943b78629448d905c9, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

@@ -13,6 +13,7 @@ public static class StringKeys
     public static readonly string ATTACK_SKILL_HIT = "ATTACK_SKILL_HIT";
     public static readonly string MAGIC_MINE = "MAGIC_MINE";
     public static readonly string MAGIC_OTHER = "MAGIC_OTHER";
+    public static readonly string HEAL_PARTICLE = "HEAL_PARTICLE";
 }
 public static class GlobalValues
 {

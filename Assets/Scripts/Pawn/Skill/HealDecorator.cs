@@ -64,30 +64,85 @@ public class HealDecorator : SkillDecorator
                 break;
         }
     }
+    // With Animation When Single Heal
     protected override IEnumerator Co_SkillEffect(MapSquare targetSquare)
     {
+        yield return new WaitForSeconds(0.5f);
+        _curPawn.ObjectTriggerAnimation.OnAnimationTrigger += () =>
+        {
+            var healParticle = ObjectManager.Instance.SpawnParticleViaID(StringKeys.HEAL_PARTICLE);
+            Vector3 healPos = targetSquare.transform.position;
+            healPos += new Vector3(0, 0.2f, 0);
+            healParticle.transform.position = healPos;
+            healParticle.SetActive(true);
+            targetSquare.CurPawn?.Heal(_healAmount);
+            OnSkillEnd?.Invoke();
+            _curPawn.ObjectTriggerAnimation.ResetTrigger();
+        };
+        _curPawn.SkillAnimation();
         yield break;
     }
-    private void HealSingle(MapSquare targetSquare)
+    // With Animation When Area Heal
+    private IEnumerator Co_SkillEffectArea(List<MapSquare> mapSquares)
     {
-        targetSquare.CurPawn?.Heal(_healAmount);
-        OnSkillEnd?.Invoke();
+        yield return new WaitForSeconds(0.5f);
+        _curPawn.ObjectTriggerAnimation.OnAnimationTrigger += () =>
+        {
+            foreach(var square in mapSquares)
+            {
+                if (square.CurPawn == null)
+                    continue;
+                if(!square.CurPawn._isPlayerPawn)
+                    continue;
+                var healParticle = ObjectManager.Instance.SpawnParticleViaID(StringKeys.HEAL_PARTICLE);
+                Vector3 healPos = square.transform.position;
+                healPos += new Vector3(0, 0.2f, 0);
+                healParticle.transform.position = healPos;
+                healParticle.SetActive(true);
+                square.CurPawn?.Heal(_healAmount);
+            }
+            OnSkillEnd?.Invoke();
+            _curPawn.ObjectTriggerAnimation.ResetTrigger();
+        };
+        _curPawn.SkillAnimation();
+        yield break;
     }
-    private void HealArea(MapSquare targetSquare)
+    // Without Animation
+    private IEnumerator Co_SkillEffectNoAnim(List<MapSquare> mapSquares)
     {
-        var radial = new List<MapSquare>();
+        foreach(var square in mapSquares)
+        {
+            if (square.CurPawn == null)
+                continue;
+            if(!square.CurPawn._isPlayerPawn)
+                continue;
+            var healParticle = ObjectManager.Instance.SpawnParticleViaID(StringKeys.HEAL_PARTICLE);
+            Vector3 healPos = square.transform.position;
+            healPos += new Vector3(0, 0.2f, 0);
+            healParticle.transform.position = healPos;
+            healParticle.SetActive(true);
+            square.CurPawn?.Heal(_healAmount);
+        }
+        OnSkillEnd?.Invoke();
+        yield break;
+    }
+    private void HealSingle(MapSquare targetSquare, bool isTick = false)
+    {
+        CoroutineManager.Instance.AsyncStartViaCoroutine(!isTick ? Co_SkillEffect(targetSquare) : Co_SkillEffectNoAnim(new List<MapSquare>(){targetSquare}));
+    }
+    private void HealArea(MapSquare targetSquare, bool isTick = false)
+    {
         var selectedIndex = SquareCalculator.CurrentIndex(targetSquare);
         
         // Check target squares
         // 상하좌우는 _healRange만큼, 대각선은 _healRange/2 만큼 단, 소숫점 이하는 버림
-        SquareCalculator.CheckTargetSquares(_healRange, selectedIndex, radial);
-        SquareCalculator.CheckDiagonalTargetSquares(_healRange/2, selectedIndex, radial);
-        targetSquare.CurPawn?.Heal(_healAmount);
-        foreach(var square in radial.Where(x => x.IsAnyPawn() && x.CurPawn._isPlayerPawn))
-        {
-            square.CurPawn.Heal(_healAmount/2);
-        }
-        OnSkillEnd?.Invoke();
+        var dir = new List<MapSquare>();
+        SquareCalculator.CheckTargetSquares(_healRange, selectedIndex, dir);
+        var area = new List<MapSquare>();
+        SquareCalculator.CheckDiagonalTargetSquares(_healRange/2, selectedIndex, area);
+        var radial = dir.Concat(area).ToList();
+        radial.Add(targetSquare);
+        CoroutineManager.Instance.AsyncStartViaCoroutine(!isTick ? Co_SkillEffectArea(radial) : Co_SkillEffectNoAnim(radial));
     }
     private void TickHeal(int healType, MapSquare targetSquare)
     {
@@ -95,10 +150,10 @@ public class HealDecorator : SkillDecorator
         switch(healType)
         {
             case 4: // 지속 지정 힐
-                HealSingle(targetSquare);
+                HealSingle(targetSquare, true);
                 break;
             case 8: // 지속 장판 힐
-                HealArea(targetSquare);
+                HealArea(targetSquare, true);
                 break;
         }
         if(_curTick == 0)

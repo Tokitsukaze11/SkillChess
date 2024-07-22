@@ -68,7 +68,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 060b6eff5d848974a9fce894b36bc963, type: 2}
+  m_Motion: {fileID: 7400000, guid: 5ade72918ac23c648907c42777532b2c, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -120,7 +120,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 5b41c533e4c5c8f4fbbe7e5064fb4038, type: 2}
+  m_Motion: {fileID: 7400000, guid: 1eacc817116e79844a332bdbfbd192e6, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -169,7 +169,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: a16376809ab302c478ae78c68881d593, type: 2}
+  m_Motion: {fileID: 7400000, guid: dfc8c4b983e2a864eb9c6b29f3ea2dc8, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -181,7 +181,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Swordman
+  m_Name: Archer
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Run
@@ -320,7 +320,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 690c45970fba5ea4e91d8bab9ec2860c, type: 2}
+  m_Motion: {fileID: 7400000, guid: cd22e844bb2c68e45b5a00dde5a4ae8f, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -381,7 +381,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 676b0e136b39f344397d76973712f7c5, type: 2}
+  m_Motion: {fileID: 7400000, guid: a759717c4fa7b0d49a04e65fd6e51d6c, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

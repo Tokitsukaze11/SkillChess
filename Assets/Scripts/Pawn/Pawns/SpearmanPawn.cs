@@ -8,7 +8,6 @@ public class SpearmanPawn : Pawn
 {
     [Header("SpearmanPawn")]
     [SerializeField] private GameObject _spear;
-    Coroutine _spearCo;
     
     protected override void Awake()
     {
@@ -55,7 +54,7 @@ public class SpearmanPawn : Pawn
             _objectTriggerAnimation.ResetTrigger();
         };
         SkillAnimation();
-        _spearCo = StartCoroutine(Co_SpearRotation(newSpear, targetPos));
+        StartCoroutine(Co_SpearRotation(newSpear, targetPos));
     }
     private IEnumerator Co_SpearRotation(GameObject spear, Vector3 targetPos)
     {
