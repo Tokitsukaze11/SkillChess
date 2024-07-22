@@ -16,7 +16,11 @@ public abstract class SkillDecorator
     }
     public abstract void UseSkill();
     protected abstract void SkillPreview();
-    protected abstract void SkillEffect(MapSquare targetSquare);
+    protected virtual void SkillEffect(MapSquare targetSquare)
+    {
+        PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
+        _curPawn.ResetOutline();
+    }
     protected abstract IEnumerator Co_SkillEffect(MapSquare targetSquare);
     protected List<MapSquare> DefaultSkillPreview(int range)
     {

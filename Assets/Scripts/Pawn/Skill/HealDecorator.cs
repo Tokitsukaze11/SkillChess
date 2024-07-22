@@ -46,7 +46,7 @@ public class HealDecorator : SkillDecorator
     }
     protected override void SkillEffect(MapSquare targetSquare)
     {
-        PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
+        base.SkillEffect(targetSquare);
         
         int tickHeal = _isTickHeal ? 1 << 3 : 1;
         int healType = tickHeal * (1 << (int)_healType);

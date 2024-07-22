@@ -59,8 +59,7 @@ public class AttackDecorator : SkillDecorator
     }
     protected override void SkillEffect(MapSquare targetSquare)
     {
-        PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
-        _curPawn.ResetOutline();
+        base.SkillEffect(targetSquare);
         CoroutineManager.Instance.AsyncStartViaCoroutine(Co_SkillEffect(targetSquare));
     }
     protected override IEnumerator Co_SkillEffect(MapSquare targetSquare)

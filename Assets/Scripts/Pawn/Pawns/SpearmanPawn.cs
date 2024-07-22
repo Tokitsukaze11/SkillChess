@@ -8,6 +8,7 @@ public class SpearmanPawn : Pawn
 {
     [Header("SpearmanPawn")]
     [SerializeField] private GameObject _spear;
+    Coroutine _spearCo;
     
     protected override void Awake()
     {
@@ -25,7 +26,7 @@ public class SpearmanPawn : Pawn
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };*/
-        _skill = new HowitzerDecorator(this, 20, 5, 1);
+        _skill = new HowitzerDecorator(this, 20, 5, 1,StringKeys.ATTACK_SKILL_HIT);
         (_skill as HowitzerDecorator)!.OnSkillEnd += () =>
         {
             OnPawnClicked?.Invoke(false, null);
@@ -36,21 +37,37 @@ public class SpearmanPawn : Pawn
     }
     private void SkillAnim(Vector3 targetPos, Action callback)
     {
+        var newSpear = ObjectManager.Instance.SpawnObject(_spear, null, false);
+        newSpear.transform.position = _spear.transform.position;
+        newSpear.transform.parent = _spear.transform.parent;
+        _spear.SetActive(false);
+        newSpear.SetActive(true);
         _objectTriggerAnimation.OnAnimationTrigger += () =>
         {
-            _spear.SetActive(false);
-            var newSpear = ObjectManager.Instance.SpawnObject(_spear, null, false);
-            newSpear.transform.position = _spear.transform.position;
-            newSpear.transform.rotation = _spear.transform.rotation;
-            newSpear.SetActive(true);
-            newSpear.transform.DOMove(targetPos, 0.5f).OnComplete(() =>
+            newSpear.transform.parent = null;
+            Destroy(newSpear,0.6f);
+            newSpear.transform.DOMove(targetPos, 0.2f).onComplete += () =>
             {
                 callback();
                 newSpear.SetActive(false);
                 _spear.SetActive(true);
-            });
+            };
             _objectTriggerAnimation.ResetTrigger();
         };
         SkillAnimation();
+        _spearCo = StartCoroutine(Co_SpearRotation(newSpear, targetPos));
+    }
+    private IEnumerator Co_SpearRotation(GameObject spear, Vector3 targetPos)
+    {
+        var spearMasterRotate = new Vector3(0, 90, 0);
+
+        while (spear != null && spear.activeSelf)
+        {
+            Vector3 direction = targetPos - spear.transform.position;
+            Quaternion targetRotation = Quaternion.LookRotation(direction) * Quaternion.Euler(spearMasterRotate);
+            spear.transform.rotation = targetRotation;
+            yield return null;
+        }
+        yield break;
     }
 }

@@ -13,12 +13,13 @@ public class HowitzerDecorator : SkillDecorator
     private bool _isIgnorePlayerPawn = false;
     public event Action OnSkillEnd;
     public event Action<Vector3, Action> OnSkillAnimation;
-    public HowitzerDecorator(Pawn pawn, int damage, int attackRange, int areaRange, bool isIgnorePlayerPawn = false)
+    public HowitzerDecorator(Pawn pawn, int damage, int attackRange, int areaRange, string hitParticleID, bool isIgnorePlayerPawn = false)
     {
         _curPawn = pawn;
         _damage = damage;
         _attackRange = attackRange;
         _areaRange = areaRange;
+        _hitParticleID = hitParticleID;
         _isIgnorePlayerPawn = isIgnorePlayerPawn;
     }
     public override void UseSkill()
@@ -37,7 +38,7 @@ public class HowitzerDecorator : SkillDecorator
     }
     protected override void SkillEffect(MapSquare targetSquare)
     {
-        PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
+        base.SkillEffect(targetSquare);
         CoroutineManager.Instance.AsyncStartViaCoroutine(Co_SkillEffect(targetSquare));
     }
     protected override IEnumerator Co_SkillEffect(MapSquare targetSquare)
@@ -53,16 +54,16 @@ public class HowitzerDecorator : SkillDecorator
         SquareCalculator.CheckDiagonalTargetSquares(_areaRange/2, selectedIndex, radial);
         Action OnSkill = () =>
         {
-            targetSquare.CurPawn?.TakeDamage(_damage);
+            targetSquare.CurPawn?.TakeDamage(_damage, _hitParticleID);
 
             if (radial.Count > 0)
             {
                 // 방사 피해는 50% 감소
                 var pawnSquares = radial.Where(x => x.IsAnyPawn() && x.CurPawn != null).ToList();
                 if (_isIgnorePlayerPawn)
-                    pawnSquares.ForEach(x => x.CurPawn.TakeDamage(_damage / 2));
+                    pawnSquares.ForEach(x => x.CurPawn.TakeDamage(_damage / 2, _hitParticleID));
                 else
-                    pawnSquares.Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x => x.CurPawn.TakeDamage(_damage / 2));
+                    pawnSquares.Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x => x.CurPawn.TakeDamage(_damage / 2, _hitParticleID));
             }
             OnSkillEnd?.Invoke();
         };
