@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -28,12 +29,16 @@ public class PlayerPawnController : MonoBehaviour
     }
     public void SpawnPlayerPawn()
     {
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 5; i++)
         {
             //var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, "PlayerPawn", true);
             GameObject obj = null;
-            if(i != 1)
+            /*if(i != 0)
                 obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab[Random.Range(0,playerPawnPrefab.Length)], null, false);
+            else
+                obj = ObjectManager.Instance.SpawnObject(playerKingPrefab, null, false);*/
+            if(i != 4)
+                obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab[i], null, false);
             else
                 obj = ObjectManager.Instance.SpawnObject(playerKingPrefab, null, false);
             //var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, null, false);
@@ -51,6 +56,7 @@ public class PlayerPawnController : MonoBehaviour
             var pawn = obj.GetComponent<Pawn>();
             pawn._isPlayerPawn = true;
             pawn.OnPawnClicked += PawnBehaviorUIPanelActive;
+            pawn.OnCannotAction += ButtonShake;
             curMapSquare.CurPawn = pawn;
             pawn.CurMapSquare = curMapSquare;
             pawn.OnDie += PawnDie;
@@ -116,5 +122,23 @@ public class PlayerPawnController : MonoBehaviour
         skillButton.onClick.RemoveAllListeners();
         skillButton.onClick.AddListener(curPawn.UseSkill);
         skillButton.gameObject.GetComponent<PopupObject>().InitDescription(curPawn._descriptObjects[3]);
+    }
+    private void ButtonShake(int index)
+    {
+        switch(index)
+        {
+            case 0:
+                moveButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 10, 90, 90, false, true);
+                break;
+            case 1:
+                attackButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 10, 90, 90, false, true);
+                break;
+            case 2:
+                throw new System.ArgumentException("Defend is not allowed to shake");
+                break;
+            case 3:
+                skillButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 10, 90, 90, false, true);
+                break;
+        }
     }
 }

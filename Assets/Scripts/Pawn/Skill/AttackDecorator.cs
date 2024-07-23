@@ -65,6 +65,21 @@ public class AttackDecorator : SkillDecorator
     protected override IEnumerator Co_SkillEffect(MapSquare targetSquare)
     {
         yield return new WaitForSeconds(0.5f);
+        if (_attackType == AttackType.AllPawnsInRange)
+        {
+            _curPawn.ObjectTriggerAnimation.OnAnimationTrigger += () =>
+            {
+                targetSquare.CurPawn?.TakeDamage(_damage, _hitParticleID);
+                OnSkillEnd?.Invoke();
+                _curPawn.ObjectTriggerAnimation.ResetTrigger();
+            };
+            Vector3 target = new Vector3(targetSquare.transform.position.x, 0, targetSquare.transform.position.z);
+            _curPawn.transform.rotation = Quaternion.LookRotation(target - _curPawn.gameObject.transform.position);
+            _curPawn.SkillAnimation();
+            yield return new WaitForSeconds(3f);
+            _curPawn.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            yield break;
+        }
         var curSq = SquareCalculator.CurrentMapSquare(_curMapSquareIndex);
         var path = MoveNavigation.FindNavigation(curSq, targetSquare).SkipLast(1).ToList();
         Queue<Vector2> keyPath = new Queue<Vector2>();

@@ -755,7 +755,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isPlayerPawn: 0
   _isCanClick: 0
-  _health: 1000
+  _health: 500
   _curHealth: 0
   _damage: 5
   _defense: 0

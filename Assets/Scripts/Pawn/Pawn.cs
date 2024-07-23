@@ -71,6 +71,8 @@ public abstract class Pawn : MonoBehaviour
     // Events
     public Action<bool,Pawn> OnPawnClicked;
     public Action<Pawn> OnDie;
+    public event Action<int> OnCannotAction;
+    // static variables
     private static readonly int Run = Animator.StringToHash("Run");
     private static readonly int Attack1 = Animator.StringToHash("Attack");
     private static readonly int Skill1 = Animator.StringToHash("Skill");
@@ -117,10 +119,11 @@ public abstract class Pawn : MonoBehaviour
             SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares, _isConsiderObstacle); // 직선 이동
         else
             SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares, _isLessMove); // 거리 우선 이동
-        if(targetSquares.Count == 0)
+        if(targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().Count == 0)
         {
             Debug.Log("No target square");
             // TODO : Show message on UI
+            OnCannotAction?.Invoke(0);
             return;
         }
         targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
@@ -162,7 +165,6 @@ public abstract class Pawn : MonoBehaviour
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };
-        
         if (pathKeys.Count > 0)
         {
             OnPawnClicked?.Invoke(false,null);
@@ -230,10 +232,18 @@ public abstract class Pawn : MonoBehaviour
         var curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
 
         // Check target squares
-        if(_isHowitzerAttack)
-            SquareCalculator.CheckTargetSquaresAsRange(_attackRange, _curMapSquare, targetSquares, true);
+        if (_isHowitzerAttack)
+            //SquareCalculator.CheckTargetSquaresAsRange(_attackRange, _curMapSquare, targetSquares, true);
+            SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
         else
             SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares, true);
+        if(targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().Count == 0)
+        {
+            Debug.Log("No target square");
+            // TODO : Show message on UI
+            OnCannotAction?.Invoke(1);
+            return;
+        }
         targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(GlobalValues.SELECABLE_COLOUR);
@@ -261,11 +271,23 @@ public abstract class Pawn : MonoBehaviour
             _objectTriggerAnimation.ResetTrigger();
         };
         //_animator.SetTrigger(Attack1);
+        /*if(!_isHowitzerAttack)
+            StartCoroutine(Co_Attack(targetSquare));
+        else
+            _animator.SetTrigger(Attack1);*/
         StartCoroutine(Co_Attack(targetSquare));
     }
     private IEnumerator Co_Attack(MapSquare targetSquare)
     {
         yield return new WaitForSeconds(0.5f);
+        if (_isHowitzerAttack)
+        {
+            this.transform.rotation = Quaternion.LookRotation(new Vector3(targetSquare.transform.position.x, 0, targetSquare.transform.position.z) - this.transform.position);
+            _animator.SetTrigger(Attack1);
+            yield return new WaitForSeconds(1.2f);
+            this.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            yield break;
+        }
         var curSq = _curMapSquare;
         var attackPath = MoveNavigation.FindNavigation(curSq, targetSquare);
         var realPath = attackPath.SkipLast(1).ToList();
