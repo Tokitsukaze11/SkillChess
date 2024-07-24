@@ -34,6 +34,7 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected PawnType _pawnType;
     [Tooltip("0:Move,1:Attack,2:Defend,3:Skill")]
     public DescriptObject[] _descriptObjects;
+    public Sprite _skillImage;
     [SerializeField] protected OutlineFx.OutlineFx[] _outlineFx;
     [SerializeField] protected Animator _animator;
     [SerializeField] protected ObjectTriggerAnimation _objectTriggerAnimation;
@@ -121,8 +122,6 @@ public abstract class Pawn : MonoBehaviour
             SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares, _isLessMove); // 거리 우선 이동
         if(targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().Count == 0)
         {
-            Debug.Log("No target square");
-            // TODO : Show message on UI
             OnCannotAction?.Invoke(0);
             return;
         }
@@ -239,8 +238,6 @@ public abstract class Pawn : MonoBehaviour
             SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares, true);
         if(targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().Count == 0)
         {
-            Debug.Log("No target square");
-            // TODO : Show message on UI
             OnCannotAction?.Invoke(1);
             return;
         }
@@ -406,5 +403,9 @@ public abstract class Pawn : MonoBehaviour
     public void ResetOutline()
     {
         _outlineFx.ToList().ForEach(x => x.enabled = false);
+    }
+    public void CannotUseSkill()
+    {
+        OnCannotAction?.Invoke(3);
     }
 }

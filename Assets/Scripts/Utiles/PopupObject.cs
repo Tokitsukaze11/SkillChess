@@ -72,4 +72,12 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         _isPanelLock = false;
         _timeSlider.fillAmount = 0;
     }
+    public void StopFillAnim()
+    {
+        if (_mouseOverCoroutine != null)
+        {
+            StopCoroutine(_mouseOverCoroutine);
+        }
+        _timeSlider.fillAmount = 0;
+    }
 }

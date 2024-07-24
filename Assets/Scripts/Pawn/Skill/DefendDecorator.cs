@@ -29,6 +29,11 @@ public class DefendDecorator : SkillDecorator
         if (isRange)
         {
             var targetSquares = DefaultSkillPreview(_defendRange);
+            if(targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().Count == 0)
+            {
+                _curPawn.CannotUseSkill();
+                return;
+            }
             targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
             {
                 x.SetColor(GlobalValues.SELECABLE_COLOUR);

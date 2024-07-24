@@ -29,7 +29,12 @@ public class HowitzerDecorator : SkillDecorator
     protected override void SkillPreview()
     {
         var targetSquares = DefaultSkillPreview(_attackRange);
-        targetSquares.Where(x => x.IsAnyPawn()).ToList().ForEach(x =>
+        if (targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().Count == 0)
+        {
+            _curPawn.CannotUseSkill();
+            return;
+        }
+        targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(GlobalValues.SELECABLE_COLOUR);
             x.OnClickSquare += SkillEffect;

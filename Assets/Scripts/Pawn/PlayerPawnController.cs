@@ -14,9 +14,14 @@ public class PlayerPawnController : MonoBehaviour
     [Header("Pawn Behavior UI Elements")]
     public GameObject pawnBehaviorUIPanel;
     public Button moveButton;
+    [SerializeField] private Image _moveTimer;
     public Button attackButton;
+    [SerializeField] private Image _attackTimer;
     public Button defendButton;
+    [SerializeField] private Image _defendTimer;
     public Button skillButton;
+    [SerializeField] private Image _skillTimer;
+    public Image _skillIconImage;
     private List<Pawn> _playerPawns = new List<Pawn>();
     public event Action PlayerTickHandler;
     private void Awake()
@@ -122,22 +127,32 @@ public class PlayerPawnController : MonoBehaviour
         skillButton.onClick.RemoveAllListeners();
         skillButton.onClick.AddListener(curPawn.UseSkill);
         skillButton.gameObject.GetComponent<PopupObject>().InitDescription(curPawn._descriptObjects[3]);
+        _skillIconImage.sprite = curPawn._skillImage;
     }
     private void ButtonShake(int index)
     {
         switch(index)
         {
             case 0:
+                moveButton.gameObject.GetComponent<PopupObject>().StopFillAnim();
                 moveButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 10, 90, 90, false, true);
+                _moveTimer.fillAmount = 1;
+                _moveTimer.DOFillAmount(0, 0.5f).SetDelay(1f);
                 break;
             case 1:
+                attackButton.gameObject.GetComponent<PopupObject>().StopFillAnim();
                 attackButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 10, 90, 90, false, true);
+                _attackTimer.fillAmount = 1;
+                _attackTimer.DOFillAmount(0, 0.5f).SetDelay(1f);
                 break;
             case 2:
                 throw new System.ArgumentException("Defend is not allowed to shake");
                 break;
             case 3:
+                skillButton.gameObject.GetComponent<PopupObject>().StopFillAnim();
                 skillButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 10, 90, 90, false, true);
+                _skillTimer.fillAmount = 1;
+                _skillTimer.DOFillAmount(0, 0.5f).SetDelay(1f);
                 break;
         }
     }

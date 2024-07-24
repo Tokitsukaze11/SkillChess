@@ -45,6 +45,11 @@ public class AttackDecorator : SkillDecorator
 
         // Check target squares
         SquareCalculator.CheckTargetSquares(_attackRange, _curMapSquareIndex, targetSquares, false, isConsideringAnyPawn);
+        if (targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().Count == 0)
+        {
+            _curPawn.CannotUseSkill();
+            return;
+        }
         targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(GlobalValues.SELECABLE_COLOUR);

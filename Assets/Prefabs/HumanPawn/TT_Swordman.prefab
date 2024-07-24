@@ -1726,6 +1726,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
   - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
   - {fileID: 11400000, guid: ca7dc394dee528c41a13f81a01cf2d76, type: 2}
+  _skillImage: {fileID: 21300000, guid: cb6bfca0806dabb4b9d84bf9d157b6c0, type: 3}
   _outlineFx: []
   _animator: {fileID: 6300179529570161063}
   _objectTriggerAnimation: {fileID: 9079617222314926775}

@@ -38,6 +38,11 @@ public class HealDecorator : SkillDecorator
     protected override void SkillPreview()
     {
         var targetSquares = DefaultSkillPreview(_healRange);
+        if(targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().Count == 0)
+        {
+            _curPawn.CannotUseSkill();
+            return;
+        }
         targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
             x.SetColor(GlobalValues.SELECABLE_COLOUR);

@@ -3,22 +3,36 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ObstacleSpawner : MonoBehaviour
 {
     [Header("Obstacle")]
     [SerializeField] GameObject[] _obstaclePrefabs;
-    private const int BOX_OBSTACLE = 0;
+    private const int TOWER_A_OBSTACLE = 0;
+    private const int TOWER_B_OBSTACLE = 1;
+    private const int TOWER_C_OBSTACLE = 2;
+    private const int WALL_B_OBSTACLE = 3;
     private void Awake()
     {
-        ObjectManager.Instance.MakePool(_obstaclePrefabs[BOX_OBSTACLE], StringKeys.BOX_OBSTACLE);
+        //ObjectManager.Instance.MakePool(_obstaclePrefabs[BOX_OBSTACLE], StringKeys.BOX_OBSTACLE);
+        ObjectManager.Instance.MakePool(_obstaclePrefabs[TOWER_A_OBSTACLE], StringKeys.TOWER_A_OBSTACLE);
+        ObjectManager.Instance.MakePool(_obstaclePrefabs[TOWER_B_OBSTACLE], StringKeys.TOWER_B_OBSTACLE);
+        ObjectManager.Instance.MakePool(_obstaclePrefabs[TOWER_C_OBSTACLE], StringKeys.TOWER_C_OBSTACLE);
+        ObjectManager.Instance.MakePool(_obstaclePrefabs[WALL_B_OBSTACLE], StringKeys.WALL_B_OBSTACLE);
     }
     private string TypeString(int type)
     {
         switch (type)
         {
-            case BOX_OBSTACLE:
-                return StringKeys.BOX_OBSTACLE;
+            case TOWER_A_OBSTACLE:
+                return StringKeys.TOWER_A_OBSTACLE;
+            case TOWER_B_OBSTACLE:
+                return StringKeys.TOWER_B_OBSTACLE;
+            case TOWER_C_OBSTACLE:
+                return StringKeys.TOWER_C_OBSTACLE;
+            case WALL_B_OBSTACLE:
+                return StringKeys.WALL_B_OBSTACLE;
             default:
                 return null;
         }
@@ -42,7 +56,7 @@ public class ObstacleSpawner : MonoBehaviour
             if (i == 0)
                 continue;
             int index = i * row + 3;
-            ObjectObstacle(index, BOX_OBSTACLE);
+            ObjectObstacle(index, Random.Range(0, _obstaclePrefabs.Length));
         }
     }
     private void VoidObstacle(int index) // 빈 공간
@@ -58,6 +72,7 @@ public class ObstacleSpawner : MonoBehaviour
         var obj = ObjectManager.Instance.SpawnObject(_obstaclePrefabs[type], TypeString(type), true);
         Vector3 targetPos = targetMap.transform.position;
         targetPos.y += 0.5f;
+        // TODO : 장애물의 위치가 각각 다를 수 있음(최대한 프리팹의 위치를 기준으로 잡아야 함)
         obj.transform.position = targetPos;
         obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
         obj.gameObject.SetActive(true);
