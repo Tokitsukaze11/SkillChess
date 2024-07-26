@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyPawnController : MonoBehaviour
 {
+    [SerializeField] private Transform _spawnPoint;
     public GameObject enemyPawnPrefab;
     public GameObject enemyKingPrefab;
     private List<Pawn> _enemyPawns = new List<Pawn>();
@@ -27,7 +28,8 @@ public class EnemyPawnController : MonoBehaviour
             int curIndex = targetCol + targetRow;
             var curKey = SquareCalculator.CurrentKey(curIndex);
             
-            obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
+            //obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
+            obj.transform.position = _spawnPoint.position;
             obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
             obj.gameObject.name = $"EnemyPawn_{i}";
             obj.transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -41,6 +43,7 @@ public class EnemyPawnController : MonoBehaviour
             pawn.CurMapSquare = curMapSquare;
             _enemyPawns.Add(pawn);
             pawn.OnDie += PawnDie;
+            StartCoroutine(pawn.Co_MoveToDest(curMapSquare.transform.position));
         }
     }
     public void DespawnEnemyPawn()

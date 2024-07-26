@@ -4,11 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class PlayerPawnController : MonoBehaviour
 {
+    public Transform _spawnPoint;
     public GameObject[] playerPawnPrefab;
     public GameObject playerKingPrefab;
     [Header("Pawn Behavior UI Elements")]
@@ -54,7 +56,9 @@ public class PlayerPawnController : MonoBehaviour
             var curMapSquare = SquareCalculator.CurrentMapSquare(targetIndex);
             Vector2 curKey = SquareCalculator.CurrentKey(targetIndex);
             
-            obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
+            //obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
+            obj.transform.position = _spawnPoint.position;
+            //obj.gameObject.GetComponent<NavMeshAgent>().destination = new Vector3(curKey.x, 0, curKey.y);
             obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
             obj.gameObject.name = $"PlayerPawn_{i}";
             obj.SetActive(true);
@@ -67,6 +71,7 @@ public class PlayerPawnController : MonoBehaviour
             pawn.OnDie += PawnDie;
             _playerPawns.Add(pawn);
             pawn._isCanClick = true; // TODO : If random player turn, change this
+            StartCoroutine(pawn.Co_MoveToDest(curMapSquare.transform.position));
         }
     }
     public void DespawnPlayerPawn()

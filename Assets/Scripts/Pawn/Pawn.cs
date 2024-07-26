@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering;
 
 public enum PawnType
@@ -38,7 +39,7 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected OutlineFx.OutlineFx[] _outlineFx;
     [SerializeField] protected Animator _animator;
     [SerializeField] protected ObjectTriggerAnimation _objectTriggerAnimation;
-    public ObjectTriggerAnimation ObjectTriggerAnimation => _objectTriggerAnimation;
+    [SerializeField] protected NavMeshAgent _navMeshAgent;
     [Header("UI")]
     [SerializeField] protected Transform _hpBarTransform;
     [SerializeField] protected SpriteRenderer _hpBar;
@@ -69,6 +70,7 @@ public abstract class Pawn : MonoBehaviour
             return _curMapSquare;
         }
     }
+    public ObjectTriggerAnimation ObjectTriggerAnimation => _objectTriggerAnimation;
     // Events
     public Action<bool,Pawn> OnPawnClicked;
     public Action<Pawn> OnDie;
@@ -85,6 +87,27 @@ public abstract class Pawn : MonoBehaviour
         _mainCamera = GameManager.Instance.mainCamera;
         var outLines = GetComponentsInChildren<OutlineFx.OutlineFx>();
         _outlineFx = outLines;
+    }
+    public IEnumerator Co_MoveToDest(Vector3 destination)
+    {
+        _navMeshAgent.SetDestination(destination);
+        yield return new WaitForSeconds(0.5f);
+        _animator.SetBool(Run,true);
+        
+        while (true)
+        {
+            if (_navMeshAgent.remainingDistance <= 0.1f)
+            {
+                _animator.SetBool(Run, false);
+                _navMeshAgent.ResetPath();
+                _navMeshAgent.enabled = false;
+                this.gameObject.transform.position = destination;
+                this.gameObject.transform.rotation = _isPlayerPawn ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+                yield break;
+            }
+            yield return null;
+        }
+        yield break;
     }
     protected void Update()
     {

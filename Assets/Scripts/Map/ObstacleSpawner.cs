@@ -71,9 +71,8 @@ public class ObstacleSpawner : MonoBehaviour
         targetMap.IsObstacle = true;
         var obj = ObjectManager.Instance.SpawnObject(_obstaclePrefabs[type], TypeString(type), true);
         Vector3 targetPos = targetMap.transform.position;
-        targetPos.y += 0.5f;
         // TODO : 장애물의 위치가 각각 다를 수 있음(최대한 프리팹의 위치를 기준으로 잡아야 함)
-        obj.transform.position = targetPos;
+        obj.transform.position += targetPos;
         obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
         obj.gameObject.SetActive(true);
     }

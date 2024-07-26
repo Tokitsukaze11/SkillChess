@@ -695,6 +695,7 @@ GameObject:
   - component: {fileID: 1361905563608749643}
   - component: {fileID: 6335208835414041170}
   - component: {fileID: 8479473785003065803}
+  - component: {fileID: 1778148159403820597}
   m_Layer: 0
   m_Name: TT_King
   m_TagString: Untagged
@@ -772,6 +773,7 @@ MonoBehaviour:
   _outlineFx: []
   _animator: {fileID: 6812401019513414169}
   _objectTriggerAnimation: {fileID: 8479473785003065803}
+  _navMeshAgent: {fileID: 1778148159403820597}
   _hpBarTransform: {fileID: 3422412473885994301}
   _hpBar: {fileID: 2944994541373702241}
   _hpBarRed: {fileID: 3992177818705931663}
@@ -824,6 +826,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 302bb1cd2ef95374388bff1e1691e4bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!195 &1778148159403820597
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4876322783698698173}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &4887114572870174137
 GameObject:
   m_ObjectHideFlags: 0

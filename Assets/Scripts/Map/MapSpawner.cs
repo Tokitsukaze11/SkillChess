@@ -45,8 +45,9 @@ public class MapSpawner : MonoBehaviour
             }
         }
         PawnManager.Instance.SetMapSquareDic(mapSquareDic);
-        PawnManager.Instance.SpawnPawn();
         _obstacleSpawner.SpawnObstacle();
+        NavMeshController.Instance.BakeNavMesh();
+        PawnManager.Instance.SpawnPawn();
         MoveNavigation.InitMapSquare(mapSquareDic);
     }
 }

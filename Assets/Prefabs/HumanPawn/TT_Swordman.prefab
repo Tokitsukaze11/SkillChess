@@ -1653,6 +1653,7 @@ GameObject:
   - component: {fileID: 6756749707382604985}
   - component: {fileID: 4991656425812805586}
   - component: {fileID: 9079617222314926775}
+  - component: {fileID: 4975877685747936959}
   m_Layer: 0
   m_Name: TT_Swordman
   m_TagString: Untagged
@@ -1730,6 +1731,7 @@ MonoBehaviour:
   _outlineFx: []
   _animator: {fileID: 6300179529570161063}
   _objectTriggerAnimation: {fileID: 9079617222314926775}
+  _navMeshAgent: {fileID: 4975877685747936959}
   _hpBarTransform: {fileID: 2695719977612811241}
   _hpBar: {fileID: 1132629808618518840}
   _hpBarRed: {fileID: 8403525808843240520}
@@ -1782,6 +1784,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 302bb1cd2ef95374388bff1e1691e4bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!195 &4975877685747936959
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7780005489763630978}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &8251124721347125985
 GameObject:
   m_ObjectHideFlags: 0
