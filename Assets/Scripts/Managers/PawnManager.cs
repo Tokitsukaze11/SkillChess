@@ -12,6 +12,7 @@ public class PawnManager : Singleton<PawnManager>
     [SerializeField] private PlayerPawnController _playerPawnController;
     [SerializeField] private EnemyPawnController _enemyPawnController;
     public event Action OnPlayerTurn;
+    public event Action OnEnemyTurn;
     private void Awake()
     {
         ObjectManager.Instance.MakePool(_damageTextParticle, StringKeys.DAMAGE);
@@ -34,8 +35,9 @@ public class PawnManager : Singleton<PawnManager>
     public void TurnChange(bool isPlayerTurn)
     {
         if (isPlayerTurn) OnPlayerTurn?.Invoke();
+        else OnEnemyTurn?.Invoke();
         _playerPawnController.TurnChange(isPlayerTurn);
-        //_enemyPawnController.TurnChange(!isPlayerTurn);
+        _enemyPawnController.TurnChange(!isPlayerTurn);
     }
     public void ResetSquaresColor()
     {

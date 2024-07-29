@@ -230,7 +230,8 @@ public abstract class Pawn : MonoBehaviour
             this.transform.DOMove(target, time).onComplete = () =>
             {
                 _animator.SetBool(Run, false);
-                this.transform.rotation = Quaternion.Euler(0, 0, 0);
+                //this.transform.rotation = Quaternion.Euler(0, 0, 0);
+                this.transform.rotation = GameManager.Instance.IsPlayerTurn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
             };
             yield return new WaitForSeconds(time);
         }
@@ -290,11 +291,6 @@ public abstract class Pawn : MonoBehaviour
             GameManager.Instance.TurnEnd();
             _objectTriggerAnimation.ResetTrigger();
         };
-        //_animator.SetTrigger(Attack1);
-        /*if(!_isHowitzerAttack)
-            StartCoroutine(Co_Attack(targetSquare));
-        else
-            _animator.SetTrigger(Attack1);*/
         StartCoroutine(Co_Attack(targetSquare));
     }
     private IEnumerator Co_Attack(MapSquare targetSquare)
@@ -324,7 +320,8 @@ public abstract class Pawn : MonoBehaviour
             StartCoroutine(Co_Move(reversPath, () =>
             {
                 _objectTriggerAnimation.ResetEndTrigger();
-                this.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+                //this.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+                this.transform.rotation = GameManager.Instance.IsPlayerTurn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
             }));
         };
         StartCoroutine(Co_Move(pathKeys, () =>

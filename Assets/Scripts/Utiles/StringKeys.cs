@@ -24,6 +24,7 @@ public static class GlobalValues
     public static int ROW;
     /// 열
     public static int COL;
-    public static Color SELECABLE_COLOUR = Color.yellow;
-    public static Color UNSELECT_COLOUR = Color.red;
+    public static Color SELECABLE_COLOUR = new Color(1f, 0, 0, 50/255f); // Attackable
+    public static Color MOVEABLE_COLOUR = new Color(0, 0, 1f, 50/255f);
+    public static Color UNSELECT_COLOUR = Color.clear;
 }

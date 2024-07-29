@@ -8,6 +8,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
 {
     [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private Material[] _colorMaterials;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
     private bool _isAnyPawn; // 다른 Pawn이 차지하고 있는지 여부
     private bool _isChoosen;
     private bool _isObstacle; // 장애물이 있는지 여부, Pawn 제외
@@ -36,7 +37,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     }
     public void SetColor(Color color, bool isDirect = false)
     {
-        if (color == GlobalValues.SELECABLE_COLOUR)
+        /*if (color == GlobalValues.SELECABLE_COLOUR)
         {
             if (isDirect)
             {
@@ -48,7 +49,18 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
             _meshRenderer.material.DOColor(color, 0.3f).onComplete = () => _meshRenderer.material = _colorMaterials[YELLOW_COLOUR];
         }
         else
-            _meshRenderer.material = _colorMaterials[RED_COLOUR];
+            _meshRenderer.material = _colorMaterials[RED_COLOUR];*/
+        if (color == GlobalValues.SELECABLE_COLOUR)
+        {
+            if(isDirect)
+            {
+                _spriteRenderer.color = GlobalValues.SELECABLE_COLOUR;
+                return;
+            }
+            _spriteRenderer.DOColor(color, 0.3f).onComplete = () => _spriteRenderer.color = GlobalValues.SELECABLE_COLOUR;
+        }
+        else
+            _spriteRenderer.color = GlobalValues.UNSELECT_COLOUR;
         _isChoosen = color == GlobalValues.SELECABLE_COLOUR;
     }
     public void OnMouseDown()
@@ -81,12 +93,11 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     {
         yield return new WaitForSeconds(0.5f);
         float time = 0;
-        var newMat = new Material(_colorMaterials[YELLOW_COLOUR]);
-        _meshRenderer.material = newMat;
         while (true)
         {
             time += Time.deltaTime;
-            _meshRenderer.material.color = Color.Lerp(Color.yellow, Color.red, Mathf.PingPong(time, 1));
+            //_meshRenderer.material.color = Color.Lerp(Color.yellow, Color.red, Mathf.PingPong(time, 1));
+            _spriteRenderer.color = Color.Lerp(GlobalValues.SELECABLE_COLOUR, GlobalValues.UNSELECT_COLOUR, Mathf.PingPong(time, 1));
             yield return null;
         }
         yield break;
