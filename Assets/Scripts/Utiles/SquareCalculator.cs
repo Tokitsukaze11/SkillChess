@@ -13,6 +13,7 @@ public static class SquareCalculator
         {
             _mapSquareDic = value;
         }
+        get => _mapSquareDic;
     }
     #region Check Target Squares
     /// <summary>

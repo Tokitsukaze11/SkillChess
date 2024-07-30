@@ -138,13 +138,10 @@ public static class MoveNavigation
         int endIndex = mapList.IndexOf(end);
         
         Queue<int> path = FindShortestPath(startIndex, endIndex);
-        /*foreach (var index in path)
-        {
-            var mapSquare = mapList[index];
-            mapSquare.SetColor(Color.white);
-        }*/
         if(path.Count == 0)
-            throw new System.Exception("경로를 찾을 수 없습니다.");
+        {
+            return null;
+        }
         Queue<MapSquare> pathMapSquare = new Queue<MapSquare>();
         foreach (var index in path)
         {
@@ -157,7 +154,11 @@ public static class MoveNavigation
         int row = GlobalValues.ROW;
         int col = GlobalValues.COL;
         
-        bool[,] visited = new bool[row, col];
+        bool[][] visited = new bool[row][];
+        for (int index = 0; index < row; index++)
+        {
+            visited[index] = new bool[col];
+        }
         int[,] parent = new int[row, col];
         Queue<int> queue = new Queue<int>();
 
@@ -167,7 +168,7 @@ public static class MoveNavigation
         int endCol = endIndex % col;
 
         queue.Enqueue(startIndex);
-        visited[startRow, startCol] = true;
+        visited[startRow][startCol] = true;
         for (int i = 0; i < row; i++)
             for (int j = 0; j < col; j++)
                 parent[i, j] = -1;
@@ -189,10 +190,10 @@ public static class MoveNavigation
                 int newCol = currentCol + _directions[i, 1];
                 int newIndex = newRow * col + newCol;
 
-                if (IsValid(newRow, newCol) && !visited[newRow, newCol] && !_obstacles[newRow, newCol])
+                if (IsValid(newRow, newCol) && !visited[newRow][newCol] && !_obstacles[newRow, newCol])
                 {
                     queue.Enqueue(newIndex);
-                    visited[newRow, newCol] = true;
+                    visited[newRow][newCol] = true;
                     parent[newRow, newCol] = currentIndex;
                 }
             }

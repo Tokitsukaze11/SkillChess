@@ -17,6 +17,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     private Coroutine _mouseOverCoroutine;
     private const int RED_COLOUR = 0;
     private const int YELLOW_COLOUR = 1;
+    private Color _originColor;
     public Pawn CurPawn
     {
         set
@@ -37,31 +38,17 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     }
     public void SetColor(Color color, bool isDirect = false)
     {
-        /*if (color == GlobalValues.SELECABLE_COLOUR)
+        _isChoosen = color != GlobalValues.UNSELECT_COLOUR;
+        if (color == GlobalValues.UNSELECT_COLOUR)
         {
-            if (isDirect)
-            {
-                _meshRenderer.material = _colorMaterials[YELLOW_COLOUR];
-                return;
-            }
-            var newMat = new Material(_colorMaterials[RED_COLOUR]);
-            _meshRenderer.material = newMat;
-            _meshRenderer.material.DOColor(color, 0.3f).onComplete = () => _meshRenderer.material = _colorMaterials[YELLOW_COLOUR];
-        }
-        else
-            _meshRenderer.material = _colorMaterials[RED_COLOUR];*/
-        if (color == GlobalValues.SELECABLE_COLOUR)
-        {
-            if(isDirect)
-            {
-                _spriteRenderer.color = GlobalValues.SELECABLE_COLOUR;
-                return;
-            }
-            _spriteRenderer.DOColor(color, 0.3f).onComplete = () => _spriteRenderer.color = GlobalValues.SELECABLE_COLOUR;
-        }
-        else
             _spriteRenderer.color = GlobalValues.UNSELECT_COLOUR;
-        _isChoosen = color == GlobalValues.SELECABLE_COLOUR;
+            return;
+        }
+        if (isDirect)
+            _spriteRenderer.color = color;
+        else
+            _spriteRenderer.DOColor(color, 0.3f).onComplete = () => _spriteRenderer.color = color;
+        _originColor = color;
     }
     public void OnMouseDown()
     {
@@ -87,7 +74,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
             return;
         StopCoroutine(_mouseOverCoroutine);
         _mouseOverCoroutine = null;
-        SetColor(GlobalValues.SELECABLE_COLOUR, true);
+        SetColor(_originColor, true);
     }
     private IEnumerator Co_ColourFade()
     {
@@ -97,7 +84,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
         {
             time += Time.deltaTime;
             //_meshRenderer.material.color = Color.Lerp(Color.yellow, Color.red, Mathf.PingPong(time, 1));
-            _spriteRenderer.color = Color.Lerp(GlobalValues.SELECABLE_COLOUR, GlobalValues.UNSELECT_COLOUR, Mathf.PingPong(time, 1));
+            _spriteRenderer.color = Color.Lerp(_originColor, GlobalValues.UNSELECT_COLOUR, Mathf.PingPong(time, 1));
             yield return null;
         }
         yield break;

@@ -45,7 +45,7 @@ public class HealDecorator : SkillDecorator
         }
         targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
         {
-            x.SetColor(GlobalValues.SELECABLE_COLOUR);
+            x.SetColor(GlobalValues.ATTACKABLE_COLOUR);
             x.OnClickSquare += SkillEffect;
         });
     }

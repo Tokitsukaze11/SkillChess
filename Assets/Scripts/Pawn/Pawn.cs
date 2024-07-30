@@ -143,14 +143,15 @@ public abstract class Pawn : MonoBehaviour
             SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares, _isConsiderObstacle); // 직선 이동
         else
             SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares, _isLessMove); // 거리 우선 이동
-        if(targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().Count == 0)
+        targetSquares = targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList();
+        if(targetSquares.Count == 0)
         {
             OnCannotAction?.Invoke(0);
             return;
         }
-        targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList().ForEach(x =>
+        targetSquares.ForEach(x =>
         {
-            x.SetColor(GlobalValues.SELECABLE_COLOUR);
+            x.SetColor(GlobalValues.MOVEABLE_COLOUR);
             x.OnClickSquare += (mapSquare) =>
             {
                 _moveTargetSquare = mapSquare;
@@ -251,7 +252,7 @@ public abstract class Pawn : MonoBehaviour
         PawnManager.Instance.ResetSquaresColor();
 
         // Check now values
-        var targetSquares = new List<MapSquare>();
+        var targetSquares = new List<MapSquare>(); // Real target squares
         var curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
 
         // Check target squares
@@ -260,14 +261,18 @@ public abstract class Pawn : MonoBehaviour
             SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
         else
             SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares, true);
-        if(targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().Count == 0)
+        var rangeSquares = targetSquares.ToList(); // Show range squares
+        targetSquares = targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList();
+        if(targetSquares.Count == 0)
         {
             OnCannotAction?.Invoke(1);
             return;
         }
-        targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle ).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+        rangeSquares = rangeSquares.Except(targetSquares).ToList();
+        rangeSquares.Where(x => !x.IsObstacle).ToList().ForEach(x=>x.SetColor(GlobalValues.ATTACKABLE_COLOUR));
+        targetSquares.ForEach(x =>
         {
-            x.SetColor(GlobalValues.SELECABLE_COLOUR);
+            x.SetColor(GlobalValues.ATTACKABLE_COLOUR);
             x.OnClickSquare += (mapSquare) =>
             {
                 Attack(x.CurPawn, x);

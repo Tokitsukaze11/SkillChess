@@ -42,21 +42,36 @@ public class ObstacleSpawner : MonoBehaviour
         int row = GlobalValues.ROW;
         int col = GlobalValues.COL;
         
-        // 1행의 마지막 열을 제외하고 모두 void 장애물이 있게 임시로 설정.
-        for (int i = 0; i < col; i++)
+        List<int> obstacleList = new List<int>();
+        
+        // 각각 아래 2개행과 위 2개행은 장애물이 없게 설정.
+        // 다른 모든 곳은 장애물을 랜덤으로 생성.
+        // 두 곳 모두 최소 출입구가 2개 이상이며 경로 또한 2개 이상인지 확인해야 함. (최종 목적) => 외나무 다리 방지 (근데 그래도 큰 문제는 없을 듯)
+        // 일단은 BFS로 경로가 존재하는지 확인하도록 만들기.
+        do
         {
-            if (i == col - 1)
-                continue;
-            int index = i * row + 1;
-            VoidObstacle(index);
-        }
-        // 3행의 첫 열을 제외하고 모두 박스 장애물이 있게 임시로 설정.
-        for (int i = 0; i < col; i++)
+            for (int i = 0; i < row*col; i++)
+            {
+                SquareCalculator.CurrentMapSquare(i).IsObstacle = false; // 장애물 초기화
+                int curRow = i % row;
+                if (curRow < 2 || curRow >= row - 2)
+                    continue;
+                int index = i;
+                int rand = Random.Range(0, 100);
+                if(rand < 60) // 확률이 너무 낮으면 무한 반복 됨 (얘도 가끔 그러더라)
+                    continue;
+                SquareCalculator.CurrentMapSquare(index).IsObstacle = true; // 코드 상으로만 장애물 생성
+                obstacleList.Add(index);
+            }
+            MoveNavigation.InitMapSquare(SquareCalculator.MapSquareDic);
+        } while (MoveNavigation.FindNavigation(SquareCalculator.CurrentMapSquare(0), SquareCalculator.CurrentMapSquare(col * row - 1)) == null);
+        foreach (int map in obstacleList) // 실제 장애물 생성
         {
-            if (i == 0)
-                continue;
-            int index = i * row + 3;
-            ObjectObstacle(index, Random.Range(0, _obstaclePrefabs.Length));
+            int randType = Random.Range(0, _obstaclePrefabs.Length + 1);
+            if (randType == _obstaclePrefabs.Length)
+                VoidObstacle(map);
+            else
+                ObjectObstacle(map, randType);
         }
     }
     private void VoidObstacle(int index) // 빈 공간
