@@ -363,10 +363,10 @@ MonoBehaviour:
   _attackRange: 1
   _pawnType: 0
   _descriptObjects:
-  - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
-  - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
-  - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
-  - {fileID: 11400000, guid: ca7dc394dee528c41a13f81a01cf2d76, type: 2}
+  - {fileID: 11400000, guid: 05bb0e75a29861844a974b0cee476371, type: 2}
+  - {fileID: 11400000, guid: 6e05b5e840c8245448526fd691c114fc, type: 2}
+  - {fileID: 11400000, guid: e3173f322141b87458063fbf35a699ce, type: 2}
+  - {fileID: 11400000, guid: d237e566e199fbb4eb019f4b03660b69, type: 2}
   _skillImage: {fileID: 21300000, guid: 3ff5a38afcb6148078c25e1b9e002cac, type: 3}
   _outlineFx: []
   _animator: {fileID: 3978431586854193517}
@@ -1668,7 +1668,7 @@ Transform:
   m_Children:
   - {fileID: 7321319676452235271}
   m_Father: {fileID: 8512138629329784392}
-  m_LocalEulerAnglesHint: {x: -0.2821066, y: 3.0619476, z: 178.58168}
+  m_LocalEulerAnglesHint: {x: -0.6200876, y: 0.07467151, z: 177.7647}
 --- !u!1 &8170391755997414981
 GameObject:
   m_ObjectHideFlags: 0

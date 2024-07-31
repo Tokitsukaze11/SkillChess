@@ -8300,10 +8300,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: TT_HighPriest
       objectReference: {fileID: 0}
-    - target: {fileID: 2150008317777968694, guid: d243b34bf161c1f4a92fc17a648fc463, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7594256768988228470, guid: d243b34bf161c1f4a92fc17a648fc463, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -8343,18 +8339,6 @@ PrefabInstance:
     - target: {fileID: 7594256768988228470, guid: d243b34bf161c1f4a92fc17a648fc463, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8360133005258082175, guid: d243b34bf161c1f4a92fc17a648fc463, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -0.6200876
-      objectReference: {fileID: 0}
-    - target: {fileID: 8360133005258082175, guid: d243b34bf161c1f4a92fc17a648fc463, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0.07467151
-      objectReference: {fileID: 0}
-    - target: {fileID: 8360133005258082175, guid: d243b34bf161c1f4a92fc17a648fc463, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 177.7647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8508,10 +8492,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: TT_Swordman
       objectReference: {fileID: 0}
-    - target: {fileID: 7780005489763630978, guid: d382f80d96763cf49908f338132cea05, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8594,25 +8574,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 188220295597849962, guid: 04ab7aeae6537b8468b41dc6a34d98cd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -4.1291404
-      objectReference: {fileID: 0}
-    - target: {fileID: 188220295597849962, guid: 04ab7aeae6537b8468b41dc6a34d98cd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 2.208451
-      objectReference: {fileID: 0}
-    - target: {fileID: 188220295597849962, guid: 04ab7aeae6537b8468b41dc6a34d98cd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 175.07265
-      objectReference: {fileID: 0}
     - target: {fileID: 5968807666989123402, guid: 04ab7aeae6537b8468b41dc6a34d98cd, type: 3}
       propertyPath: m_Name
       value: TT_Archer
-      objectReference: {fileID: 0}
-    - target: {fileID: 5968807666989123402, guid: 04ab7aeae6537b8468b41dc6a34d98cd, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8983558919961981468, guid: 04ab7aeae6537b8468b41dc6a34d98cd, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9467,10 +9431,6 @@ PrefabInstance:
     - target: {fileID: 6826463673037146894, guid: 1c578181b0c64dd4a8787e2e495d8b2c, type: 3}
       propertyPath: m_Name
       value: TT_Spearman
-      objectReference: {fileID: 0}
-    - target: {fileID: 6826463673037146894, guid: 1c578181b0c64dd4a8787e2e495d8b2c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

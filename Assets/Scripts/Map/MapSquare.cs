@@ -23,13 +23,12 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
         set
         {
             _curPawn = value;
-            _isAnyPawn = _curPawn != null;
         }
         get => _curPawn;
     }
     public bool IsAnyPawn()
     {
-        return _isAnyPawn;
+        return _curPawn != null;
     }
     public bool IsObstacle
     {

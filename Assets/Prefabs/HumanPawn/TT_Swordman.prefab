@@ -1714,19 +1714,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isPlayerPawn: 0
   _isCanClick: 0
-  _health: 100
+  _health: 200
   _curHealth: 0
-  _damage: 10
-  _defense: 2
+  _damage: 20
+  _defense: 10
   _shield: 0
   _movementRange: 2
   _attackRange: 3
   _pawnType: 0
   _descriptObjects:
-  - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
-  - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
-  - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
-  - {fileID: 11400000, guid: ca7dc394dee528c41a13f81a01cf2d76, type: 2}
+  - {fileID: 11400000, guid: b9d04e3ef443ebc4aaeb389378f593b5, type: 2}
+  - {fileID: 11400000, guid: 7e628270cf15b64428283f229607d491, type: 2}
+  - {fileID: 11400000, guid: 9172f134012df87459c963c9fa29bb34, type: 2}
+  - {fileID: 11400000, guid: 81156ab5533a499409886152aadbf59f, type: 2}
   _skillImage: {fileID: 21300000, guid: cb6bfca0806dabb4b9d84bf9d157b6c0, type: 3}
   _outlineFx: []
   _animator: {fileID: 6300179529570161063}

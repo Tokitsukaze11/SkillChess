@@ -14,6 +14,7 @@ public class HealDecorator : SkillDecorator
 {
     private int _healAmount;
     private int _healRange;
+    private int _radiusRange;
     private HealType _healType;
     private int _tickCount;
     private int _curTick = 0;
@@ -21,11 +22,12 @@ public class HealDecorator : SkillDecorator
     private List<MapSquare> _targetSquares = new List<MapSquare>();
     private event Action TickHealHandler;
     public event Action OnSkillEnd;
-    public HealDecorator(Pawn pawn, int healAmount, int healRange, HealType healType, int tickCount = 0)
+    public HealDecorator(Pawn pawn, int healAmount, int healRange, int radiusRange, HealType healType, int tickCount = 0)
     {
         _curPawn = pawn;
         _healAmount = healAmount;
-        _healRange = healRange; 
+        _healRange = healRange;
+        _radiusRange = radiusRange;
         _healType = healType;
         _tickCount = tickCount;
         _curTick = _tickCount;
@@ -38,14 +40,15 @@ public class HealDecorator : SkillDecorator
     protected override void SkillPreview()
     {
         var targetSquares = DefaultSkillPreview(_healRange);
-        if(targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().Count == 0)
+        var realTargets = targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList();
+        if(realTargets.Count == 0)
         {
             _curPawn.CannotUseSkill();
             return;
         }
-        targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+        realTargets.ForEach(x =>
         {
-            x.SetColor(GlobalValues.ATTACKABLE_COLOUR);
+            x.SetColor(GlobalValues.BUFFABLE_COLOUR);
             x.OnClickSquare += SkillEffect;
         });
     }
@@ -93,18 +96,26 @@ public class HealDecorator : SkillDecorator
         yield return new WaitForSeconds(0.5f);
         _curPawn.ObjectTriggerAnimation.OnAnimationTrigger += () =>
         {
-            foreach(var square in mapSquares)
+            var realTargets = mapSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList();
+            // 첫번째 대상은 표기된 힐량
             {
-                if (square.CurPawn == null)
-                    continue;
-                if(!square.CurPawn._isPlayerPawn)
-                    continue;
+                var firstSquare = realTargets.First();
+                var healParticle = ObjectManager.Instance.SpawnParticleViaID(StringKeys.HEAL_PARTICLE);
+                Vector3 healPos = firstSquare.transform.position;
+                healPos += new Vector3(0, 0.2f, 0);
+                healParticle.transform.position = healPos;
+                healParticle.SetActive(true);
+                firstSquare.CurPawn?.Heal(_healAmount);
+            }
+            // 나머지 대상은 표기된 힐량의 절반 (밸런싱)
+            foreach(var square in realTargets.Skip(1))
+            {
                 var healParticle = ObjectManager.Instance.SpawnParticleViaID(StringKeys.HEAL_PARTICLE);
                 Vector3 healPos = square.transform.position;
                 healPos += new Vector3(0, 0.2f, 0);
                 healParticle.transform.position = healPos;
                 healParticle.SetActive(true);
-                square.CurPawn?.Heal(_healAmount);
+                square.CurPawn?.Heal(_healAmount / 2);
             }
             OnSkillEnd?.Invoke();
             _curPawn.ObjectTriggerAnimation.ResetTrigger();
@@ -140,13 +151,17 @@ public class HealDecorator : SkillDecorator
         var selectedIndex = SquareCalculator.CurrentIndex(targetSquare);
         
         // Check target squares
-        // 상하좌우는 _healRange만큼, 대각선은 _healRange/2 만큼 단, 소숫점 이하는 버림
+        // 상하좌우는 _radiusRange, 대각선은 _radiusRange/2 만큼 단, 소숫점 이하는 버림
         var dir = new List<MapSquare>();
-        SquareCalculator.CheckTargetSquares(_healRange, selectedIndex, dir);
+        SquareCalculator.CheckTargetSquares(_radiusRange, selectedIndex, dir);
         var area = new List<MapSquare>();
-        SquareCalculator.CheckDiagonalTargetSquares(_healRange/2, selectedIndex, area);
-        var radial = dir.Concat(area).ToList();
-        radial.Add(targetSquare);
+        SquareCalculator.CheckDiagonalTargetSquares(_radiusRange/2, selectedIndex, area);
+        var radial = new List<MapSquare>
+        {
+            targetSquare
+        };
+        radial = radial.Concat(dir).ToList();
+        radial = radial.Concat(area).ToList();
         CoroutineManager.Instance.AsyncStartViaCoroutine(!isTick ? Co_SkillEffectArea(radial) : Co_SkillEffectNoAnim(radial));
     }
     private void TickHeal(int healType, MapSquare targetSquare)

@@ -50,15 +50,16 @@ public class ObstacleSpawner : MonoBehaviour
         // 일단은 BFS로 경로가 존재하는지 확인하도록 만들기.
         do
         {
+            obstacleList.Clear();
             for (int i = 0; i < row*col; i++)
             {
-                SquareCalculator.CurrentMapSquare(i).IsObstacle = false; // 장애물 초기화
+                int index = i;
+                SquareCalculator.CurrentMapSquare(index).IsObstacle = false; // 장애물 초기화
                 int curRow = i % row;
                 if (curRow < 2 || curRow >= row - 2)
                     continue;
-                int index = i;
                 int rand = Random.Range(0, 100);
-                if(rand < 60) // 확률이 너무 낮으면 무한 반복 됨 (얘도 가끔 그러더라)
+                if(rand < 50) // 확률이 너무 높으면 무한 반복 됨 (얘도 가끔 그러더라)
                     continue;
                 SquareCalculator.CurrentMapSquare(index).IsObstacle = true; // 코드 상으로만 장애물 생성
                 obstacleList.Add(index);

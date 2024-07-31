@@ -29,14 +29,15 @@ public class DefendDecorator : SkillDecorator
         if (isRange)
         {
             var targetSquares = DefaultSkillPreview(_defendRange);
-            if(targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().Count == 0)
+            var realTargets = targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList();
+            if(realTargets.Count == 0)
             {
                 _curPawn.CannotUseSkill();
                 return;
             }
-            targetSquares.Where(x => x.IsAnyPawn()).ToList().Where(x => x.CurPawn._isPlayerPawn).ToList().ForEach(x =>
+            realTargets.ForEach(x =>
             {
-                x.SetColor(GlobalValues.ATTACKABLE_COLOUR);
+                x.SetColor(GlobalValues.BUFFABLE_COLOUR);
                 x.OnClickSquare += SkillEffect;
             });
         }
@@ -45,7 +46,7 @@ public class DefendDecorator : SkillDecorator
             var playerPawns = PawnManager.Instance.GetPawns(true);
             playerPawns.Select(x => x?.CurMapSquare).ToList().ForEach(x =>
             {
-                x.SetColor(GlobalValues.ATTACKABLE_COLOUR);
+                x.SetColor(GlobalValues.BUFFABLE_COLOUR);
                 x.OnClickSquare += SkillEffect;
             });
         }

@@ -759,16 +759,16 @@ MonoBehaviour:
   _health: 500
   _curHealth: 0
   _damage: 5
-  _defense: 0
+  _defense: 10
   _shield: 0
   _movementRange: 1
   _attackRange: 1
   _pawnType: 1
   _descriptObjects:
-  - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
-  - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
-  - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
-  - {fileID: 11400000, guid: ca7dc394dee528c41a13f81a01cf2d76, type: 2}
+  - {fileID: 11400000, guid: 9f1326dd334ac7943a75f1bfc439d693, type: 2}
+  - {fileID: 11400000, guid: 4fbba3d6288875142bffa0140e5c9e8c, type: 2}
+  - {fileID: 11400000, guid: b63755842e29ca04a9db029e24fecebd, type: 2}
+  - {fileID: 11400000, guid: 96d09ead43c43a14ba536898be2b8f74, type: 2}
   _skillImage: {fileID: 21300000, guid: 3f6ba9bcc34c54efa9fbd288e824ca12, type: 3}
   _outlineFx: []
   _animator: {fileID: 6812401019513414169}

@@ -31,7 +31,6 @@ public class AttackDecorator : SkillDecorator
     protected override void SkillPreview()
     {
         AttackPreview();
-        // TODO : UI disable except cancel button
     }
     private void AttackPreview()
     {
@@ -59,7 +58,6 @@ public class AttackDecorator : SkillDecorator
             x.SetColor(GlobalValues.ATTACKABLE_COLOUR);
             x.OnClickSquare += SkillEffect;
         });
-        //_targetSquares.AddRange(targetSquares);
         _targetSquares.Clear();
         foreach(var square in targetSquares)
         {

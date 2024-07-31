@@ -1439,7 +1439,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2526884395796385545
 Transform:
   m_ObjectHideFlags: 0
@@ -1502,10 +1502,10 @@ MonoBehaviour:
   _attackRange: 2
   _pawnType: 0
   _descriptObjects:
-  - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
-  - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
-  - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
-  - {fileID: 11400000, guid: ca7dc394dee528c41a13f81a01cf2d76, type: 2}
+  - {fileID: 11400000, guid: 7dcefc8ab007fba44b34e0ba6c3c6bbf, type: 2}
+  - {fileID: 11400000, guid: 6479608d1a804c54fa24d794de5276a3, type: 2}
+  - {fileID: 11400000, guid: 80fb90f4f29cbe945a7e8f60e3bc5f3f, type: 2}
+  - {fileID: 11400000, guid: e9ae00c1437d39246b4dd6e39c3ce3bb, type: 2}
   _skillImage: {fileID: 21300000, guid: 854a7ef6fa2068c449234947d44a2f3c, type: 3}
   _outlineFx: []
   _animator: {fileID: 8227678868772951974}

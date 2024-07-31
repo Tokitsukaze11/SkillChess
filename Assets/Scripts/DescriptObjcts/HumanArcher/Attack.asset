@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f695e1df5f7fadc448676886079aabaf, type: 3}
+  m_Name: Attack
+  m_EditorClassIdentifier: 
+  description: "<color=orange><link=\"ID_OBSTACLES\">4\uAC70\uB9AC \uB0B4</link></color>\uC758
+    \uC120\uD0DD\uD55C \uC801\uC5D0\uAC8C <color=orange>30</color>\uC758 \uB370\uBBF8\uC9C0\uB85C
+    \uACF5\uACA9\uD569\uB2C8\uB2E4"

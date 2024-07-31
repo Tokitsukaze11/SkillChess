@@ -1138,19 +1138,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _isPlayerPawn: 0
   _isCanClick: 0
-  _health: 200
+  _health: 100
   _curHealth: 0
   _damage: 30
   _defense: 10
   _shield: 0
   _movementRange: 3
-  _attackRange: 5
+  _attackRange: 4
   _pawnType: 0
   _descriptObjects:
-  - {fileID: 11400000, guid: c6951d24821f6d24f9472bca4766ebf8, type: 2}
-  - {fileID: 11400000, guid: c82277c7905d00e41bbe79b359b406e0, type: 2}
-  - {fileID: 11400000, guid: 5e80cf234b6bc99498a2d52eb544728d, type: 2}
-  - {fileID: 11400000, guid: ca7dc394dee528c41a13f81a01cf2d76, type: 2}
+  - {fileID: 11400000, guid: 15f345b0d6d8a354cb68502ee51b9972, type: 2}
+  - {fileID: 11400000, guid: fc5d296b54dbcf74e825c09f03b528ea, type: 2}
+  - {fileID: 11400000, guid: 68f14e2078a00104087bd8c07f2fc8c6, type: 2}
+  - {fileID: 11400000, guid: 5710a81fb3e5109429a45123e155d0fb, type: 2}
   _skillImage: {fileID: 21300000, guid: 783252d07640d47508b22f4d10920b26, type: 3}
   _outlineFx: []
   _animator: {fileID: 6501969072709670902}
@@ -1355,7 +1355,7 @@ Transform:
   m_Children:
   - {fileID: 8315635719237925387}
   m_Father: {fileID: 7755692443863887364}
-  m_LocalEulerAnglesHint: {x: 7.4251933, y: -6.422475, z: 170.07198}
+  m_LocalEulerAnglesHint: {x: -4.1291404, y: 2.208451, z: 175.07265}
 --- !u!1 &6813069718864809259
 GameObject:
   m_ObjectHideFlags: 0
