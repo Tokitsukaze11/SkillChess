@@ -8,21 +8,25 @@ public enum GameState
     Idle,
     Play,
     Pause,
+    End
 }
 public class GameManager : Singleton<GameManager>
 {
+    public Camera mainCamera;
+    public Texture2D[] _cursorTextures;
+    private int _targetFPS = 120;
+    private bool _isEndGame = false;
     private GameState _eGameState = GameState.Idle;
     public GameState GameState => _eGameState;
-    public Camera mainCamera;
+    public int TargetFPS => _targetFPS;
     public event Action OnTurnEnd;
     public Func<bool> IsPlayerTurn;
-    private int _targetFPS = 120;
-    public int TargetFPS => _targetFPS;
     public event Action<GameState> OnGameStateChanged;
-    public Texture2D[] _cursorTextures;
+    public event Action<bool> OnGameEnd;
     public void TurnEnd()
     {
-        OnTurnEnd!.Invoke();
+        if(!_isEndGame)
+            OnTurnEnd!.Invoke();
     }
     private void Awake()
     {
@@ -35,5 +39,11 @@ public class GameManager : Singleton<GameManager>
     {
         _eGameState = gameState;
         OnGameStateChanged?.Invoke(gameState);
+    }
+    public void GameEnd(bool isPlayerWin = false)
+    {
+        _isEndGame = true;
+        GameStateChange(GameState.End);
+        OnGameEnd?.Invoke(isPlayerWin);
     }
 }

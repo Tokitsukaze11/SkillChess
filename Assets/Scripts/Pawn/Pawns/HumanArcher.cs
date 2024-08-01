@@ -16,7 +16,6 @@ public class HumanArcher : Pawn
         _skill = new AttackDecorator(this, 50, 5, AttackType.AllPawnsInRange, _skillParticleID);
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
-            OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };

@@ -9,6 +9,7 @@ public abstract class SkillDecorator
     public Pawn _curPawn;
     protected int _curMapSquareIndex;
     protected string _hitParticleID;
+    public event Action<bool,Pawn> OnSkillUsed;
     public virtual void Initialize(){}
     public void UpdateCurIndex(int index)
     {
@@ -20,6 +21,7 @@ public abstract class SkillDecorator
     {
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         _curPawn.ResetOutline();
+        OnSkillUsed!.Invoke(false, null);
     }
     protected abstract IEnumerator Co_SkillEffect(MapSquare targetSquare);
     protected List<MapSquare> DefaultSkillPreview(int range)

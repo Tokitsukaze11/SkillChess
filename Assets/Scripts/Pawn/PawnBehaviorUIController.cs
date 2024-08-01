@@ -19,6 +19,7 @@ public class PawnBehaviorUIController : MonoBehaviour
     public Button skillButton;
     [SerializeField] private Image _skillTimer;
     public Image _skillIconImage;
+    public RectTransform _buttonsContainer;
     private List<Pawn> _playerPawns;
     private void Start()
     {
@@ -34,9 +35,13 @@ public class PawnBehaviorUIController : MonoBehaviour
             _playerPawns.Where(x => x != curPawn).ToList().ForEach(x => x.UnSelected());
         Action uiAction = () =>
         {
-            pawnBehaviorUIPanel.SetActive(active);
             if(active)
+            {
                 BehaviorButtonHandle(curPawn);
+                pawnBehaviorUIPanel.SetActive(true);
+            }
+            _buttonsContainer.DOAnchorPosY(active ? 0 : -200, 0.5f).SetEase(active ? Ease.OutBack : Ease.InBack)
+                .onComplete += () =>{if(!active) pawnBehaviorUIPanel.SetActive(false);};
         };
         UIManager.Instance.UpdateUI(uiAction);
     }

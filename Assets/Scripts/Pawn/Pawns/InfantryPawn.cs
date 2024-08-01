@@ -16,7 +16,6 @@ public class InfantryPawn : Pawn
         _skill = new AttackDecorator(this,20,5,AttackType.ConsiderOtherPawnTarget, _skillParticleID);
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
-            OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };

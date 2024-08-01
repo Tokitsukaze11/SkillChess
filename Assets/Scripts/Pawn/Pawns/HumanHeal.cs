@@ -16,7 +16,6 @@ public class HumanHeal : Pawn
         _skill = new HealDecorator(this, 20, 5, 2, HealType.Area);
         (_skill as HealDecorator)!.OnSkillEnd += () =>
         {
-            OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };

@@ -43,7 +43,7 @@ public class DefendDecorator : SkillDecorator
         }
         else
         {
-            var playerPawns = PawnManager.Instance.GetPawns(true);
+            var playerPawns = PawnManager.Instance.GetPawns(GameManager.Instance.IsPlayerTurn.Invoke());
             playerPawns.Select(x => x?.CurMapSquare).ToList().ForEach(x =>
             {
                 x.SetColor(GlobalValues.BUFFABLE_COLOUR);

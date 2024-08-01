@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f695e1df5f7fadc448676886079aabaf, type: 3}
   m_Name: Move
   m_EditorClassIdentifier: 
-  description: "<color=orange>2</color>\uAC70\uB9AC\uC758 <color=orange><link=\"ID_STRAIGHT\">\uC9C1\uC120
-    \uBC29\uD5A5</link></color>\uC73C\uB85C \uC774\uB3D9\uD569\uB2C8\uB2E4"
+  description: "<color=orange><link=\"ID_STRAIGHT\">\uC9C1\uC120\uBC29\uD5A5</link></color>\uC73C\uB85C
+    <color=orange><link=\"ID_RANGE_PREFERENCE_LESS\">3\uAC70\uB9AC \uB0B4</link></color>\uC758
+    \uC120\uD0DD\uD55C \uC9C0\uC810\uC73C\uB85C \uC774\uB3D9\uD569\uB2C8\uB2E4."

@@ -16,7 +16,6 @@ public class HumanKing : Pawn
         _skill = new DefendDecorator(this, 10, skillOtherPawn, _skillParticleID);
         (_skill as DefendDecorator)!.OnSkillEnd += () =>
         {
-            OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };

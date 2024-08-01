@@ -88,6 +88,11 @@ public abstract class Pawn : MonoBehaviour
         var outLines = GetComponentsInChildren<OutlineFx.OutlineFx>();
         _outlineFx = outLines;
     }
+    protected void Start()
+    {
+        // TODO : 이벤트가 null이 아닌지 확실히 확인 필요
+        _skill.OnSkillUsed += OnPawnClicked;
+    }
     public IEnumerator Co_MoveToDest(Vector3 destination)
     {
         _navMeshAgent.SetDestination(destination);
@@ -161,9 +166,6 @@ public abstract class Pawn : MonoBehaviour
     }
     protected virtual void Move()
     {
-        if(!_isPlayerPawn)
-            StartCoroutine(Co_EnemyMove());
-        
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
         _outlineFx.ToList().ForEach(x => x.enabled = false);
@@ -291,11 +293,11 @@ public abstract class Pawn : MonoBehaviour
         _objectTriggerAnimation.OnAnimationTrigger += () =>
         {
             targetPawn.TakeDamage(_damage,_attackParticleID);
-            OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
             _objectTriggerAnimation.ResetTrigger();
         };
+        OnPawnClicked?.Invoke(false, null);
         StartCoroutine(Co_Attack(targetSquare));
     }
     private IEnumerator Co_Attack(MapSquare targetSquare)
@@ -338,6 +340,7 @@ public abstract class Pawn : MonoBehaviour
     }
     public virtual void Defend()
     {
+        PawnManager.Instance.ResetSquaresColor();
         _outlineFx.ToList().ForEach(x => x.enabled = false);
         _curDefense = _defense;
         OnPawnClicked?.Invoke(false, null);

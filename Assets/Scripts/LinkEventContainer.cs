@@ -16,6 +16,7 @@ public class LinkEventContainer : MonoBehaviour
         LinkManager.Instance.AttachLinkEvent("ID_RANGE_PREFERENCE", ID_RANGE_PREFERENCE);
         LinkManager.Instance.AttachLinkEvent("ID_HOWITZER", ID_HOWITZER);
         LinkManager.Instance.AttachLinkEvent("ID_TICK", ID_TICK);
+        LinkManager.Instance.AttachLinkEvent("ID_DIAGONAL", ID_DIAGONAL);
     }
     private void CreateAndInitPopup(string description, Vector3 position)
     {
@@ -110,6 +111,16 @@ public class LinkEventContainer : MonoBehaviour
         if (isOn)
         {
             string description = "각 플레이어의 턴이 돌아오는 주기를 의미하며, 주로 시전자의 다음 턴 시작을 기준으로 합니다.\n효과의 지속 시간 등이 이 단위로 측정됩니다.";
+            CreateAndInitPopup(description, position);
+        }
+        else
+            RemovePopup();
+    }
+    private void ID_DIAGONAL(bool isOn, Vector3 position)
+    {
+        if (isOn)
+        {
+            string description = "선택 지점을 중심으로 일정한 거리의 지점을 의미합니다.\n상하좌우의 직선 거리는 설정된 이하의 거리의 칸이 영향 범위입니다.\n대각선의 거리는 설정된 거리의 절반으로 영향을 받습니다.\n단, 소숫점 이하는 버림니다.";
             CreateAndInitPopup(description, position);
         }
         else
