@@ -234,18 +234,11 @@ public abstract class Pawn : MonoBehaviour
             {
                 _animator.SetBool(Run, false);
                 //this.transform.rotation = Quaternion.Euler(0, 0, 0);
-                this.transform.rotation = GameManager.Instance.IsPlayerTurn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+                this.transform.rotation = GameManager.Instance.IsPlayer1Turn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
             };
             yield return new WaitForSeconds(time);
         }
         callback!();
-        yield break;
-    }
-    protected virtual IEnumerator Co_EnemyMove()
-    {
-        yield return new WaitForSeconds(3); // TODO : AI
-        // 임시로 3초 대기 후 턴 종료
-        GameManager.Instance.TurnEnd();
         yield break;
     }
     public virtual void ShowAttackRange()
@@ -283,9 +276,6 @@ public abstract class Pawn : MonoBehaviour
     }
     protected virtual void Attack(Pawn targetPawn, MapSquare targetSquare)
     {
-        if(!_isPlayerPawn)
-            StartCoroutine(Co_EnemyMove());
-        
         PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
         
         _outlineFx.ToList().ForEach(x => x.enabled = false);
@@ -294,7 +284,6 @@ public abstract class Pawn : MonoBehaviour
         {
             targetPawn.TakeDamage(_damage,_attackParticleID);
             _curDefense = 0;
-            GameManager.Instance.TurnEnd();
             _objectTriggerAnimation.ResetTrigger();
         };
         OnPawnClicked?.Invoke(false, null);
@@ -308,7 +297,9 @@ public abstract class Pawn : MonoBehaviour
             this.transform.rotation = Quaternion.LookRotation(new Vector3(targetSquare.transform.position.x, 0, targetSquare.transform.position.z) - this.transform.position);
             _animator.SetTrigger(Attack1);
             yield return new WaitForSeconds(1.2f);
-            this.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            //this.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            this.transform.rotation = GameManager.Instance.IsPlayer1Turn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+            GameManager.Instance.TurnEnd();
             yield break;
         }
         var curSq = _curMapSquare;
@@ -327,8 +318,8 @@ public abstract class Pawn : MonoBehaviour
             StartCoroutine(Co_Move(reversPath, () =>
             {
                 _objectTriggerAnimation.ResetEndTrigger();
-                //this.transform.rotation = Quaternion.LookRotation(Vector3.forward);
-                this.transform.rotation = GameManager.Instance.IsPlayerTurn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+                this.transform.rotation = GameManager.Instance.IsPlayer1Turn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+                GameManager.Instance.TurnEnd();
             }));
         };
         StartCoroutine(Co_Move(pathKeys, () =>

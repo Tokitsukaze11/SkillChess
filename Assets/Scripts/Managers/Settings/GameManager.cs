@@ -20,9 +20,10 @@ public class GameManager : Singleton<GameManager>
     public GameState GameState => _eGameState;
     public int TargetFPS => _targetFPS;
     public event Action OnTurnEnd;
-    public Func<bool> IsPlayerTurn;
-    public event Action<GameState> OnGameStateChanged;
+    public Func<bool> IsPlayer1Turn;
+    private event Action<GameState> OnGameStateChanged;
     public event Action<bool> OnGameEnd;
+    public event Action OnGameRestart;
     public void TurnEnd()
     {
         if(!_isEndGame)
@@ -35,6 +36,14 @@ public class GameManager : Singleton<GameManager>
         _eGameState = GameState.Play; // TODO : Change to GameState.Idle
         CursorController.InitCursor(_cursorTextures);
     }
+    public void AttachGameStateChanged(Action<GameState> action)
+    {
+        OnGameStateChanged += action;
+    }
+    public void DetachGameStateChanged(Action<GameState> action)
+    {
+        OnGameStateChanged -= action;
+    }
     public void GameStateChange(GameState gameState)
     {
         _eGameState = gameState;
@@ -45,5 +54,11 @@ public class GameManager : Singleton<GameManager>
         _isEndGame = true;
         GameStateChange(GameState.End);
         OnGameEnd?.Invoke(isPlayerWin);
+    }
+    public void GameRestart()
+    {
+        _isEndGame = false;
+        GameStateChange(GameState.Play);
+        OnGameRestart?.Invoke();
     }
 }

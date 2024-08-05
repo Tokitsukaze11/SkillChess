@@ -12,7 +12,10 @@ public class NavMeshController : Singleton<NavMeshController>
     }
     public void BakeNavMesh()
     {
-        _navMeshSurface.BuildNavMesh();
+        if(_navMeshSurface.navMeshData == null)
+            _navMeshSurface.BuildNavMesh();
+        else
+            UpdateNavMesh();
     }
     private void UpdateNavMesh()
     {

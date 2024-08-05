@@ -40,10 +40,9 @@ public class ObstacleSpawner : MonoBehaviour
     }
     private void ResetObstacle()
     {
-        foreach(var obstacle in _obstacleList)
-        {
-            ObjectManager.Instance.RemoveObject(obstacle);
-        }
+        if(_obstacleList.Count > 0)
+            foreach(var obstacle in _obstacleList)
+                ObjectManager.Instance.RemoveObject(obstacle);
         _obstacleList.Clear();
     }
     public void SpawnObstacle()
@@ -80,17 +79,16 @@ public class ObstacleSpawner : MonoBehaviour
         {
             int randType = Random.Range(0, _obstaclePrefabs.Length + 1);
             if (randType == _obstaclePrefabs.Length)
-                _obstacleList.Add(VoidObstacle(map));
+                VoidObstacle(map);
             else
                 _obstacleList.Add(ObjectObstacle(map, randType));
         }
     }
-    private GameObject VoidObstacle(int index) // 빈 공간
+    private void VoidObstacle(int index) // 빈 공간
     {
         var targetMap = SquareCalculator.CurrentMapSquare(index);
         targetMap.IsObstacle = true;
         targetMap.gameObject.SetActive(false);
-        return targetMap.gameObject;
     }
     private GameObject ObjectObstacle(int index, int type)
     {

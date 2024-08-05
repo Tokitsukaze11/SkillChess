@@ -8,9 +8,10 @@ using UnityEngine;
 
 public class MapSpawner : MonoBehaviour
 {
-    [Header("Debugging Spawn")]
     public GameObject place;
     public float squareSize = 1.5f;
+    public GameObject _player2HQ;
+    private Vector3 _originPlayer2HQpos;
 
     [ReadOnly] public int row = 8;
     [ReadOnly] public int col = 8;
@@ -22,6 +23,8 @@ public class MapSpawner : MonoBehaviour
     private void Awake()
     {
         ObjectManager.Instance.MakePool(place, StringKeys.MAP_PLACE);
+        _originPlayer2HQpos = _player2HQ.transform.position;
+        GameManager.Instance.OnGameRestart += ResetMapSquares;
     }
     private void Start() // TODO : Will be called by other class
     {
@@ -29,8 +32,10 @@ public class MapSpawner : MonoBehaviour
         GlobalValues.COL = col;
         MakeMapSquares(row, col);
     }
-    public void MakeMapSquares(int row, int col)
+    private void MakeMapSquares(int row, int col)
     {
+        _originPlayer2HQpos.z += (row - 8) * squareSize;
+        _player2HQ.transform.position = _originPlayer2HQpos;
         Dictionary<Vector2,MapSquare> mapSquareDic = new Dictionary<Vector2, MapSquare>();
         for (int i = 0; i < col; i++)
         {
@@ -46,8 +51,7 @@ public class MapSpawner : MonoBehaviour
         }
         PawnManager.Instance.SetMapSquareDic(mapSquareDic);
         _obstacleSpawner.SpawnObstacle();
-        PawnManager.Instance.ResetPawns();
-        NavMeshController.Instance.BakeNavMesh(); // TODO : Pawn들의 위치들을 무시하게 해야함
+        NavMeshController.Instance.BakeNavMesh();
         PawnManager.Instance.SpawnPawn();
     }
     public void ResetMapSquares()
@@ -58,6 +62,7 @@ public class MapSpawner : MonoBehaviour
             ObjectManager.Instance.RemoveObject(mapSquare.gameObject);
         }
         SquareCalculator.MapSquareDic.Clear();
+        PawnManager.Instance.ResetPawns();
         MakeMapSquares(GlobalValues.ROW, GlobalValues.COL);
     }
 }

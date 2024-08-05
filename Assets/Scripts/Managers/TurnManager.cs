@@ -5,16 +5,22 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    private bool _isPlayerTurn = true;
+    private bool _isPlayer1Turn = true;
     private void Awake()
     {
         GameManager.Instance.OnTurnEnd += TurnChange;
-        GameManager.Instance.IsPlayerTurn = () => _isPlayerTurn;
+        GameManager.Instance.IsPlayer1Turn = () => _isPlayer1Turn;
+        GameManager.Instance.OnGameRestart += StartGame;
+    }
+    private void StartGame()
+    {
+        _isPlayer1Turn = true;
+        // TODO : First Turn Event
     }
     private void TurnChange()
     {
-        _isPlayerTurn = !_isPlayerTurn;
-        Action action = _isPlayerTurn ? PlayerTurn : EnemyTurn;
+        _isPlayer1Turn = !_isPlayer1Turn;
+        Action action = _isPlayer1Turn ? PlayerTurn : EnemyTurn;
         action!.Invoke();
     }
     private void PlayerTurn()

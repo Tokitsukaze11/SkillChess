@@ -45,11 +45,4 @@ public class SamplePawn : Pawn
             GameManager.Instance.TurnEnd();
         };*/
     }
-    protected override IEnumerator Co_EnemyMove()
-    {
-        yield return new WaitForSeconds(3); // TODO : AI
-        // 임시로 3초 대기 후 턴 종료
-        GameManager.Instance.TurnEnd();
-        yield break;
-    }
 }

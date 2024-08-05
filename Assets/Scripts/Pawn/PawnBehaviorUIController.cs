@@ -40,8 +40,17 @@ public class PawnBehaviorUIController : MonoBehaviour
                 BehaviorButtonHandle(curPawn);
                 pawnBehaviorUIPanel.SetActive(true);
             }
-            _buttonsContainer.DOAnchorPosY(active ? 0 : -200, 0.5f).SetEase(active ? Ease.OutBack : Ease.InBack)
-                .onComplete += () =>{if(!active) pawnBehaviorUIPanel.SetActive(false);};
+            /*_buttonsContainer.DOAnchorPosY(active ? 0 : -200, 0.5f).SetEase(active ? Ease.OutBack : Ease.InBack)
+                .onComplete += () =>{if(!active) pawnBehaviorUIPanel.SetActive(false);};*/
+            skillButton.gameObject.GetComponent<RectTransform>().DOAnchorPosY(active ? 0 : -200, 0.5f)
+                .SetEase(active ? Ease.OutBack : Ease.InBack).SetDelay(active ? 0 : 0.3f)
+                .onComplete += () => {if(!active) pawnBehaviorUIPanel.SetActive(false);};
+            defendButton.gameObject.GetComponent<RectTransform>().DOAnchorPosY(active ? 0 : -200, 0.5f)
+                .SetEase(active ? Ease.OutBack : Ease.InBack).SetDelay(active ? 0.1f : 0.2f);
+            attackButton.gameObject.GetComponent<RectTransform>().DOAnchorPosY(active ? 0 : -200, 0.5f)
+                .SetEase(active ? Ease.OutBack : Ease.InBack).SetDelay(active ? 0.2f : 0.1f);
+            moveButton.gameObject.GetComponent<RectTransform>().DOAnchorPosY(active ? 0 : -200, 0.5f)
+                .SetEase(active ? Ease.OutBack : Ease.InBack).SetDelay(active ? 0.3f : 0);
         };
         UIManager.Instance.UpdateUI(uiAction);
     }
