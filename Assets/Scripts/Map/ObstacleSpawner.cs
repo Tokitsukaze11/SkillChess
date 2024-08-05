@@ -9,6 +9,7 @@ public class ObstacleSpawner : MonoBehaviour
 {
     [Header("Obstacle")]
     [SerializeField] GameObject[] _obstaclePrefabs;
+    private List<GameObject> _obstacleList = new List<GameObject>();
     private const int TOWER_A_OBSTACLE = 0;
     private const int TOWER_B_OBSTACLE = 1;
     private const int TOWER_C_OBSTACLE = 2;
@@ -37,8 +38,17 @@ public class ObstacleSpawner : MonoBehaviour
                 return null;
         }
     }
+    private void ResetObstacle()
+    {
+        foreach(var obstacle in _obstacleList)
+        {
+            ObjectManager.Instance.RemoveObject(obstacle);
+        }
+        _obstacleList.Clear();
+    }
     public void SpawnObstacle()
     {
+        ResetObstacle();
         int row = GlobalValues.ROW;
         int col = GlobalValues.COL;
         
@@ -70,18 +80,19 @@ public class ObstacleSpawner : MonoBehaviour
         {
             int randType = Random.Range(0, _obstaclePrefabs.Length + 1);
             if (randType == _obstaclePrefabs.Length)
-                VoidObstacle(map);
+                _obstacleList.Add(VoidObstacle(map));
             else
-                ObjectObstacle(map, randType);
+                _obstacleList.Add(ObjectObstacle(map, randType));
         }
     }
-    private void VoidObstacle(int index) // 빈 공간
+    private GameObject VoidObstacle(int index) // 빈 공간
     {
         var targetMap = SquareCalculator.CurrentMapSquare(index);
         targetMap.IsObstacle = true;
         targetMap.gameObject.SetActive(false);
+        return targetMap.gameObject;
     }
-    private void ObjectObstacle(int index, int type)
+    private GameObject ObjectObstacle(int index, int type)
     {
         var targetMap = SquareCalculator.CurrentMapSquare(index);
         targetMap.IsObstacle = true;
@@ -91,5 +102,6 @@ public class ObstacleSpawner : MonoBehaviour
         obj.transform.position += targetPos;
         obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
         obj.gameObject.SetActive(true);
+        return obj;
     }
 }

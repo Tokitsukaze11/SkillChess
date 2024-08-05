@@ -25,13 +25,13 @@ public class MapSpawner : MonoBehaviour
     }
     private void Start() // TODO : Will be called by other class
     {
+        GlobalValues.ROW = row;
+        GlobalValues.COL = col;
         MakeMapSquares(row, col);
     }
     public void MakeMapSquares(int row, int col)
     {
         Dictionary<Vector2,MapSquare> mapSquareDic = new Dictionary<Vector2, MapSquare>();
-        GlobalValues.ROW = row;
-        GlobalValues.COL = col;
         for (int i = 0; i < col; i++)
         {
             for (int j = 0; j < row; j++)
@@ -46,7 +46,18 @@ public class MapSpawner : MonoBehaviour
         }
         PawnManager.Instance.SetMapSquareDic(mapSquareDic);
         _obstacleSpawner.SpawnObstacle();
-        NavMeshController.Instance.BakeNavMesh();
+        PawnManager.Instance.ResetPawns();
+        NavMeshController.Instance.BakeNavMesh(); // TODO : Pawn들의 위치들을 무시하게 해야함
         PawnManager.Instance.SpawnPawn();
+    }
+    public void ResetMapSquares()
+    {
+        var mapSquareDic = SquareCalculator.MapSquareDic;
+        foreach (var mapSquare in mapSquareDic.Values)
+        {
+            ObjectManager.Instance.RemoveObject(mapSquare.gameObject);
+        }
+        SquareCalculator.MapSquareDic.Clear();
+        MakeMapSquares(GlobalValues.ROW, GlobalValues.COL);
     }
 }

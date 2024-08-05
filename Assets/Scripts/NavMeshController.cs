@@ -14,7 +14,7 @@ public class NavMeshController : Singleton<NavMeshController>
     {
         _navMeshSurface.BuildNavMesh();
     }
-    public void UpdateNavMesh()
+    private void UpdateNavMesh()
     {
         _navMeshSurface.UpdateNavMesh(_navMeshSurface.navMeshData);
     }

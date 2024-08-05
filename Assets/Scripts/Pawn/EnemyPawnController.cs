@@ -9,6 +9,16 @@ public class EnemyPawnController : MonoBehaviour
     public GameObject enemyKingPrefab;
     private List<Pawn> _enemyPawns = new List<Pawn>();
     [SerializeField] private PawnBehaviorUIController _pawnBehaviorUIController;
+    public void ResetPawns()
+    {
+        if (_enemyPawns.Count <= 0)
+            return;
+        foreach(var pawn in _enemyPawns)
+        {
+            ObjectManager.Instance.RemoveObject(pawn.gameObject);
+        }
+        _enemyPawns.Clear();
+    }
     public void SpawnEnemyPawn(int count = 0)
     {
         for(int i = 0; i < 3; i++)

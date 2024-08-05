@@ -23,7 +23,12 @@ public class PawnManager : Singleton<PawnManager>
         _mapSquareDic = mapSquareDic;
         SquareCalculator.MapSquareDic = _mapSquareDic;
     }
-    public void SpawnPawn() // TODO : Will maybe get count of pawn
+    public void ResetPawns()
+    {
+        _playerPawnController.ResetPawns();
+        _enemyPawnController.ResetPawns();
+    }
+public void SpawnPawn() // TODO : Will maybe get count of pawn
     {
         _playerPawnController.SpawnPlayerPawn();
         _enemyPawnController.SpawnEnemyPawn();

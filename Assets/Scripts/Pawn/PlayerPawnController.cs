@@ -16,6 +16,16 @@ public class PlayerPawnController : MonoBehaviour
     [SerializeField] private PawnBehaviorUIController _pawnBehaviorUIController;
     private List<Pawn> _playerPawns = new List<Pawn>();
     public event Action PlayerTickHandler;
+    public void ResetPawns()
+    {
+        if (_playerPawns.Count <= 0)
+            return;
+        foreach(var pawn in _playerPawns)
+        {
+            ObjectManager.Instance.RemoveObject(pawn.gameObject);
+        }
+        _playerPawns.Clear();
+    }
     public void SpawnPlayerPawn(int count = 0)
     {
         for(int i = 0; i < 5; i++)

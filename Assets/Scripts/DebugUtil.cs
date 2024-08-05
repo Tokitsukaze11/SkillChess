@@ -16,15 +16,10 @@ public class DebugUtil : MonoBehaviour
         #if !UNITY_EDITOR
         Destroy(this);
         #endif
-        _debugButton.onClick.AddListener(TryKillPawn);
+        _debugButton.onClick.AddListener(DebugFunc);
     }
-    private void TryKillPawn()
+    private void DebugFunc()
     {
-        List<MapSquare> allSquares = new List<MapSquare>();
-        for(int i = 0; i < GlobalValues.ROW * GlobalValues.COL; i++)
-        {
-            allSquares.Add(SquareCalculator.CurrentMapSquare(i));
-        }
-        allSquares.Where(x => x.CurPawn != null).ToList().Where(x => x.CurPawn.PawnType == PawnType.King && !x.CurPawn._isPlayerPawn).ToList().ForEach(x => x.CurPawn.TakeDamage(100));
+        FindObjectOfType<MapSpawner>().ResetMapSquares();
     }
 }
