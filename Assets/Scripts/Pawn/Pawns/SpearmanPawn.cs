@@ -25,7 +25,7 @@ public class SpearmanPawn : Pawn
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };*/
-        _skill = new HowitzerDecorator(this, 20, 5, 1,StringKeys.ATTACK_SKILL_HIT);
+        _skill = new HowitzerDecorator(this, 40, 5, 1,StringKeys.ATTACK_SKILL_HIT);
         (_skill as HowitzerDecorator)!.OnSkillEnd += () =>
         {
             _curDefense = 0;

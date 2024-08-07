@@ -13,7 +13,7 @@ public class HumanArcher : Pawn
         _isLessMove = true;
         _attackParticleID = StringKeys.NORMAL_ATTACK_HIT;
         _skillParticleID = StringKeys.ATTACK_SKILL_HIT;
-        _skill = new AttackDecorator(this, 50, 5, AttackType.AllPawnsInRange, _skillParticleID);
+        _skill = new AttackDecorator(this, 80, 5, AttackType.AllPawnsInRange, _skillParticleID);
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
             _curDefense = 0;

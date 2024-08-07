@@ -13,7 +13,7 @@ public class InfantryPawn : Pawn
         _attackParticleID = StringKeys.NORMAL_ATTACK_HIT;
         _skillParticleID = StringKeys.ATTACK_SKILL_HIT;
         //_skill.UpdateCurIndex(SquareCalculator.CurrentIndex(_curMapSquare));
-        _skill = new AttackDecorator(this,20,5,AttackType.ConsiderOtherPawnTarget, _skillParticleID);
+        _skill = new AttackDecorator(this,50,5,AttackType.ConsiderOtherPawnTarget, _skillParticleID);
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
             _curDefense = 0;

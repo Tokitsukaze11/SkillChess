@@ -80,6 +80,7 @@ public abstract class Pawn : MonoBehaviour
     private static readonly int Attack1 = Animator.StringToHash("Attack");
     private static readonly int Skill1 = Animator.StringToHash("Skill");
     private static readonly int Damage = Animator.StringToHash("Damage");
+    private static readonly int Die1 = Animator.StringToHash("Die");
     protected virtual void Awake()
     {
         _curHealth = _health;
@@ -367,8 +368,11 @@ public abstract class Pawn : MonoBehaviour
     }
     protected virtual void Die()
     {
-        Debug.Log($"{this.gameObject.name} is dead");
-        OnDie?.Invoke(this);
+        _objectTriggerAnimation.OnAnimationTrigger += () =>
+        {
+            OnDie?.Invoke(this);
+        };
+        _animator.SetBool(Die1,true);
     }
     private void UpdateHpBar()
     {
@@ -378,6 +382,8 @@ public abstract class Pawn : MonoBehaviour
         _hpBarShield.transform.localScale = new Vector3(shieldBarX, 1, 1);
         if (_curHealth <= 0)
         {
+            _hpBar.transform.localScale = new Vector3(0, 1, 1);
+            _hpBarRed.transform.DOScaleX(0, 0.5f).SetDelay(0.2f);
             Die();
             return;
         }
