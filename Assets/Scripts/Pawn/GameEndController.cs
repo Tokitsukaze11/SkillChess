@@ -14,6 +14,7 @@ public class GameEndController : MonoBehaviour
     [SerializeField] private Button _endButton;
     [SerializeField] private Button _restartButton;
     [SerializeField] private Image _panelImage;
+    [SerializeField] private GameObject _mapSetPanel;
     private void Awake()
     {
         GameManager.Instance.OnGameEnd += GameEnd;
@@ -28,8 +29,9 @@ public class GameEndController : MonoBehaviour
         _endPanel.SetActive(false);
         _panelImage.color = new Color(118/255f, 118/255f, 118/255f, 0f);
         _winText.rectTransform.localScale = new Vector3(1, 0, 1);
-        _endButton.gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150, -200);
-        _restartButton.gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(150, -200);
+        _endButton.gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(150, -200);
+        _restartButton.gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150, -200);
+        _mapSetPanel.gameObject.GetComponent<RectTransform>().localScale = new Vector3(1, 0, 1);
     }
     private void GameEnd(bool isPlayerWin)
     {
@@ -40,6 +42,7 @@ public class GameEndController : MonoBehaviour
             _winText.rectTransform.DOScaleY(1, 0.3f);
             _restartButton.gameObject.GetComponent<RectTransform>().DOAnchorPosY(0, 0.3f);
             _endButton.gameObject.GetComponent<RectTransform>().DOAnchorPosY(0, 0.3f).SetDelay(0.1f);
+            _mapSetPanel.gameObject.GetComponent<RectTransform>().DOScaleY(1, 0.3f);
         };
     }
     private void RestartGame()
@@ -47,6 +50,7 @@ public class GameEndController : MonoBehaviour
         _winText.rectTransform.DOScaleY(0, 0.3f);
         _restartButton.gameObject.GetComponent<RectTransform>().DOAnchorPosY(-200, 0.3f).SetDelay(0.1f);
         _endButton.gameObject.GetComponent<RectTransform>().DOAnchorPosY(-200, 0.3f);
+        _mapSetPanel.gameObject.GetComponent<RectTransform>().DOScaleY(0, 0.3f);
         _panelImage.DOFade(0, 0.3f).onComplete += () =>
         {
             _endPanel.SetActive(false);

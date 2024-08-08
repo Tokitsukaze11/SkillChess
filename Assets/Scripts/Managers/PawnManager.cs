@@ -28,7 +28,7 @@ public class PawnManager : Singleton<PawnManager>
         _playerPawnController.ResetPawns();
         _enemyPawnController.ResetPawns();
     }
-public void SpawnPawn() // TODO : Will maybe get count of pawn
+    public void SpawnPawn() // TODO : Will maybe get count of pawn
     {
         _playerPawnController.SpawnPlayerPawn();
         _enemyPawnController.SpawnEnemyPawn();

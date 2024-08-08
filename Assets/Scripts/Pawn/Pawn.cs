@@ -207,7 +207,8 @@ public abstract class Pawn : MonoBehaviour
         List<Vector2> pathList = path.ToList();
         // 이동 경로에서 각각의 꼭지점을 찾기.
         Queue<Vector2> vertex = new Queue<Vector2>();
-        var curPath = pathList[0];
+        var thisPos = new Vector2(_curMapSquare.transform.position.x, _curMapSquare.transform.position.z);
+        var curPath = thisPos;
         vertex.Enqueue(curPath);
         for (int i = 0; i < pathList.Count; i++)
         {

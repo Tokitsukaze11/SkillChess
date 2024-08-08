@@ -14,15 +14,16 @@ public class MapViewController : MonoBehaviour
     private KeyCode _leftRotationKey = KeyCode.Q;
     private Transform _cameraTransform;
     
-    private Vector3 defaultPosition;
-    private Quaternion defaultRotation;
+    private Vector3 _defaultPosition;
+    private Quaternion _defaultRotation;
     private void Awake()
     {
         _cameraTransform = _mainCamera.transform;
         UpdateManager.Instance.OnUpdate += KeyCheck;
         
-        defaultPosition = _cameraTransform.position;
-        defaultRotation = _cameraTransform.rotation;
+        _defaultPosition = _cameraTransform.position;
+        _defaultRotation = _cameraTransform.rotation;
+        GameManager.Instance.OnGameRestart += CameraReset;
     }
     private void KeyCheck()
     {
@@ -61,7 +62,15 @@ public class MapViewController : MonoBehaviour
     }
     public void CameraReset()
     {
-        _cameraTransform.position = defaultPosition;
-        _cameraTransform.rotation = defaultRotation;
+        CamPositionSet();
+        _cameraTransform.rotation = _defaultRotation;
+    }
+    private void CamPositionSet()
+    {
+        int col = GlobalValues.COL;
+        
+        var targetX = (col - 8) * (1.5f / 2);
+        var newPos = new Vector3(_defaultPosition.x + targetX, _defaultPosition.y, _defaultPosition.z);
+        _cameraTransform.position = newPos;
     }
 }

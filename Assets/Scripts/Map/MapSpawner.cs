@@ -10,11 +10,13 @@ public class MapSpawner : MonoBehaviour
 {
     public GameObject place;
     public float squareSize = 1.5f;
+    public GameObject _player1HQ;
     public GameObject _player2HQ;
+    private Vector3 _originPlayer1HQpos;
     private Vector3 _originPlayer2HQpos;
 
-    [ReadOnly] public int row = 8;
-    [ReadOnly] public int col = 8;
+    [ReadOnly] private int row = 8;
+    [ReadOnly] private int col = 8;
     
     //private Dictionary<Vector2,MapSquare> _mapSquareDic = new Dictionary<Vector2, MapSquare>();
     
@@ -23,6 +25,7 @@ public class MapSpawner : MonoBehaviour
     private void Awake()
     {
         ObjectManager.Instance.MakePool(place, StringKeys.MAP_PLACE);
+        _originPlayer1HQpos = _player1HQ.transform.position;
         _originPlayer2HQpos = _player2HQ.transform.position;
         GameManager.Instance.OnGameRestart += ResetMapSquares;
     }
@@ -34,8 +37,12 @@ public class MapSpawner : MonoBehaviour
     }
     private void MakeMapSquares(int row, int col)
     {
-        _originPlayer2HQpos.z += (row - 8) * squareSize;
-        _player2HQ.transform.position = _originPlayer2HQpos;
+        var targetX = (col - 8) * (squareSize / 2);
+        var targetZ = (row - 8) * (squareSize / 2);
+        var newPos1 = new Vector3(_originPlayer1HQpos.x + targetX, _originPlayer1HQpos.y, _originPlayer1HQpos.z);
+        var newPos2 = new Vector3(_originPlayer2HQpos.x + targetX, _originPlayer2HQpos.y, _originPlayer2HQpos.z + targetZ);
+        _player1HQ.transform.position = newPos1;
+        _player2HQ.transform.position = newPos2;
         Dictionary<Vector2,MapSquare> mapSquareDic = new Dictionary<Vector2, MapSquare>();
         for (int i = 0; i < col; i++)
         {

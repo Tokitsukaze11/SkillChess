@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 public class PlayerPawnController : MonoBehaviour
 {
-    public Transform _spawnPoint;
+    [SerializeField] private GameObject _spawnPoint;
     public GameObject[] playerPawnPrefab;
     public GameObject playerKingPrefab;
     [SerializeField] private PawnBehaviorUIController _pawnBehaviorUIController;
@@ -28,37 +28,46 @@ public class PlayerPawnController : MonoBehaviour
     }
     public void SpawnPlayerPawn(int count = 0)
     {
-        for(int i = 0; i < 5; i++)
+        int row = GlobalValues.ROW;
+        int col = GlobalValues.COL;
+        
+        // 0과 1행에 각각 홀수 열에 배치(i가 짝수일 때). 킹은 0행의 중앙 즈음에 배치.(대충 col/2에 위치 할 듯)
+
+        for (int nowRow = 0; nowRow < 2; nowRow++)
         {
-            GameObject obj = null;
-            if(i != 4)
-                obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab[i], null, false);
-            else
-                obj = ObjectManager.Instance.SpawnObject(playerKingPrefab, null, false);
-            //var obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab, null, false);
+            for (int i = 0; i < col/2; i++)
+            {
+                GameObject obj = null;
+                
+                if(i == col/2/2 && nowRow == 0)
+                    obj = ObjectManager.Instance.SpawnObject(playerKingPrefab, null, false);
+                else
+                    obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab[Random.Range(0,playerPawnPrefab.Length)], null, false);
+
+                /*int targetColumn = i * 2;
+                int targetRow = nowRow;
+                int targetIndex = targetRow + targetColumn;*/
+                int targetIndex = i * 2 * col + nowRow;
+                var curMapSquare = SquareCalculator.CurrentMapSquare(targetIndex);
+                Vector2 curKey = SquareCalculator.CurrentKey(targetIndex);
             
-            int targetColumn = i*GlobalValues.ROW;
-            int targetRow = 0;
-            int targetIndex = targetRow + targetColumn;
-            var curMapSquare = SquareCalculator.CurrentMapSquare(targetIndex);
-            Vector2 curKey = SquareCalculator.CurrentKey(targetIndex);
-            
-            //obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
-            obj.transform.position = _spawnPoint.position;
-            //obj.gameObject.GetComponent<NavMeshAgent>().destination = new Vector3(curKey.x, 0, curKey.y);
-            obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
-            obj.gameObject.name = $"PlayerPawn_{i}";
-            obj.SetActive(true);
-            var pawn = obj.GetComponent<Pawn>();
-            pawn._isPlayerPawn = true;
-            pawn.OnPawnClicked += _pawnBehaviorUIController.PawnBehaviorUIPanelActive;
-            pawn.OnCannotAction += _pawnBehaviorUIController.ButtonShake;
-            curMapSquare.CurPawn = pawn;
-            pawn.CurMapSquare = curMapSquare;
-            pawn.OnDie += PawnDie;
-            _playerPawns.Add(pawn);
-            pawn._isCanClick = true; // TODO : If random player turn, change this
-            StartCoroutine(pawn.Co_MoveToDest(curMapSquare.transform.position));
+                //obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
+                obj.transform.position = _spawnPoint.transform.position;
+                //obj.gameObject.GetComponent<NavMeshAgent>().destination = new Vector3(curKey.x, 0, curKey.y);
+                obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
+                obj.gameObject.name = $"PlayerPawn_{i}";
+                obj.SetActive(true);
+                var pawn = obj.GetComponent<Pawn>();
+                pawn._isPlayerPawn = true;
+                pawn.OnPawnClicked += _pawnBehaviorUIController.PawnBehaviorUIPanelActive;
+                pawn.OnCannotAction += _pawnBehaviorUIController.ButtonShake;
+                curMapSquare.CurPawn = pawn;
+                pawn.CurMapSquare = curMapSquare;
+                pawn.OnDie += PawnDie;
+                _playerPawns.Add(pawn);
+                pawn._isCanClick = true; // TODO : If random player turn, change this
+                StartCoroutine(pawn.Co_MoveToDest(curMapSquare.transform.position));
+            }
         }
         _pawnBehaviorUIController.UpdatePlayerPawns(_playerPawns);
     }
@@ -85,9 +94,7 @@ public class PlayerPawnController : MonoBehaviour
         _playerPawns.Remove(diedPawn);
         if(diedPawn.PawnType == PawnType.King)
         {
-            Debug.Log("Game Over, Enemy Win");
             GameManager.Instance.GameEnd();
-            // TODO : If pawn is king, game over
         }
         ObjectManager.Instance.RemoveObject(diedPawn.gameObject);
     }
