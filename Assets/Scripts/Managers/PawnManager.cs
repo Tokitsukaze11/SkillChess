@@ -13,6 +13,8 @@ public class PawnManager : Singleton<PawnManager>
     [SerializeField] private EnemyPawnController _enemyPawnController;
     public event Action OnPlayerTurn;
     public event Action OnEnemyTurn;
+    public event Action OnResetPawns;
+    public event Action OnSpawnPawns;
     private void Awake()
     {
         ObjectManager.Instance.MakePool(_damageTextParticle, StringKeys.DAMAGE);
@@ -25,13 +27,15 @@ public class PawnManager : Singleton<PawnManager>
     }
     public void ResetPawns()
     {
-        _playerPawnController.ResetPawns();
-        _enemyPawnController.ResetPawns();
+        /*_playerPawnController.ResetPawns();
+        _enemyPawnController.ResetPawns();*/
+        OnResetPawns?.Invoke();
     }
-    public void SpawnPawn() // TODO : Will maybe get count of pawn
+    public void SpawnPawn()
     {
-        _playerPawnController.SpawnPlayerPawn();
-        _enemyPawnController.SpawnEnemyPawn();
+        /*_playerPawnController.SpawnPlayerPawn();
+        _enemyPawnController.SpawnEnemyPawn();*/
+        OnSpawnPawns?.Invoke();
     }
     public void DespawnPawn()
     {

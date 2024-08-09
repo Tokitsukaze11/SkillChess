@@ -12,8 +12,8 @@ public class MapSpawner : MonoBehaviour
     public float squareSize = 1.5f;
     public GameObject _player1HQ;
     public GameObject _player2HQ;
-    private Vector3 _originPlayer1HQpos;
-    private Vector3 _originPlayer2HQpos;
+    private Vector3 _originPlayer1HQpos = new Vector3(5, -4.6f, -4.8f);
+    private Vector3 _originPlayer2HQpos = new Vector3(5, -4.6f, 15.2f);
 
     [ReadOnly] private int row = 8;
     [ReadOnly] private int col = 8;
@@ -25,8 +25,8 @@ public class MapSpawner : MonoBehaviour
     private void Awake()
     {
         ObjectManager.Instance.MakePool(place, StringKeys.MAP_PLACE);
-        _originPlayer1HQpos = _player1HQ.transform.position;
-        _originPlayer2HQpos = _player2HQ.transform.position;
+         /*_originPlayer1HQpos = _player1HQ.transform.position;
+         _originPlayer2HQpos = _player2HQ.transform.position;*/
         GameManager.Instance.OnGameRestart += ResetMapSquares;
     }
     private void Start() // TODO : Will be called by other class

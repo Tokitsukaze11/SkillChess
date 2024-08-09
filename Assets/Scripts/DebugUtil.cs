@@ -6,6 +6,7 @@ using OutlineFx;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class DebugUtil : MonoBehaviour
 {
@@ -20,6 +21,10 @@ public class DebugUtil : MonoBehaviour
     }
     private void DebugFunc()
     {
+        int randomRow = Random.Range(8, 20);
+        int randomCol = Random.Range(8, 20);
+        GlobalValues.ROW = randomRow;
+        GlobalValues.COL = randomCol;
         FindObjectOfType<MapSpawner>().ResetMapSquares();
     }
 }

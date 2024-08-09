@@ -16,7 +16,12 @@ public class PlayerPawnController : MonoBehaviour
     [SerializeField] private PawnBehaviorUIController _pawnBehaviorUIController;
     private List<Pawn> _playerPawns = new List<Pawn>();
     public event Action PlayerTickHandler;
-    public void ResetPawns()
+    private void Awake()
+    {
+        PawnManager.Instance.OnResetPawns += ResetPawns;
+        PawnManager.Instance.OnSpawnPawns += SpawnPlayerPawn;
+    }
+    private void ResetPawns()
     {
         if (_playerPawns.Count <= 0)
             return;
@@ -26,10 +31,12 @@ public class PlayerPawnController : MonoBehaviour
         }
         _playerPawns.Clear();
     }
-    public void SpawnPlayerPawn(int count = 0)
+    public void SpawnPlayerPawn()
     {
         int row = GlobalValues.ROW;
         int col = GlobalValues.COL;
+        
+        Vector3 spawnPos = _spawnPoint.transform.position;
         
         // 0과 1행에 각각 홀수 열에 배치(i가 짝수일 때). 킹은 0행의 중앙 즈음에 배치.(대충 col/2에 위치 할 듯)
 
@@ -43,18 +50,18 @@ public class PlayerPawnController : MonoBehaviour
                     obj = ObjectManager.Instance.SpawnObject(playerKingPrefab, null, false);
                 else
                     obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab[Random.Range(0,playerPawnPrefab.Length)], null, false);
-
-                /*int targetColumn = i * 2;
-                int targetRow = nowRow;
-                int targetIndex = targetRow + targetColumn;*/
-                int targetIndex = i * 2 * col + nowRow;
+                
+                int curRow = nowRow;
+                int curCol = i * 2;
+                int targetIndex = curCol * row + curRow;
                 var curMapSquare = SquareCalculator.CurrentMapSquare(targetIndex);
                 Vector2 curKey = SquareCalculator.CurrentKey(targetIndex);
             
                 //obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
-                obj.transform.position = _spawnPoint.transform.position;
-                //obj.gameObject.GetComponent<NavMeshAgent>().destination = new Vector3(curKey.x, 0, curKey.y);
+                obj.transform.position = Vector3.zero;
+                obj.transform.position = spawnPos;
                 obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
+                //obj.gameObject.GetComponent<NavMeshAgent>().destination = new Vector3(curKey.x, 0, curKey.y);
                 obj.gameObject.name = $"PlayerPawn_{i}";
                 obj.SetActive(true);
                 var pawn = obj.GetComponent<Pawn>();
