@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HumanKing : Pawn
 {
+    [SerializeField] private AudioClip[] _attackSounds;
     protected override void Awake()
     {
         base.Awake();
@@ -13,6 +14,7 @@ public class HumanKing : Pawn
         _attackParticleID = StringKeys.NORMAL_ATTACK_HIT;
         _skillParticleID = StringKeys.MAGIC_MINE;
         string skillOtherPawn = StringKeys.MAGIC_OTHER;
+        _hitSound = _attackSounds;
         _skill = new DefendDecorator(this, 10, skillOtherPawn, _skillParticleID);
         (_skill as DefendDecorator)!.OnSkillEnd += () =>
         {

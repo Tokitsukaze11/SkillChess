@@ -8,7 +8,7 @@ public class SpearmanPawn : Pawn
 {
     [Header("SpearmanPawn")]
     [SerializeField] private GameObject _spear;
-    
+    [SerializeField] private AudioClip[] _attackSounds;
     protected override void Awake()
     {
         base.Awake();

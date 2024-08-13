@@ -1161,6 +1161,9 @@ MonoBehaviour:
   _hpBarRed: {fileID: 5398678640222917097}
   _hpBarShield: {fileID: 5889045544450171780}
   _sortingGroup: {fileID: 1079548824959104481}
+  _hitSound:
+  - {fileID: 8300000, guid: b6956a7842fc6474ea26f8c4b3e77719, type: 3}
+  - {fileID: 8300000, guid: 2eab3f84962a91d4eac0097a532a68b0, type: 3}
   _attackSound:
   - {fileID: 8300000, guid: b6956a7842fc6474ea26f8c4b3e77719, type: 3}
   - {fileID: 8300000, guid: 2eab3f84962a91d4eac0097a532a68b0, type: 3}

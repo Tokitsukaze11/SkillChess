@@ -300,7 +300,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7594256768988228470
 Transform:
   m_ObjectHideFlags: 0
@@ -377,6 +377,9 @@ MonoBehaviour:
   _hpBarRed: {fileID: 1332393288582167665}
   _hpBarShield: {fileID: 1533472353907411112}
   _sortingGroup: {fileID: 9149828336838602487}
+  _attackSound:
+  - {fileID: 8300000, guid: d83f0e3cdc09ddc4294167857c9c37da, type: 3}
+  - {fileID: 8300000, guid: 983ecbfb126aeb746b6c37b1b95ddbc6, type: 3}
 --- !u!210 &9149828336838602487
 SortingGroup:
   m_ObjectHideFlags: 0

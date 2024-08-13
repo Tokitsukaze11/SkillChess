@@ -10818,10 +10818,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: TT_HighPriest
       objectReference: {fileID: 0}
-    - target: {fileID: 2150008317777968694, guid: d243b34bf161c1f4a92fc17a648fc463, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7594256768988228470, guid: d243b34bf161c1f4a92fc17a648fc463, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -11846,6 +11842,7 @@ MonoBehaviour:
   _hpBarRed: {fileID: 1375253842037558511}
   _hpBarShield: {fileID: 4811720414975389828}
   _sortingGroup: {fileID: 5733916627107527359}
+  _hitSound: []
 --- !u!23 &7590008161358192438
 MeshRenderer:
   m_ObjectHideFlags: 0
