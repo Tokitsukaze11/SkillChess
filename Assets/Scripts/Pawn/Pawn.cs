@@ -6,6 +6,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
+using Random = UnityEngine.Random;
 
 public enum PawnType
 {
@@ -57,6 +58,7 @@ public abstract class Pawn : MonoBehaviour
     private MapSquare _curMapSquare;
     protected SkillDecorator _skill;
     private MapSquare _moveTargetSquare;
+    protected AudioClip[] _hitSound;
     // Properties
     public PawnType PawnType => _pawnType;
     public MapSquare CurMapSquare
@@ -72,8 +74,9 @@ public abstract class Pawn : MonoBehaviour
     }
     public ObjectTriggerAnimation ObjectTriggerAnimation => _objectTriggerAnimation;
     // Events
-    public Action<bool,Pawn> OnPawnClicked;
-    public Action<Pawn> OnDie;
+    public event Action<bool,Pawn> OnPawnClicked;
+    public event Action<Pawn> OnDie;
+    public event Action OnPlayDieSound;
     public event Action<int> OnCannotAction;
     // static variables
     private static readonly int Run = Animator.StringToHash("Run");
@@ -285,6 +288,7 @@ public abstract class Pawn : MonoBehaviour
 
         _objectTriggerAnimation.OnAnimationTrigger += () =>
         {
+            SoundManager.Instance.PlaySfx(_hitSound[Random.Range(0, _hitSound.Length)]);
             targetPawn.TakeDamage(_damage,_attackParticleID);
             _curDefense = 0;
             _objectTriggerAnimation.ResetTrigger();
@@ -375,6 +379,7 @@ public abstract class Pawn : MonoBehaviour
             OnDie?.Invoke(this);
         };
         _animator.SetBool(Die1,true);
+        OnPlayDieSound?.Invoke();
     }
     private void UpdateHpBar()
     {

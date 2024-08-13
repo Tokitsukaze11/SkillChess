@@ -10,6 +10,7 @@ public class EnemyPawnController : MonoBehaviour
     public GameObject enemyKingPrefab;
     private List<Pawn> _enemyPawns = new List<Pawn>();
     [SerializeField] private PawnBehaviorUIController _pawnBehaviorUIController;
+    [SerializeField] private AudioClip[] _pawnDieSounds;
     private void Awake()
     {
         PawnManager.Instance.OnResetPawns += ResetPawns;
@@ -64,6 +65,7 @@ public class EnemyPawnController : MonoBehaviour
                 pawn._sortingGroup.sortingOrder = i; //TODO : 열을 기준으로 정렬
                 pawn.OnPawnClicked += _pawnBehaviorUIController.PawnBehaviorUIPanelActive;
                 pawn.OnCannotAction += _pawnBehaviorUIController.ButtonShake;
+                pawn.OnPlayDieSound += PlayDieSound;
                 var curMapSquare = SquareCalculator.CurrentMapSquare(curIndex);
                 curMapSquare.CurPawn = pawn;
                 pawn.CurMapSquare = curMapSquare;
@@ -104,5 +106,10 @@ public class EnemyPawnController : MonoBehaviour
             GameManager.Instance.GameEnd(true);
         }
         ObjectManager.Instance.RemoveObject(diedPawn.gameObject);
+    }
+    private void PlayDieSound()
+    {
+        var clip = _pawnDieSounds[Random.Range(0, _pawnDieSounds.Length)];
+        SoundManager.Instance.PlaySfx(clip);
     }
 }

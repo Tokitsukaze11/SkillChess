@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HumanHeal : Pawn
 {
+    [SerializeField] private AudioClip[] _attackSound;
     protected override void Awake()
     {
         base.Awake();

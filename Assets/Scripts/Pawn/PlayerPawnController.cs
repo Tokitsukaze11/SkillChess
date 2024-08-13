@@ -13,8 +13,9 @@ public class PlayerPawnController : MonoBehaviour
     [SerializeField] private GameObject _spawnPoint;
     public GameObject[] playerPawnPrefab;
     public GameObject playerKingPrefab;
-    [SerializeField] private PawnBehaviorUIController _pawnBehaviorUIController;
     private List<Pawn> _playerPawns = new List<Pawn>();
+    [SerializeField] private PawnBehaviorUIController _pawnBehaviorUIController;
+    [SerializeField] private AudioClip[] _pawnDieSounds;
     public event Action PlayerTickHandler;
     private void Awake()
     {
@@ -69,6 +70,7 @@ public class PlayerPawnController : MonoBehaviour
                 pawn._isPlayerPawn = true;
                 pawn.OnPawnClicked += _pawnBehaviorUIController.PawnBehaviorUIPanelActive;
                 pawn.OnCannotAction += _pawnBehaviorUIController.ButtonShake;
+                pawn.OnPlayDieSound += PlayDieSound;
                 curMapSquare.CurPawn = pawn;
                 pawn.CurMapSquare = curMapSquare;
                 pawn.OnDie += PawnDie;
@@ -112,5 +114,10 @@ public class PlayerPawnController : MonoBehaviour
             GameManager.Instance.GameEnd();
         }
         ObjectManager.Instance.RemoveObject(diedPawn.gameObject);
+    }
+    private void PlayDieSound()
+    {
+        var clip = _pawnDieSounds[Random.Range(0, _pawnDieSounds.Length)];
+        SoundManager.Instance.PlaySfx(clip);
     }
 }

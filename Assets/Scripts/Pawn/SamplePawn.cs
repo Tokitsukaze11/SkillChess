@@ -18,7 +18,7 @@ public class SamplePawn : Pawn
         _skill = new AttackDecorator(this,20,5,AttackType.ConsiderOtherPawnTarget, null);
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
-            OnPawnClicked?.Invoke(false, null);
+            //OnPawnClicked?.Invoke(false, null);
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };
