@@ -38,12 +38,13 @@ public class MapSpawner : MonoBehaviour
     private void MakeMapSquares(int row, int col)
     {
         var targetX = (col - 8) * (squareSize / 2);
-        var targetZ = (row - 8) * (squareSize / 2);
+        var targetZ = (row - 8) * (squareSize);
         var newPos1 = new Vector3(_originPlayer1HQpos.x + targetX, _originPlayer1HQpos.y, _originPlayer1HQpos.z);
         var newPos2 = new Vector3(_originPlayer2HQpos.x + targetX, _originPlayer2HQpos.y, _originPlayer2HQpos.z + targetZ);
         _player1HQ.transform.position = newPos1;
         _player2HQ.transform.position = newPos2;
         Dictionary<Vector2,MapSquare> mapSquareDic = new Dictionary<Vector2, MapSquare>();
+        //Debug.Log("행 : " + row + " 열 : " + col);
         for (int i = 0; i < col; i++)
         {
             for (int j = 0; j < row; j++)

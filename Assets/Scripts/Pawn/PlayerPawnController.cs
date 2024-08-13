@@ -31,7 +31,7 @@ public class PlayerPawnController : MonoBehaviour
         }
         _playerPawns.Clear();
     }
-    public void SpawnPlayerPawn()
+    private void SpawnPlayerPawn()
     {
         int row = GlobalValues.ROW;
         int col = GlobalValues.COL;
@@ -58,6 +58,7 @@ public class PlayerPawnController : MonoBehaviour
                 Vector2 curKey = SquareCalculator.CurrentKey(targetIndex);
             
                 //obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
+                obj.GetComponent<NavMeshAgent>().enabled = false;
                 obj.transform.position = Vector3.zero;
                 obj.transform.position = spawnPos;
                 obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
@@ -76,7 +77,14 @@ public class PlayerPawnController : MonoBehaviour
                 StartCoroutine(pawn.Co_MoveToDest(curMapSquare.transform.position));
             }
         }
+        StartCoroutine(SetNavMeshAgentEnable());
         _pawnBehaviorUIController.UpdatePlayerPawns(_playerPawns);
+    }
+    private IEnumerator SetNavMeshAgentEnable()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _playerPawns.ForEach(x => x.GetComponent<NavMeshAgent>().enabled = true);
+        yield break;
     }
     public void DespawnPlayerPawn()
     {

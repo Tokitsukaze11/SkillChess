@@ -96,6 +96,7 @@ public abstract class Pawn : MonoBehaviour
     }
     public IEnumerator Co_MoveToDest(Vector3 destination)
     {
+        yield return new WaitForSeconds(0.2f);
         _navMeshAgent.SetDestination(destination);
         yield return new WaitForSeconds(0.5f);
         _animator.SetBool(Run,true);

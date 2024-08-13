@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyPawnController : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class EnemyPawnController : MonoBehaviour
         }
         _enemyPawns.Clear();
     }
-    public void SpawnEnemyPawn()
+    private void SpawnEnemyPawn()
     {
         int row = GlobalValues.ROW;
         int col = GlobalValues.COL;
@@ -50,6 +51,7 @@ public class EnemyPawnController : MonoBehaviour
                 var curKey = SquareCalculator.CurrentKey(curIndex);
             
                 //obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
+                obj.GetComponent<NavMeshAgent>().enabled = false;
                 obj.transform.position = Vector3.zero;
                 obj.transform.position = spawnPos;
                 obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
@@ -67,9 +69,17 @@ public class EnemyPawnController : MonoBehaviour
                 pawn.CurMapSquare = curMapSquare;
                 _enemyPawns.Add(pawn);
                 pawn.OnDie += PawnDie;
+                //obj.GetComponent<NavMeshAgent>().enabled = true;
                 StartCoroutine(pawn.Co_MoveToDest(curMapSquare.transform.position));
             }
         }
+        StartCoroutine(SetNavMeshAgentEnable());
+    }
+    private IEnumerator SetNavMeshAgentEnable()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _enemyPawns.ForEach(x => x.GetComponent<NavMeshAgent>().enabled = true);
+        yield break;
     }
     public void DespawnEnemyPawn()
     {
