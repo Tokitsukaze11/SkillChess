@@ -78,6 +78,7 @@ public abstract class Pawn : MonoBehaviour
     public event Action<Pawn> OnDie;
     public event Action OnPlayDieSound;
     public event Action<int> OnCannotAction;
+    public event Action OnHowitzerAttack;
     // static variables
     private static readonly int Run = Animator.StringToHash("Run");
     private static readonly int Attack1 = Animator.StringToHash("Attack");
@@ -211,7 +212,8 @@ public abstract class Pawn : MonoBehaviour
         List<Vector2> pathList = path.ToList();
         // 이동 경로에서 각각의 꼭지점을 찾기.
         Queue<Vector2> vertex = new Queue<Vector2>();
-        var thisPos = new Vector2(_curMapSquare.transform.position.x, _curMapSquare.transform.position.z);
+        //var thisPos = new Vector2(_curMapSquare.transform.position.x, _curMapSquare.transform.position.z);
+        var thisPos = new Vector2(this.transform.position.x, this.transform.position.z);
         var curPath = thisPos;
         vertex.Enqueue(curPath);
         for (int i = 0; i < pathList.Count; i++)
@@ -301,6 +303,7 @@ public abstract class Pawn : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         if (_isHowitzerAttack)
         {
+            _objectTriggerAnimation.OnAnimationEndTrigger += OnHowitzerAttack;
             this.transform.rotation = Quaternion.LookRotation(new Vector3(targetSquare.transform.position.x, 0, targetSquare.transform.position.z) - this.transform.position);
             _animator.SetTrigger(Attack1);
             yield return new WaitForSeconds(1.2f);

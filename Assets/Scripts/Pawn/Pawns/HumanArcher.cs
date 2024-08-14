@@ -5,6 +5,8 @@ using UnityEngine;
 public class HumanArcher : Pawn
 {
     [SerializeField] private AudioClip[] _attackSound;
+    [SerializeField] private AudioClip[] _shootSound;
+    [SerializeField] private AudioClip[] _pullSound;
     protected override void Awake()
     {
         base.Awake();
@@ -22,5 +24,6 @@ public class HumanArcher : Pawn
             _curDefense = 0;
             GameManager.Instance.TurnEnd();
         };
+        OnHowitzerAttack += () => SoundManager.Instance.PlaySfx(_shootSound[Random.Range(0, _pullSound.Length)]);
     }
 }

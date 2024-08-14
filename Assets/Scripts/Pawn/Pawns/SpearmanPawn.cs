@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SpearmanPawn : Pawn
 {
     [Header("SpearmanPawn")]
     [SerializeField] private GameObject _spear;
     [SerializeField] private AudioClip[] _attackSounds;
+    [SerializeField] private AudioClip[] _skillSounds;
     protected override void Awake()
     {
         base.Awake();
@@ -18,6 +20,7 @@ public class SpearmanPawn : Pawn
         _isHowitzerAttack = false;
         _attackParticleID = StringKeys.NORMAL_ATTACK_HIT;
         _skillParticleID = StringKeys.ATTACK_SKILL_HIT;
+        _hitSound = _attackSounds;
         /*_skill = new AttackDecorator(this,20,5,AttackType.ConsiderOtherPawnTarget, _skillParticleID);
         (_skill as AttackDecorator)!.OnSkillEnd += () =>
         {
@@ -44,6 +47,7 @@ public class SpearmanPawn : Pawn
         {
             newSpear.transform.parent = null;
             Destroy(newSpear,0.6f);
+            SoundManager.Instance.PlaySfx(_skillSounds[Random.Range(0, _skillSounds.Length)]);
             newSpear.transform.DOMove(targetPos, 0.2f).onComplete += () =>
             {
                 callback();

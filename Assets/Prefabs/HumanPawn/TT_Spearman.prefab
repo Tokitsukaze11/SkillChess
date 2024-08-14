@@ -1439,7 +1439,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2526884395796385545
 Transform:
   m_ObjectHideFlags: 0
@@ -1517,6 +1517,13 @@ MonoBehaviour:
   _hpBarShield: {fileID: 3030798428130844916}
   _sortingGroup: {fileID: 8452244390030725205}
   _spear: {fileID: 1520328061363399845}
+  _attackSounds:
+  - {fileID: 8300000, guid: f1d16c724816145cf99f9625fb4baca3, type: 3}
+  - {fileID: 8300000, guid: 559075658831f4ac79f3bcc68e784c59, type: 3}
+  _skillSounds:
+  - {fileID: 8300000, guid: b69bd290b5821ce4b817db4bcae6ead7, type: 3}
+  - {fileID: 8300000, guid: afae75ff88ac509409f9374a4b5fe697, type: 3}
+  - {fileID: 8300000, guid: c759c0ed324d80545b7a30f4b413f526, type: 3}
 --- !u!210 &8452244390030725205
 SortingGroup:
   m_ObjectHideFlags: 0

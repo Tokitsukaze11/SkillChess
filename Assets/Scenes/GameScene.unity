@@ -10737,10 +10737,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: TT_King
       objectReference: {fileID: 0}
-    - target: {fileID: 4876322783698698173, guid: a5cea1277cf26bd4999d7a7e32ce1538, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11011,10 +11007,6 @@ PrefabInstance:
     - target: {fileID: 7780005489763630978, guid: d382f80d96763cf49908f338132cea05, type: 3}
       propertyPath: m_Name
       value: TT_Swordman
-      objectReference: {fileID: 0}
-    - target: {fileID: 7780005489763630978, guid: d382f80d96763cf49908f338132cea05, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11842,7 +11834,6 @@ MonoBehaviour:
   _hpBarRed: {fileID: 1375253842037558511}
   _hpBarShield: {fileID: 4811720414975389828}
   _sortingGroup: {fileID: 5733916627107527359}
-  _hitSound: []
 --- !u!23 &7590008161358192438
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -11994,10 +11985,6 @@ PrefabInstance:
     - target: {fileID: 6826463673037146894, guid: 1c578181b0c64dd4a8787e2e495d8b2c, type: 3}
       propertyPath: m_Name
       value: TT_Spearman
-      objectReference: {fileID: 0}
-    - target: {fileID: 6826463673037146894, guid: 1c578181b0c64dd4a8787e2e495d8b2c, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
