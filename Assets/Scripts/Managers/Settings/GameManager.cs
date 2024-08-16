@@ -33,7 +33,6 @@ public class GameManager : Singleton<GameManager>
     {
         Cursor.lockState = CursorLockMode.Confined;
         Application.targetFrameRate = _targetFPS;
-        _eGameState = GameState.Play; // TODO : Change to GameState.Idle
         CursorController.InitCursor(_cursorTextures);
     }
     public void AttachGameStateChanged(Action<GameState> action)

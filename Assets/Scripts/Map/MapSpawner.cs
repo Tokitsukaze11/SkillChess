@@ -28,15 +28,19 @@ public class MapSpawner : MonoBehaviour
          /*_originPlayer1HQpos = _player1HQ.transform.position;
          _originPlayer2HQpos = _player2HQ.transform.position;*/
         GameManager.Instance.OnGameRestart += ResetMapSquares;
+        EventManager.Instance.OnGameStart += MakeMapSquares;
+        GlobalValues.ROW = row;
+        GlobalValues.COL = col;
     }
     private void Start() // TODO : Will be called by other class
     {
-        GlobalValues.ROW = row;
+        /*GlobalValues.ROW = row;
         GlobalValues.COL = col;
-        MakeMapSquares(row, col);
+        MakeMapSquares(row, col);*/
     }
     private void MakeMapSquares(int row, int col)
     {
+        GameManager.Instance.GameStateChange(GameState.Play);
         var targetX = (col - 8) * (squareSize / 2);
         var targetZ = (row - 8) * (squareSize);
         var newPos1 = new Vector3(_originPlayer1HQpos.x + targetX, _originPlayer1HQpos.y, _originPlayer1HQpos.z);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -319,6 +320,11 @@ public static class SquareCalculator
     {
         //return _mapSquareDic.FirstOrDefault(x => x.Key == CurrentKey(curKeyIndex)).Value;
         return _mapSquareDic.Values.ToList()[curKeyIndex];
+    }
+    [Obsolete("Use CurrentMapSquare(int curKeyIndex) instead. Don't suggest find current map square by key.")]
+    public static MapSquare CurrentMapSquare(Vector2 curKey)
+    {
+        return _mapSquareDic.Keys.ToList().Where(x => Mathf.Approximately(x.x, curKey.x) && Mathf.Approximately(x.y, curKey.y)).Select(x => _mapSquareDic[x]).FirstOrDefault();
     }
     public static Vector2 CurrentKey(MapSquare curMapSquare)
     {

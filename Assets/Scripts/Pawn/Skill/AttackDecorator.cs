@@ -77,14 +77,14 @@ public class AttackDecorator : SkillDecorator
             _curPawn.ObjectTriggerAnimation.OnAnimationTrigger += () =>
             {
                 targetSquare.CurPawn?.TakeDamage(_damage, _hitParticleID);
-                OnSkillEnd?.Invoke();
                 _curPawn.ObjectTriggerAnimation.ResetTrigger();
             };
             Vector3 target = new Vector3(targetSquare.transform.position.x, 0, targetSquare.transform.position.z);
             _curPawn.transform.rotation = Quaternion.LookRotation(target - _curPawn.gameObject.transform.position);
             _curPawn.SkillAnimation();
             yield return new WaitForSeconds(3f);
-            _curPawn.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            _curPawn.transform.rotation = Quaternion.LookRotation(GameManager.Instance.IsPlayer1Turn.Invoke() ? Vector3.forward : Vector3.back);
+            OnSkillEnd?.Invoke();
             yield break;
         }
         var curSq = SquareCalculator.CurrentMapSquare(_curMapSquareIndex);
@@ -100,16 +100,18 @@ public class AttackDecorator : SkillDecorator
         pathKeys.Reverse().ToList().ForEach(x => reversPath.Enqueue(x));
         _curPawn.ObjectTriggerAnimation.OnAnimationEndTrigger += () =>
         {
-            _curPawn.MoveOrder(reversPath, () => // TODO : error
+            _curPawn.CurMapSquare = realPath.Last();
+            _curPawn.MoveOrder(reversPath, () =>
             {
+                _curPawn.CurMapSquare = curSq; // Fix Error but feel FUCK
                 _curPawn.ObjectTriggerAnimation.ResetEndTrigger();
                 _curPawn.transform.rotation = GameManager.Instance.IsPlayer1Turn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+                OnSkillEnd?.Invoke();
             });
         };
         _curPawn.ObjectTriggerAnimation.OnAnimationTrigger += () =>
         {
             targetSquare.CurPawn?.TakeDamage(_damage, _hitParticleID);
-            OnSkillEnd?.Invoke();
             _curPawn.ObjectTriggerAnimation.ResetTrigger();
         };
         _curPawn.MoveOrder(pathKeys, () =>

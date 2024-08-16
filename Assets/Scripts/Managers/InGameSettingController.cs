@@ -18,7 +18,7 @@ public class InGameSettingController : MonoBehaviour
     public RectTransform _camResetDesc;
     public TextMeshProUGUI _camResetDescText;
     public Button _surrenderButton;
-    public Button _settingButton;
+    public Button _goTitleButton;
     
     [Header("Scripts")]
     public MapViewController _mapViewController;
@@ -34,7 +34,7 @@ public class InGameSettingController : MonoBehaviour
     private List<TextMeshProUGUI> _buttonsText = new List<TextMeshProUGUI>();
     private const int CAMERA_RESET_BUTTON = 0;
     private const int SURRENDER_BUTTON = 1;
-    private const int SETTING_BUTTON = 2;
+    private const int TITLE_BUTTON = 2;
     
     private bool _currentPanelActive = false;
     
@@ -46,10 +46,9 @@ public class InGameSettingController : MonoBehaviour
         _onGameStateChange += GameManager.Instance.GameStateChange;
         _buttonsRect.Add(_cameraResetButton.GetComponent<RectTransform>());
         _buttonsRect.Add(_surrenderButton.GetComponent<RectTransform>());
-        _buttonsRect.Add(_settingButton.GetComponent<RectTransform>());
+        _buttonsRect.Add(_goTitleButton.GetComponent<RectTransform>());
         _buttonsText.Add(_cameraResetButton.GetComponentInChildren<TextMeshProUGUI>());
         _buttonsText.Add(_surrenderButton.GetComponentInChildren<TextMeshProUGUI>());
-        _buttonsText.Add(_settingButton.GetComponentInChildren<TextMeshProUGUI>());
     }
     private void Start()
     {
@@ -67,13 +66,12 @@ public class InGameSettingController : MonoBehaviour
         _camResetDesc.sizeDelta = new Vector2(600, 0);
         _buttonsRect[CAMERA_RESET_BUTTON].sizeDelta = new Vector2(300, 0);
         _buttonsRect[SURRENDER_BUTTON].sizeDelta = new Vector2(300, 0);
-        _buttonsRect[SETTING_BUTTON].sizeDelta = new Vector2(300, 0);
+        _buttonsRect[TITLE_BUTTON].sizeDelta = new Vector2(128, 0);
         var curColor = _buttonsText[CAMERA_RESET_BUTTON].color;
         curColor.a = 0;
         _buttonsText[CAMERA_RESET_BUTTON].color = curColor;
         _buttonsText[SURRENDER_BUTTON].color = curColor;
-        _buttonsText[SETTING_BUTTON].color = curColor;
-        _settingButton.onClick.AddListener(() => SettingPanelActive(true));
+        _goTitleButton.onClick.AddListener(GoTitle);
     }
     private void InGameMenuPanelActive(bool isActive)
     {
@@ -86,10 +84,9 @@ public class InGameSettingController : MonoBehaviour
         _panelBackImage.DOColor(isActive ? new Color(255, 255, 255, 0.9f) : new Color(255,255,255,0), 0.5f).onComplete += () => _inGameMenuPanel.SetActive(isActive);
         _buttonsRect[CAMERA_RESET_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
         _buttonsRect[SURRENDER_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
-        _buttonsRect[SETTING_BUTTON].DOSizeDelta(isActive ? new Vector2(300,100) : new Vector2(300,0), 0.5f);
+        _buttonsRect[TITLE_BUTTON].DOSizeDelta(isActive ? new Vector2(128,128) : new Vector2(128,0), 0.5f);
         _buttonsText[CAMERA_RESET_BUTTON].DOFade(isActive ? 1 : 0, 0.3f);
         _buttonsText[SURRENDER_BUTTON].DOFade(isActive ? 1 : 0, 0.3f);
-        _buttonsText[SETTING_BUTTON].DOFade(isActive ? 1 : 0, 0.3f);
     }
     private void MenuUpInGame()
     {
@@ -104,22 +101,9 @@ public class InGameSettingController : MonoBehaviour
         // TODO : Surrender
         Debug.Log("Surrender");
     }
-    private void SettingPanelActive(bool isActive)
+    private void GoTitle()
     {
-        Action UIAction = () =>
-        {
-            if (isActive)
-            {
-                _settingManager.ShowSettingPanelFromOther(true);
-                _inGameMenuPanel.SetActive(false);
-            }
-            else
-            {
-                _inGameMenuPanel.SetActive(true);
-                _settingManager.ShowSettingPanelFromOther(false);
-            }
-        };
-        UIManager.Instance.UpdateUI(UIAction);
+        EventManager.Instance.GoTitle();
     }
     private void CameraResetDescription(bool isOn, string description = null)
     {

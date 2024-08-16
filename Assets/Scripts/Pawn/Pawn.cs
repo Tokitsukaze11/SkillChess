@@ -212,8 +212,8 @@ public abstract class Pawn : MonoBehaviour
         List<Vector2> pathList = path.ToList();
         // 이동 경로에서 각각의 꼭지점을 찾기.
         Queue<Vector2> vertex = new Queue<Vector2>();
-        //var thisPos = new Vector2(_curMapSquare.transform.position.x, _curMapSquare.transform.position.z);
-        var thisPos = new Vector2(this.transform.position.x, this.transform.position.z);
+        var thisPos = new Vector2(_curMapSquare.transform.position.x, _curMapSquare.transform.position.z);
+        //var thisPos = new Vector2(this.transform.position.x, this.transform.position.z); // When in animation, this can make bug
         var curPath = thisPos;
         vertex.Enqueue(curPath);
         for (int i = 0; i < pathList.Count; i++)
@@ -223,6 +223,7 @@ public abstract class Pawn : MonoBehaviour
             float y = key.y;
             if (Mathf.Approximately(x, curPath.x) || Mathf.Approximately(y, curPath.y))
                 continue;
+            //vertex.Enqueue(pathList[Math.Clamp(i - 1,0,pathList.Count)]); // Tried to fix the bug 근데 ㅅㅂ 안해도 됬잖아
             vertex.Enqueue(pathList[i - 1]);
             curPath = pathList[i];
         }
@@ -325,8 +326,10 @@ public abstract class Pawn : MonoBehaviour
         pathKeys.Reverse().ToList().ForEach(x => reversPath.Enqueue(x));
         _objectTriggerAnimation.OnAnimationEndTrigger += () =>
         {
+            _curMapSquare = realPath.Last();
             StartCoroutine(Co_Move(reversPath, () =>
             {
+                _curMapSquare = curSq;
                 _objectTriggerAnimation.ResetEndTrigger();
                 this.transform.rotation = GameManager.Instance.IsPlayer1Turn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
                 GameManager.Instance.TurnEnd();

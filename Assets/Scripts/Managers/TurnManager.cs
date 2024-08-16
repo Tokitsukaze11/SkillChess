@@ -17,15 +17,16 @@ public class TurnManager : MonoBehaviour
         GameManager.Instance.IsPlayer1Turn = () => _isPlayer1Turn;
         GameManager.Instance.OnGameRestart += StartGame;
         _turnTextRect = _turnText.gameObject.GetComponent<RectTransform>();
+        EventManager.Instance.OnGameStart += (row, col) => StartGame();
     }
     private void Start()
     {
-        StartGame();
+        //StartGame();
     }
     private void StartGame()
     {
         _isPlayer1Turn = true;
-        StartCoroutine(Co_TurnChange(true));
+        StartCoroutine(Co_TurnChange(true, 5));
     }
     private void TurnChange()
     {
@@ -43,8 +44,9 @@ public class TurnManager : MonoBehaviour
         PawnManager.Instance.TurnChange(false);
         StartCoroutine(Co_TurnChange(false));
     }
-    private IEnumerator Co_TurnChange(bool isPlayer1)
+    private IEnumerator Co_TurnChange(bool isPlayer1, int delay = 0)
     {
+        yield return new WaitForSeconds(delay);
         _turnText.gameObject.SetActive(true);
         _turnText.text = isPlayer1 ? "Player1 턴" : "Player2 턴";
         _turnTextRect.DOAnchorPosX(0, 0.3f).SetEase(Ease.OutQuint);

@@ -6,21 +6,37 @@ using UnityEngine.UI;
 
 public class MapSetController : MonoBehaviour
 {
-    [SerializeField] private Button _colUpButton;
-    [SerializeField] private Button _colDownButton;
-    [SerializeField] private Button _rowUpButton;
-    [SerializeField] private Button _rowDownButton;
-    [SerializeField] private TextMeshProUGUI _matrixText;
+    [SerializeField] private Button[] _colUpButton;
+    [SerializeField] private Button[] _colDownButton;
+    [SerializeField] private Button[] _rowUpButton;
+    [SerializeField] private Button[] _rowDownButton;
+    [SerializeField] private TextMeshProUGUI[] _matrixText;
 
     private const int MAX_SIZE = 20;
     private const int MIN_SIZE = 8;
 
     private void Awake()
     {
-        _colUpButton.onClick.AddListener(ColUp);
+        /*_colUpButton.onClick.AddListener(ColUp);
         _colDownButton.onClick.AddListener(ColDown);
         _rowUpButton.onClick.AddListener(RowUp);
-        _rowDownButton.onClick.AddListener(RowDown);
+        _rowDownButton.onClick.AddListener(RowDown);*/
+        foreach (var button in _colUpButton)
+        {
+            button.onClick.AddListener(ColUp);
+        }
+        foreach (var button in _colDownButton)
+        {
+            button.onClick.AddListener(ColDown);
+        }
+        foreach (var button in _rowUpButton)
+        {
+            button.onClick.AddListener(RowUp);
+        }
+        foreach (var button in _rowDownButton)
+        {
+            button.onClick.AddListener(RowDown);
+        }
     }
     private void ColUp()
     {
@@ -60,6 +76,14 @@ public class MapSetController : MonoBehaviour
     }
     private void UpdateUI()
     {
-        _matrixText.text = $"<color=red>{GlobalValues.COL}</color> X <color=red>{GlobalValues.ROW}</color>";
+        //_matrixText.text = $"<color=red>{GlobalValues.COL}</color> X <color=red>{GlobalValues.ROW}</color>";
+        /*foreach (var text in _matrixText)
+        {
+            text.text = $"<color=red>{GlobalValues.COL}</color> X <color=red>{GlobalValues.ROW}</color>";
+        }*/
+        if(GameManager.Instance.GameState == GameState.End)
+            _matrixText[1].text = $"<color=red>{GlobalValues.COL}</color> X <color=red>{GlobalValues.ROW}</color>";
+        else
+            _matrixText[0].text = $"<color=red>{GlobalValues.COL}</color> X <color=red>{GlobalValues.ROW}</color>";
     }
 }
