@@ -103,6 +103,7 @@ public class InGameSettingController : MonoBehaviour
     }
     private void GoTitle()
     {
+        InGameMenuPanelActive(false);
         EventManager.Instance.GoTitle();
     }
     private void CameraResetDescription(bool isOn, string description = null)

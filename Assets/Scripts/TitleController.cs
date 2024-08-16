@@ -20,6 +20,14 @@ public class TitleController : MonoBehaviour
         _exitButton.onClick.AddListener(ExitGame);
         EventManager.Instance.OnTitle += () => TitleChange(true);
     }
+    private void Start()
+    {
+        Initialize();
+    }
+    private void Initialize()
+    {
+        // TODO : Init UI
+    }
     private void StartGame()
     {
         TitleChange(false);
