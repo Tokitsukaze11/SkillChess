@@ -31,6 +31,10 @@ public class ObjectManager : Singleton<ObjectManager>
     {
         return isPooling ? _objectPool.CreateObject(obj, objectCode) : Instantiate(obj);
     }
+    /// <summary>
+    /// Remove object either pooling object but you don't know object code or not pooling object
+    /// </summary>
+    /// <param name="obj">Object to remove</param>
     public void RemoveObject(GameObject obj)
     {
         bool isPooling = _objectPool.IsPoolingObject(obj);
@@ -43,6 +47,12 @@ public class ObjectManager : Singleton<ObjectManager>
             Destroy(obj);
         }
     }
+    /// <summary>
+    /// Remove object just pooling object that you know object code
+    /// </summary>
+    /// <param name="obj">Object to remove</param>
+    /// <param name="objectCode">Object code</param>
+    /// <param name="isPooling">Is pooling object?</param>
     public void RemoveObject(GameObject obj, string objectCode, bool isPooling = true)
     {
         if(isPooling)

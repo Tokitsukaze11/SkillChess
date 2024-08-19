@@ -98,8 +98,8 @@ public class InGameSettingController : MonoBehaviour
     }
     private void Surrender()
     {
-        // TODO : Surrender
-        Debug.Log("Surrender");
+        InGameMenuPanelActive(false);
+        GameManager.Instance.GameEnd(GameManager.Instance.IsPlayer1Turn());
     }
     private void GoTitle()
     {

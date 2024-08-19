@@ -60,8 +60,15 @@ public class ObjectPool : MonoBehaviour
     }
     public void TryRemoveObject(GameObject obj)
     {
-        
         var targetKey = _objectPooling.FirstOrDefault(x => x.Value.Contains(obj)).Key;
-        RemoveObject(obj, targetKey);
+        if (targetKey != null)
+        {
+            RemoveObject(obj, targetKey);
+        }
+        else
+        {
+            Debug.LogWarning("The key is disappeared in the dictionary. Anyway, we destroy the object.");
+            Destroy(obj);
+        }
     }
 }

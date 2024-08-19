@@ -26,7 +26,14 @@ public class TitleController : MonoBehaviour
     }
     private void Initialize()
     {
-        // TODO : Init UI
+        _titlePanel.SetActive(true);
+        var originColor = _titleBG.color;
+        originColor.a = 1;
+        _titleBG.color = originColor;
+        _titleText.transform.localScale = Vector3.one;
+        _mapSetPanel.transform.localScale = Vector3.one;
+        _startButton.transform.localScale = Vector3.one;
+        _exitButton.transform.localScale = Vector3.one;
     }
     private void StartGame()
     {
@@ -35,7 +42,7 @@ public class TitleController : MonoBehaviour
     }
     private void ExitGame()
     {
-        Application.Quit();
+        GameManager.Instance.CloseGame();
     }
     private void TitleChange(bool isOn)
     {

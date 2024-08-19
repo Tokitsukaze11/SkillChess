@@ -20,7 +20,7 @@ public class GameEndController : MonoBehaviour
         GameManager.Instance.OnGameEnd += GameEnd;
         _endButton.onClick.AddListener(() =>
         {
-            Debug.Log("게임 종료");
+            GameManager.Instance.CloseGame();
         });
         _restartButton.onClick.AddListener(RestartGame);
     }

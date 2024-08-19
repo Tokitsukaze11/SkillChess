@@ -10,6 +10,7 @@ public class ObstacleSpawner : MonoBehaviour
     [Header("Obstacle")]
     [SerializeField] GameObject[] _obstaclePrefabs;
     private List<GameObject> _obstacleList = new List<GameObject>();
+    //private List<Tuple<string,GameObject>> _obstacleList2 = new List<Tuple<string, GameObject>>();
     private const int TOWER_A_OBSTACLE = 0;
     private const int TOWER_B_OBSTACLE = 1;
     private const int TOWER_C_OBSTACLE = 2;

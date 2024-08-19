@@ -24,8 +24,9 @@ public static class GlobalValues
     public static int ROW;
     /// 열
     public static int COL;
-    public static Color ATTACKABLE_COLOUR = new Color(1f, 0, 0, 50/255f); // Attackable
+    public static Color ATTACKABLE_COLOUR = new Color(1f, 0, 0, 50/255f);
     public static Color MOVEABLE_COLOUR = new Color(0f, 229/255f, 255/255f, 0.6f);
     public static Color BUFFABLE_COLOUR = new Color(174/255f, 245/255f, 189/255f, 0.6f);
     public static Color UNSELECT_COLOUR = Color.clear;
+    public static Color NAVIGATION_COLOUR = new Color(0, 1, 0, 0.6f);
 }

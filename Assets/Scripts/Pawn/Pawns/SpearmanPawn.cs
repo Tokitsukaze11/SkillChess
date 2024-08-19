@@ -38,6 +38,7 @@ public class SpearmanPawn : Pawn
     }
     private void SkillAnim(Vector3 targetPos, Action callback)
     {
+        this.transform.rotation = Quaternion.LookRotation(targetPos - this.transform.position);
         var newSpear = ObjectManager.Instance.SpawnObject(_spear, null, false);
         newSpear.transform.position = _spear.transform.position;
         newSpear.transform.parent = _spear.transform.parent;
@@ -56,6 +57,13 @@ public class SpearmanPawn : Pawn
             };
             _objectTriggerAnimation.ResetTrigger();
         };
+        /*_objectTriggerAnimation.OnAnimationEndTrigger += () =>
+        {
+            bool isPlayer1Turn = GameManager.Instance.IsPlayer1Turn.Invoke();
+            this.transform.rotation = !isPlayer1Turn ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, -180, 0);
+            //_objectTriggerAnimation.ResetEndTrigger();
+            //Debug.Break();
+        };*/
         SkillAnimation();
         StartCoroutine(Co_SpearRotation(newSpear, targetPos));
     }
@@ -70,6 +78,9 @@ public class SpearmanPawn : Pawn
             spear.transform.rotation = targetRotation;
             yield return null;
         }
+        yield return new WaitForSeconds(0.2f);
+        bool isPlayer1Turn = GameManager.Instance.IsPlayer1Turn.Invoke();
+        this.transform.rotation = !isPlayer1Turn ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, -180, 0);
         yield break;
     }
 }

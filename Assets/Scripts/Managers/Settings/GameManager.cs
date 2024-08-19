@@ -35,6 +35,14 @@ public class GameManager : Singleton<GameManager>
         Application.targetFrameRate = _targetFPS;
         CursorController.InitCursor(_cursorTextures);
     }
+    public void CloseGame()
+    {
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #elif UNITY_STANDALONE || UNITY_ANDROID || UNITY_IOS
+        Application.Quit();
+        #endif
+    }
     public void AttachGameStateChanged(Action<GameState> action)
     {
         OnGameStateChanged += action;

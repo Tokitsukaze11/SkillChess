@@ -29,14 +29,9 @@ public class MapSpawner : MonoBehaviour
          _originPlayer2HQpos = _player2HQ.transform.position;*/
         GameManager.Instance.OnGameRestart += ResetMapSquares;
         EventManager.Instance.OnGameStart += MakeMapSquares;
+        EventManager.Instance.OnTitle += ClearMapSquares;
         GlobalValues.ROW = row;
         GlobalValues.COL = col;
-    }
-    private void Start() // TODO : Will be called by other class
-    {
-        /*GlobalValues.ROW = row;
-        GlobalValues.COL = col;
-        MakeMapSquares(row, col);*/
     }
     private void MakeMapSquares(int row, int col)
     {
@@ -68,6 +63,18 @@ public class MapSpawner : MonoBehaviour
     }
     public void ResetMapSquares()
     {
+        /*var mapSquareDic = SquareCalculator.MapSquareDic;
+        foreach (var mapSquare in mapSquareDic.Values)
+        {
+            ObjectManager.Instance.RemoveObject(mapSquare.gameObject);
+        }
+        SquareCalculator.MapSquareDic.Clear();
+        PawnManager.Instance.ResetPawns();*/
+        ClearMapSquares();
+        MakeMapSquares(GlobalValues.ROW, GlobalValues.COL);
+    }
+    private void ClearMapSquares()
+    {
         var mapSquareDic = SquareCalculator.MapSquareDic;
         foreach (var mapSquare in mapSquareDic.Values)
         {
@@ -75,6 +82,5 @@ public class MapSpawner : MonoBehaviour
         }
         SquareCalculator.MapSquareDic.Clear();
         PawnManager.Instance.ResetPawns();
-        MakeMapSquares(GlobalValues.ROW, GlobalValues.COL);
     }
 }

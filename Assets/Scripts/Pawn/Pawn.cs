@@ -414,7 +414,6 @@ public abstract class Pawn : MonoBehaviour
                 _hpBarRed.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
             };
         }
-        
         /*_hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
         _hpBarRed.transform.DOScaleX((float)_curHealth / _health, 0.5f).SetDelay(1f);*/
     }
