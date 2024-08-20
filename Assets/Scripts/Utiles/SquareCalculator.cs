@@ -165,7 +165,8 @@ public static class SquareCalculator
                     break;
 
                 int newKeyIndex = newRow + newCol * row;
-                CheckDirection(newKeyIndex, newRow, newCol, keys, targetSquares);
+                //CheckDirection(newKeyIndex, newRow, newCol, keys, targetSquares);
+                CheckDirection(newKeyIndex, 0, row * col - 1, keys, targetSquares);
                 
                 if(CheckBool(isConsideringObstacles, false, targetSquares))
                     break;

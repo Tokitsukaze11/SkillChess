@@ -15,8 +15,6 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
     public event Action<MapSquare> OnClickSquare;
     private Pawn _curPawn;
     private Coroutine _mouseOverCoroutine;
-    private const int RED_COLOUR = 0;
-    private const int YELLOW_COLOUR = 1;
     private Color _originColor;
     public Pawn CurPawn
     {
@@ -26,6 +24,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
         }
         get => _curPawn;
     }
+    public Obstacle Obstacle { get; set; }
     public bool IsAnyPawn()
     {
         return _curPawn != null;

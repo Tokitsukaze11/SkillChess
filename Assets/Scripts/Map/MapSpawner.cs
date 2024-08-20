@@ -53,7 +53,8 @@ public class MapSpawner : MonoBehaviour
                 obj.transform.position = new Vector3(spawnPoint.x, 0, spawnPoint.y);
                 obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
                 obj.gameObject.name = $"Place_{i}_{j}";
-                mapSquareDic.Add(spawnPoint, obj.GetComponent<MapSquare>());
+                var mapSquare = obj.GetComponent<MapSquare>();
+                mapSquareDic.Add(spawnPoint, mapSquare);
             }
         }
         PawnManager.Instance.SetMapSquareDic(mapSquareDic);

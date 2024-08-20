@@ -101,6 +101,7 @@ public class ObstacleSpawner : MonoBehaviour
         obj.transform.position += targetPos;
         obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
         obj.gameObject.SetActive(true);
+        targetMap.Obstacle = obj.GetComponent<Obstacle>();
         return obj;
     }
 }

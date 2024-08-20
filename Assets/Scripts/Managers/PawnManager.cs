@@ -15,6 +15,7 @@ public class PawnManager : Singleton<PawnManager>
     public event Action OnEnemyTurn;
     public event Action OnResetPawns;
     public event Action OnSpawnPawns;
+    public event Action OnTurnChange;
     private void Awake()
     {
         ObjectManager.Instance.MakePool(_damageTextParticle, StringKeys.DAMAGE);
@@ -47,6 +48,7 @@ public class PawnManager : Singleton<PawnManager>
         else OnEnemyTurn?.Invoke();
         _playerPawnController.TurnChange(isPlayerTurn);
         _enemyPawnController.TurnChange(!isPlayerTurn);
+        OnTurnChange?.Invoke();
     }
     public void ResetSquaresColor()
     {
