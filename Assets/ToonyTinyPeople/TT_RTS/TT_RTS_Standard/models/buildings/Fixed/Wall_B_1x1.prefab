@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6837044471053102720}
   - component: {fileID: 3912343238829144146}
   - component: {fileID: -8623389636683419150}
+  - component: {fileID: -2542810737142124595}
   m_Layer: 0
   m_Name: Wall_B_1x1
   m_TagString: Untagged
@@ -119,3 +120,24 @@ MonoBehaviour:
   _materials:
   - {fileID: 2100000, guid: ee90f878377271b4fbbf915249f24476, type: 2}
   - {fileID: 2100000, guid: b79d372235f17c44d816feae2db3e840, type: 2}
+--- !u!65 &-2542810737142124595
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917284316462808646}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.162695, y: 2.2132254, z: 4.6630697}
+  m_Center: {x: 0, y: 0.009983423, z: 2.3315349}

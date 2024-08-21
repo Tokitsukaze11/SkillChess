@@ -21,6 +21,7 @@ public class MapSpawner : MonoBehaviour
     //private Dictionary<Vector2,MapSquare> _mapSquareDic = new Dictionary<Vector2, MapSquare>();
     
     [SerializeField] private ObstacleSpawner _obstacleSpawner;
+    [SerializeField] private ObstacleController _obstacleController;
     
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class MapSpawner : MonoBehaviour
         GameManager.Instance.OnGameRestart += ResetMapSquares;
         EventManager.Instance.OnGameStart += MakeMapSquares;
         EventManager.Instance.OnTitle += ClearMapSquares;
+        _obstacleSpawner.OnObstacleSet += _obstacleController.SetObstacle;
         GlobalValues.ROW = row;
         GlobalValues.COL = col;
     }

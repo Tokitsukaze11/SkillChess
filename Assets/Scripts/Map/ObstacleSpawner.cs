@@ -15,6 +15,7 @@ public class ObstacleSpawner : MonoBehaviour
     private const int TOWER_B_OBSTACLE = 1;
     private const int TOWER_C_OBSTACLE = 2;
     private const int WALL_B_OBSTACLE = 3;
+    public event Action<List<Obstacle>> OnObstacleSet;
     private void Awake()
     {
         //ObjectManager.Instance.MakePool(_obstaclePrefabs[BOX_OBSTACLE], StringKeys.BOX_OBSTACLE);
@@ -84,6 +85,7 @@ public class ObstacleSpawner : MonoBehaviour
             else
                 _obstacleList.Add(ObjectObstacle(map, randType));
         }
+        OnObstacleSet?.Invoke(_obstacleList.Select(x => x.GetComponent<Obstacle>()).ToList());
     }
     private void VoidObstacle(int index) // 빈 공간
     {

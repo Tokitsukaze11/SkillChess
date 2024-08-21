@@ -15,6 +15,7 @@ public class PawnManager : Singleton<PawnManager>
     public event Action OnEnemyTurn;
     public event Action OnResetPawns;
     public event Action OnSpawnPawns;
+    public event Action OnSpawnComplete;
     public event Action OnTurnChange;
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class PawnManager : Singleton<PawnManager>
         /*_playerPawnController.SpawnPlayerPawn();
         _enemyPawnController.SpawnEnemyPawn();*/
         OnSpawnPawns?.Invoke();
+        OnSpawnComplete?.Invoke();
     }
     public void DespawnPawn()
     {

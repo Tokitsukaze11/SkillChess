@@ -6,54 +6,65 @@ using UnityEngine;
 
 public class ObstacleController : MonoBehaviour
 {
-    HashSet<MapSquare> _obstacleSet = new HashSet<MapSquare>();
-    List<MapSquare> _obstacleSquaresList = new List<MapSquare>();
+    private Dictionary<Obstacle, bool> _obstacleCoverageMap = new Dictionary<Obstacle, bool>();
+    
+    private Camera _mainCamera;
+    private List<Pawn> _pawns;
+    private void Awake()
+    {
+        PawnManager.Instance.OnSpawnComplete += OnPawnSpawn;
+    }
     private void Start()
     {
-        PawnManager.Instance.OnTurnChange += SetObstacle;
+        _mainCamera = GameManager.Instance.mainCamera;
     }
-    private void SetObstacle()
+    private void OnPawnSpawn()
     {
-        if(_obstacleSquaresList.Count < 1)
+        var playerPawns = PawnManager.Instance.GetPawns(true);
+        var enemyPawns = PawnManager.Instance.GetPawns(false);
+        _pawns = playerPawns.Concat(enemyPawns).ToList();
+    }
+    private void LateUpdate()
+    {
+        if (_pawns == null)
+            return;
+        foreach (var pawn in _pawns.Where(pawn => pawn != null))
         {
-            _obstacleSquaresList.Clear();
-            SquareCalculator.MapSquareDic.Values.Where(x => x.Obstacle != null).ToList().ForEach(x => _obstacleSquaresList.Add(x));
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(_mainCamera.transform.position, pawn.transform.position - _mainCamera.transform.position);
+            //Debug.DrawRay(_mainCamera.transform.position, pawn.transform.position - _mainCamera.transform.position, Color.red);
+            foreach (var hit in hits)
+            {
+                var obstacle = hit.collider.GetComponent<Obstacle>();
+                if (obstacle == null)
+                    continue;
+                SetObstacleCovered(obstacle, true);
+            }
         }
-        var pawnSquares = SquareCalculator.MapSquareDic.Values.Where(x => x.CurPawn != null).ToList();
-        var newObstacleSet = new HashSet<MapSquare>();
-        foreach (var pawnSquare in pawnSquares)
+        SetObstaclesUncovered();
+    }
+    public void SetObstacle(List<Obstacle> obstacles)
+    {
+        _obstacleCoverageMap.Clear();
+        foreach(var obstacle in obstacles)
         {
-            int mapIndex = SquareCalculator.CurrentIndex(pawnSquare);
-            var targetList = new List<MapSquare>();
-            SquareCalculator.CheckTargetSquares(1, mapIndex, targetList);
-            var diagonalTargets = new List<MapSquare>();
-            SquareCalculator.CheckDiagonalTargetSquares(1, mapIndex, diagonalTargets);
-            var finalList = targetList.Concat(diagonalTargets).ToList().Where(x => x.Obstacle != null).ToList();
-            if (finalList.Count <= 0)
+            if(obstacle == null)
                 continue;
-            foreach (var map in finalList)
-                newObstacleSet.Add(map);
+            _obstacleCoverageMap.TryAdd(obstacle, false);
         }
-        /*foreach(var obstacle in _obstacleSquaresList)
+    }
+    private void SetObstacleCovered(Obstacle obstacle, bool isCovered)
+    {
+        _obstacleCoverageMap[obstacle] = isCovered;
+    }
+    private void SetObstaclesUncovered()
+    {
+        // 가려지지 않은 오브젝트 찾기
+        foreach (var pair in _obstacleCoverageMap)
         {
-            int mapIndex = SquareCalculator.CurrentIndex(obstacle);
-            var targetList = new List<MapSquare>();
-            SquareCalculator.CheckTargetSquares(1, mapIndex, targetList);
-            var diagonalTargets = new List<MapSquare>();
-            SquareCalculator.CheckDiagonalTargetSquares(1, mapIndex, diagonalTargets);
-            var finalList = targetList.Concat(diagonalTargets).ToList().Where(x => x.Obstacle != null).ToList();
-            if (finalList.Count <= 0)
-                continue;
-            foreach(var map in finalList)
-                newObstacleSet.Add(map);
-        }*/
-        foreach(var map in _obstacleSet)
-        {
-            if(!newObstacleSet.Contains(map))
-                map.Obstacle.SetAlpha(false);
+            pair.Key.SetAlpha(pair.Value);
         }
-        _obstacleSet = newObstacleSet;
-        foreach(var map in _obstacleSet)
-            map.Obstacle.SetAlpha(true);
+        // 가려짐 상태 업데이트
+        _obstacleCoverageMap.ToList().ForEach(pair => _obstacleCoverageMap[pair.Key] = false);
     }
 }
