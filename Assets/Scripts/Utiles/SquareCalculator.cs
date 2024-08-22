@@ -23,49 +23,9 @@ public static class SquareCalculator
     /// <param name="targetRange">Range of do something</param>
     /// <param name="startSquare">Start square</param>
     /// <param name="targetSquares">List of target squares</param>
-    /// <param name="isCanLess">Is can less of range</param>
-    public static void CheckTargetSquaresAsRange(int targetRange, MapSquare startSquare, List<MapSquare> targetSquares, bool isCanLess = false)
+    public static void CheckTargetSquaresAsRange(int targetRange, MapSquare startSquare, List<MapSquare> targetSquares)
     {
-        /*if (!isCanLess)
-        {
-            Queue<MapSquare> target = MoveNavigation.FindReachablePositions(startSquare, targetRange);
-            foreach (var map in target)
-            {
-                targetSquares.Add(map);
-            }
-        }
-        else
-        {
-            HashSet<MapSquare> mapSet = new HashSet<MapSquare>();
-            List<Queue<MapSquare>> target = new List<Queue<MapSquare>>();
-            for (int i = targetRange; i > 0; i--)
-            {
-                int range = i;
-                /*target.Add(MoveNavigation.FindReachablePositions(startSquare, range));#1#
-                var targetSquaresList = MoveNavigation.FindReachablePositions(startSquare, range);
-                foreach (var destination in targetSquaresList)
-                {
-                    var path = MoveNavigation.FindNavigation(startSquare, destination);
-                    foreach (var sq in path)
-                        mapSet.Add(sq);
-                }
-            }
-            foreach (var map in mapSet)
-            {
-                targetSquares.Add(map);
-            }
-        }*/
-        // isCanLess will be discarded
         HashSet<MapSquare> mapSet = new HashSet<MapSquare>();
-        /*for (int i = targetRange; i > 0; i--)
-        {
-            int range = i;
-            var targetSquaresList = MoveNavigation.FindReachablePositions(startSquare, range);
-            foreach (var destination in targetSquaresList)
-            {
-                mapSet.Add(destination);
-            }
-        }*/
         int index = CurrentIndex(startSquare);
         int startRow = index % GlobalValues.ROW;
         int startCol = index / GlobalValues.ROW;
@@ -80,7 +40,6 @@ public static class SquareCalculator
         {
             targetSquares.Add(map);
         }
-        //targetSquares = mapSet.ToList();
     }
     /// <summary>
     /// Check squares that can something be done

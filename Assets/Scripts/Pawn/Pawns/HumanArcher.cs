@@ -13,7 +13,6 @@ public class HumanArcher : Pawn
         _moveType = MoveType.Range;
         _isConsiderObstacle = true;
         _isHowitzerAttack = true;
-        _isLessMove = true;
         _attackParticleID = StringKeys.NORMAL_ATTACK_HIT;
         _skillParticleID = StringKeys.ATTACK_SKILL_HIT;
         _hitSound = _attackSound;

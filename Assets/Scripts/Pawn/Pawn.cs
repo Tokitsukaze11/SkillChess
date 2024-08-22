@@ -48,7 +48,6 @@ public abstract class Pawn : MonoBehaviour
     [SerializeField] protected SpriteRenderer _hpBarShield;
     public SortingGroup _sortingGroup;
     // Variables
-    protected bool _isLessMove = false;
     protected bool _isHowitzerAttack = false;
     protected MoveType _moveType;
     protected bool _isConsiderObstacle = true;
@@ -153,7 +152,7 @@ public abstract class Pawn : MonoBehaviour
         if(_moveType == MoveType.Straight)
             SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares, _isConsiderObstacle); // 직선 이동
         else
-            SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares, _isLessMove); // 거리 우선 이동
+            SquareCalculator.CheckTargetSquaresAsRange(_movementRange, _curMapSquare, targetSquares); // 거리 우선 이동
         targetSquares = targetSquares.Where(x => !x.IsAnyPawn() && !x.IsObstacle).ToList();
         if(targetSquares.Count == 0)
         {
@@ -185,7 +184,6 @@ public abstract class Pawn : MonoBehaviour
             var key = SquareCalculator.CurrentKey(mapSquare);
             pathKeys.Enqueue(key);
         }
-        
         Action callBack = () =>
         {
             _curMapSquare.CurPawn = null;
@@ -199,21 +197,21 @@ public abstract class Pawn : MonoBehaviour
         if (pathKeys.Count > 0)
         {
             OnPawnClicked?.Invoke(false,null);
-            StartCoroutine(Co_Move(pathKeys, callBack));
+            StartCoroutine(Co_Move(path, callBack));
         }
         return;
     }
-    public void MoveOrder(Queue<Vector2> path, Action callback)
+    public void MoveOrder(Queue<MapSquare> path, Action callback)
     {
         StartCoroutine(Co_Move(path, callback));
     }
-    protected virtual IEnumerator Co_Move(Queue<Vector2> path, Action callback)
+    protected virtual IEnumerator Co_Move(Queue<MapSquare> path, Action callback)
     {
-        List<Vector2> pathList = path.ToList();
+        // TODO : 꼭지점 이동을 정확히 하기위해 MapSquare의 위치를 이용해야 함.
+        List<Vector2> pathList = path.Select(SquareCalculator.CurrentKey).ToList();
         // 이동 경로에서 각각의 꼭지점을 찾기.
         Queue<Vector2> vertex = new Queue<Vector2>();
         var thisPos = new Vector2(_curMapSquare.transform.position.x, _curMapSquare.transform.position.z);
-        //var thisPos = new Vector2(this.transform.position.x, this.transform.position.z); // When in animation, this can make bug
         var curPath = thisPos;
         vertex.Enqueue(curPath);
         for (int i = 0; i < pathList.Count; i++)
@@ -223,7 +221,6 @@ public abstract class Pawn : MonoBehaviour
             float y = key.y;
             if (Mathf.Approximately(x, curPath.x) || Mathf.Approximately(y, curPath.y))
                 continue;
-            //vertex.Enqueue(pathList[Math.Clamp(i - 1,0,pathList.Count)]); // Tried to fix the bug 근데 ㅅㅂ 안해도 됬잖아
             vertex.Enqueue(pathList[i - 1]);
             curPath = pathList[i];
         }
@@ -231,7 +228,6 @@ public abstract class Pawn : MonoBehaviour
             vertex.Enqueue(pathList[^1]);
         vertex.Dequeue(); // 시작점 제거
         float time = 0.5f + Math.Clamp((vertex.Count - 1) * 0.1f, 0, 0.5f);
-        //this.transform.rotation = Quaternion.LookRotation(new Vector3(curPath.x, 0, curPath.y) - this.transform.position);
         yield return new WaitForSeconds(0.3f);
         while (vertex.Count > 0)
         {
@@ -315,19 +311,16 @@ public abstract class Pawn : MonoBehaviour
         }
         var curSq = _curMapSquare;
         var attackPath = MoveNavigation.FindNavigation(curSq, targetSquare);
-        var realPath = attackPath.SkipLast(1).ToList();
-        var pathKeys = new Queue<Vector2>();
-        foreach (var mapSquare in realPath)
+        var realPath = new Queue<MapSquare>(attackPath.SkipLast(1));
+        var reversPathQueue = new Queue<MapSquare>();
+        for(int i = realPath.Count - 1; i >= 0; i--)
         {
-            var key = SquareCalculator.CurrentKey(mapSquare);
-            pathKeys.Enqueue(key);
+            reversPathQueue.Enqueue(realPath.ElementAt(i));
         }
-        Queue<Vector2> reversPath = new Queue<Vector2>();
-        pathKeys.Reverse().ToList().ForEach(x => reversPath.Enqueue(x));
         _objectTriggerAnimation.OnAnimationEndTrigger += () =>
         {
             _curMapSquare = realPath.Last();
-            StartCoroutine(Co_Move(reversPath, () =>
+            StartCoroutine(Co_Move(reversPathQueue, () =>
             {
                 _curMapSquare = curSq;
                 _objectTriggerAnimation.ResetEndTrigger();
@@ -335,7 +328,7 @@ public abstract class Pawn : MonoBehaviour
                 GameManager.Instance.TurnEnd();
             }));
         };
-        StartCoroutine(Co_Move(pathKeys, () =>
+        StartCoroutine(Co_Move(realPath, () =>
         {
             this.transform.rotation = Quaternion.LookRotation(new Vector3(targetSquare.transform.position.x, 0, targetSquare.transform.position.z) - this.transform.position);
             _animator.SetTrigger(Attack1);

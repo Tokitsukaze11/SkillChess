@@ -89,19 +89,16 @@ public class AttackDecorator : SkillDecorator
         }
         var curSq = SquareCalculator.CurrentMapSquare(_curMapSquareIndex);
         var attackPath = MoveNavigation.FindNavigation(curSq, targetSquare);
-        var realPath = attackPath.SkipLast(1).ToList();
-        var pathKeys = new Queue<Vector2>();
-        foreach (var mapSquare in realPath)
+        var realPath = new Queue<MapSquare>(attackPath.SkipLast(1));
+        var reversPathQueue = new Queue<MapSquare>();
+        for(int i = realPath.Count - 1; i >= 0; i--)
         {
-            var key = SquareCalculator.CurrentKey(mapSquare);
-            pathKeys.Enqueue(key);
+            reversPathQueue.Enqueue(realPath.ElementAt(i));
         }
-        Queue<Vector2> reversPath = new Queue<Vector2>();
-        pathKeys.Reverse().ToList().ForEach(x => reversPath.Enqueue(x));
         _curPawn.ObjectTriggerAnimation.OnAnimationEndTrigger += () =>
         {
             _curPawn.CurMapSquare = realPath.Last();
-            _curPawn.MoveOrder(reversPath, () =>
+            _curPawn.MoveOrder(reversPathQueue, () =>
             {
                 _curPawn.CurMapSquare = curSq; // Fix Error but feel FUCK
                 _curPawn.ObjectTriggerAnimation.ResetEndTrigger();
@@ -114,7 +111,7 @@ public class AttackDecorator : SkillDecorator
             targetSquare.CurPawn?.TakeDamage(_damage, _hitParticleID);
             _curPawn.ObjectTriggerAnimation.ResetTrigger();
         };
-        _curPawn.MoveOrder(pathKeys, () =>
+        _curPawn.MoveOrder(realPath, () =>
         {
             Vector3 target = new Vector3(targetSquare.transform.position.x, 0, targetSquare.transform.position.z);
             _curPawn.transform.rotation = Quaternion.LookRotation(target - _curPawn.gameObject.transform.position);

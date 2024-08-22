@@ -15,7 +15,6 @@ public class SpearmanPawn : Pawn
     {
         base.Awake();
         _moveType = MoveType.Range;
-        _isLessMove = true;
         _isConsiderObstacle = true;
         _isHowitzerAttack = false;
         _attackParticleID = StringKeys.NORMAL_ATTACK_HIT;
