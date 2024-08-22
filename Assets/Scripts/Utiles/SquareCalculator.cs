@@ -69,7 +69,6 @@ public static class SquareCalculator
         int index = CurrentIndex(startSquare);
         int startRow = index % GlobalValues.ROW;
         int startCol = index / GlobalValues.ROW;
-        Debug.Log($"Start Row : {startRow}, Start Col : {startCol}");
         var targetSquaresList = MoveNavigation.FindReachablePositions(startSquare, targetRange);
         foreach (var destination in targetSquaresList)
         {

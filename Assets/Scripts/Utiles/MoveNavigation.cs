@@ -38,11 +38,11 @@ using UnityEngine;
  * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
  * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
  * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * 건들지 말라면 건들지 마
 */
 public static class MoveNavigation
 {
     private static  List<List<int>> _convertedIndex = new List<List<int>>();
-    private static Dictionary<Vector2, MapSquare> _convertedMapSquareDic = new Dictionary<Vector2, MapSquare>();
     private static List<MapSquare> _convertedMapSquareList = new List<MapSquare>();
     
     static bool[,] _obstacles; // 장애물 배열
@@ -51,7 +51,6 @@ public static class MoveNavigation
     public static void InitMapSquare(Dictionary<Vector2, MapSquare> mapSquareDic)
     {
         _convertedIndex.Clear();
-        _convertedMapSquareDic.Clear();
         _convertedMapSquareList.Clear();
         Converter1DTo2D(mapSquareDic);
         bool[,] isObstacle = new bool[GlobalValues.ROW, GlobalValues.COL];
@@ -62,11 +61,11 @@ public static class MoveNavigation
                 isObstacle[i, j] = false;
             }
         }
-        foreach(var mapSquare in _convertedMapSquareDic.Values)
+        foreach(var mapSquare in _convertedMapSquareList)
         {
             if (!mapSquare.IsObstacle)
                 continue;
-            int index = _convertedMapSquareDic.Values.ToList().IndexOf(mapSquare);
+            int index = _convertedMapSquareList.IndexOf(mapSquare);
             int row = index / GlobalValues.COL;
             int col = index % GlobalValues.COL;
             isObstacle[row, col] = true;
@@ -96,99 +95,21 @@ public static class MoveNavigation
         // 딕셔너리에 있던 MapSquare를 생성된 2차원 배열에 맞게 1차원 배열로 변환.
         var mapSquares = mapSquareDic.Values.ToList();
         List<MapSquare> tempMapSquares = new List<MapSquare>();
-        /*for (int i = row-1; i >= 0; i--)
-        {
-            for (int j = 0; j < column; j++)
-            {
-                tempMapSquares.Add(mapSquares[i * column + j]);
-                Debug.Log("Now Index : " + tempMapSquares.IndexOf(mapSquares[i * column + j]) + " origin Index : " + (i * column + j));
-            }
-        }*/
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
             {
                 int originIndex = (row-1-i)+j * row;
                 tempMapSquares.Add(mapSquares[originIndex]);
-                //Debug.Log("Now Index : " + tempMapSquares.IndexOf(mapSquares[originIndex]) + " origin Index : " + originIndex);
             }
         }
-        // 해당 1차원 배열을 바탕으로 딕셔너리로 다시 변환.
-        /*for (int i = 0; i < row; i++)
-        {
-            for (int j = 0; j < column; j++)
-            {
-                var mapSquare = tempMapSquares[i * column + j];
-                var key = mapSquareDic.FirstOrDefault(x => x.Value == mapSquare).Key;
-                _convertedMapSquareDic.Add(key, mapSquare);
-            }
-        }*/
-        foreach(var mapSquare in tempMapSquares)
-        {
-            var key = mapSquareDic.FirstOrDefault(x => x.Value == mapSquare).Key;
-            _convertedMapSquareDic.Add(key, mapSquare);
-        }
-        // 굳이 딕셔너리를 사용할 필요는 없음. 키를 쓸일이 없음. -> 리스트로 변환
+        // 배열을 리스트로 변환.
         foreach(var square in tempMapSquares)
             _convertedMapSquareList.Add(square);
-        /*foreach(var map in _convertedMapSquareList)
-            Debug.Log("Now Index : " + _convertedMapSquareList.IndexOf(map) + " origin Index : " + SquareCalculator.CurrentIndex(map));*/
         // 이로 2차원 배열로 변환 완료.
     }
     public static Queue<MapSquare> FindReachablePositions(MapSquare startMapSquare, int range)
     {
-        /*var mapList = _convertedMapSquareDic.Values.ToList();
-        int[] dx = { -1, 1, 0, 0 };
-        int[] dy = { 0, 0, -1, 1 };
-        
-        int row = GlobalValues.ROW;
-        int col = GlobalValues.COL;
-        
-        int startIndex = mapList.IndexOf(startMapSquare);
-
-        bool[,] visited = new bool[row, col];
-        int[,] distance = new int[row, col];
-
-        Queue<int> queue = new Queue<int>();
-        Queue<int> result = new Queue<int>();
-        
-        int startRow = startIndex / col;
-        int startCol = startIndex % col;
-        
-        queue.Enqueue(startIndex);
-
-        while (queue.Count > 0)
-        {
-            int currentIndex = queue.Dequeue();
-            int currentRow = currentIndex / col;
-            int currentCol = currentIndex % col;
-            
-            if(distance[currentRow, currentCol] <= range)
-            {
-                result.Enqueue(currentIndex);
-                continue;
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                int newRow = currentRow + dx[i];
-                int newCol = currentCol + dy[i];
-                
-                if(IsValid(newRow,newCol) && !visited[newRow,newCol] && !_obstacles[newRow,newCol])
-                {
-                    queue.Enqueue(newRow * col + newCol);
-                    visited[newRow, newCol] = true;
-                    distance[newRow, newCol] = distance[currentRow, currentCol] + 1;
-                }
-            }
-        }
-        Queue<MapSquare> resultSquares = new Queue<MapSquare>();
-        foreach (var index in result)
-        {
-            resultSquares.Enqueue(mapList[index]);
-        }
-        return resultSquares;*/
-        //var mapList = _convertedMapSquareDic.Values.ToList();
         var mapList = _convertedMapSquareList;
         int[] dx = { -1, 1, 0, 0 };
         int[] dy = { 0, 0, -1, 1 };
@@ -196,7 +117,6 @@ public static class MoveNavigation
         int row = GlobalValues.ROW;
         int col = GlobalValues.COL;
     
-        //int startIndex = mapList.IndexOf(startMapSquare);
         int startIndex = _convertedMapSquareList.IndexOf(startMapSquare);
 
         bool[,] visited = new bool[row, col];
@@ -207,8 +127,6 @@ public static class MoveNavigation
     
         int startRow = startIndex / col;
         int startCol = startIndex % col;
-        
-        //Debug.Log($"StartRow : {startRow}, StartCol : {startCol}, StartIndex : {startIndex}");
     
         queue.Enqueue(startIndex);
         visited[startRow, startCol] = true;
@@ -239,160 +157,9 @@ public static class MoveNavigation
             }
         }
         return resultSquares;
-        /*var mapList = _convertedMapSquareDic.Values.ToList();
-        int[] dx = { -1, 1, 0, 0 };
-        int[] dy = { 0, 0, -1, 1 };
-
-        int row = GlobalValues.ROW;
-        int col = GlobalValues.COL;
-
-        int startIndex = mapList.IndexOf(startMapSquare);
-
-        bool[,] visited = new bool[row, col];
-        int[,] distance = new int[row, col];
-
-        Queue<int> queue = new Queue<int>();
-        Queue<MapSquare> resultSquares = new Queue<MapSquare>();
-
-        int startRow = startIndex / col;
-        int startCol = startIndex % col;
-
-        queue.Enqueue(startIndex);
-        visited[startRow, startCol] = true;
-        distance[startRow, startCol] = 0;  // 시작 위치의 거리를 0으로 초기화
-
-        while (queue.Count > 0)
-        {
-            int currentIndex = queue.Dequeue();
-            int currentRow = currentIndex / col;
-            int currentCol = currentIndex % col;
-        
-            if(distance[currentRow, currentCol] <= range)
-            {
-                resultSquares.Enqueue(mapList[currentIndex]);
-
-                for (int i = 0; i < 4; i++)
-                {
-                    int newRow = currentRow + dx[i];
-                    int newCol = currentCol + dy[i];
-                
-                    if (IsValid(newRow, newCol) && !visited[newRow, newCol] && !_obstacles[newRow, newCol])
-                    {
-                        int newIndex = newRow * col + newCol;
-                        int newDistance = distance[currentRow, currentCol] + 1;
-                    
-                        if (newDistance <= range)  // 새로운 위치의 거리가 range 이하인 경우에만 큐에 추가
-                        {
-                            queue.Enqueue(newIndex);
-                            visited[newRow, newCol] = true;
-                            distance[newRow, newCol] = newDistance;
-                        }
-                    }
-                }
-            }
-        }
-    
-        return resultSquares;*/
-        /*var mapList = _convertedMapSquareDic.Values.ToList();
-        int[] dx = { -1, 1, 0, 0 };
-        int[] dy = { 0, 0, -1, 1 };
-
-        int row = GlobalValues.ROW;
-        int col = GlobalValues.COL;
-
-        int startIndex = mapList.IndexOf(startMapSquare);
-
-        bool[,] visited = new bool[row, col];
-        int[,] distance = new int[row, col];
-
-        Queue<(int, int)> queue = new Queue<(int, int)>();
-        Queue<MapSquare> resultSquares = new Queue<MapSquare>();
-
-        int startRow = startIndex / col;
-        int startCol = startIndex % col;
-        
-        Debug.Log($"StartRow : {startRow}, StartCol : {startCol}, StartIndex : {startIndex}");
-
-        queue.Enqueue((startRow, startCol));
-        visited[startRow, startCol] = true;
-        distance[startRow, startCol] = 0;
-
-        while (queue.Count > 0)
-        {
-            var (currentRow, currentCol) = queue.Dequeue();
-        
-            if(distance[currentRow, currentCol] <= range)
-            {
-                resultSquares.Enqueue(mapList[currentRow * col + currentCol]);
-
-                for (int i = 0; i < 4; i++)
-                {
-                    int newRow = currentRow + dx[i];
-                    int newCol = currentCol + dy[i];
-                
-                    if (IsValid(newRow, newCol) && !visited[newRow, newCol] && !_obstacles[newRow, newCol])
-                    {
-                        int newDistance = distance[currentRow, currentCol] + 1;
-                    
-                        if (newDistance <= range)
-                        {
-                            queue.Enqueue((newRow, newCol));
-                            visited[newRow, newCol] = true;
-                            distance[newRow, newCol] = newDistance;
-                        }
-                    }
-                }
-            }
-        }
-        return resultSquares;*/
-        /*var mapList = _convertedMapSquareDic.Values.ToList();
-        int[] dx = { -1, 1, 0, 0 };
-        int[] dy = { 0, 0, -1, 1 };
-
-        int row = GlobalValues.ROW;
-        int col = GlobalValues.COL;
-
-        int startIndex = mapList.IndexOf(startMapSquare);
-
-        bool[,] visited = new bool[row, col];
-        Queue<MapSquare> resultSquares = new Queue<MapSquare>();
-
-        int startRow = startIndex % col;
-        int startCol = startIndex / col;
-        
-        Debug.Log($"StartRow : {startRow}, StartCol : {startCol}, StartIndex : {startIndex}");
-
-        DFS(startRow, startCol, 0, range, visited, resultSquares, mapList, row, col);
-
-        return resultSquares;*/
-    }
-    private static void DFS(int currentRow, int currentCol, int currentDistance, int maxRange, 
-                            bool[,] visited, Queue<MapSquare> resultSquares, List<MapSquare> mapList, 
-                            int totalRows, int totalCols)
-    {
-        if (currentDistance > maxRange || !IsValid(currentRow, currentCol) || 
-            visited[currentRow, currentCol] || _obstacles[currentRow, currentCol])
-        {
-            return;
-        }
-
-        visited[currentRow, currentCol] = true;
-        resultSquares.Enqueue(mapList[currentRow * totalCols + currentCol]);
-
-        int[] dx = { -1, 1, 0, 0 };
-        int[] dy = { 0, 0, -1, 1 };
-
-        for (int i = 0; i < 4; i++)
-        {
-            int newRow = currentRow + dx[i];
-            int newCol = currentCol + dy[i];
-
-            DFS(newRow, newCol, currentDistance + 1, maxRange, visited, resultSquares, mapList, totalRows, totalCols);
-        }
     }
     public static Queue<MapSquare> FindNavigation(MapSquare start, MapSquare end)
     {
-        //var mapList = _convertedMapSquareDic.Values.ToList();
         var mapList = _convertedMapSquareList;
         int startIndex = mapList.IndexOf(start);
         int endIndex = mapList.IndexOf(end);
