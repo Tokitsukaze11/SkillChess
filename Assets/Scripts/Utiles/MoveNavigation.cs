@@ -2,11 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+/*
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+ * ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!ㅅㅂ 건들지마!! ㅅㅂ 건들지마!
+*/
 public static class MoveNavigation
 {
     private static  List<List<int>> _convertedIndex = new List<List<int>>();
     private static Dictionary<Vector2, MapSquare> _convertedMapSquareDic = new Dictionary<Vector2, MapSquare>();
+    private static List<MapSquare> _convertedMapSquareList = new List<MapSquare>();
     
     static bool[,] _obstacles; // 장애물 배열
     static int[,] _directions = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }; // 상하좌우 이동
@@ -15,6 +52,7 @@ public static class MoveNavigation
     {
         _convertedIndex.Clear();
         _convertedMapSquareDic.Clear();
+        _convertedMapSquareList.Clear();
         Converter1DTo2D(mapSquareDic);
         bool[,] isObstacle = new bool[GlobalValues.ROW, GlobalValues.COL];
         for (int i = 0; i < GlobalValues.ROW; i++)
@@ -58,15 +96,25 @@ public static class MoveNavigation
         // 딕셔너리에 있던 MapSquare를 생성된 2차원 배열에 맞게 1차원 배열로 변환.
         var mapSquares = mapSquareDic.Values.ToList();
         List<MapSquare> tempMapSquares = new List<MapSquare>();
-        for (int i = 0; i < row; i++)
+        /*for (int i = row-1; i >= 0; i--)
         {
             for (int j = 0; j < column; j++)
             {
                 tempMapSquares.Add(mapSquares[i * column + j]);
+                Debug.Log("Now Index : " + tempMapSquares.IndexOf(mapSquares[i * column + j]) + " origin Index : " + (i * column + j));
+            }
+        }*/
+        for (int i = 0; i < row; i++)
+        {
+            for (int j = 0; j < column; j++)
+            {
+                int originIndex = (row-1-i)+j * row;
+                tempMapSquares.Add(mapSquares[originIndex]);
+                //Debug.Log("Now Index : " + tempMapSquares.IndexOf(mapSquares[originIndex]) + " origin Index : " + originIndex);
             }
         }
         // 해당 1차원 배열을 바탕으로 딕셔너리로 다시 변환.
-        for (int i = 0; i < row; i++)
+        /*for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < column; j++)
             {
@@ -74,7 +122,17 @@ public static class MoveNavigation
                 var key = mapSquareDic.FirstOrDefault(x => x.Value == mapSquare).Key;
                 _convertedMapSquareDic.Add(key, mapSquare);
             }
+        }*/
+        foreach(var mapSquare in tempMapSquares)
+        {
+            var key = mapSquareDic.FirstOrDefault(x => x.Value == mapSquare).Key;
+            _convertedMapSquareDic.Add(key, mapSquare);
         }
+        // 굳이 딕셔너리를 사용할 필요는 없음. 키를 쓸일이 없음. -> 리스트로 변환
+        foreach(var square in tempMapSquares)
+            _convertedMapSquareList.Add(square);
+        /*foreach(var map in _convertedMapSquareList)
+            Debug.Log("Now Index : " + _convertedMapSquareList.IndexOf(map) + " origin Index : " + SquareCalculator.CurrentIndex(map));*/
         // 이로 2차원 배열로 변환 완료.
     }
     public static Queue<MapSquare> FindReachablePositions(MapSquare startMapSquare, int range)
@@ -130,14 +188,16 @@ public static class MoveNavigation
             resultSquares.Enqueue(mapList[index]);
         }
         return resultSquares;*/
-        var mapList = _convertedMapSquareDic.Values.ToList();
+        //var mapList = _convertedMapSquareDic.Values.ToList();
+        var mapList = _convertedMapSquareList;
         int[] dx = { -1, 1, 0, 0 };
         int[] dy = { 0, 0, -1, 1 };
     
         int row = GlobalValues.ROW;
         int col = GlobalValues.COL;
     
-        int startIndex = mapList.IndexOf(startMapSquare);
+        //int startIndex = mapList.IndexOf(startMapSquare);
+        int startIndex = _convertedMapSquareList.IndexOf(startMapSquare);
 
         bool[,] visited = new bool[row, col];
         int[,] distance = new int[row, col];
@@ -145,10 +205,10 @@ public static class MoveNavigation
         Queue<int> queue = new Queue<int>();
         Queue<MapSquare> resultSquares = new Queue<MapSquare>();
     
-        int startRow = startIndex % col;
-        int startCol = startIndex / col;
+        int startRow = startIndex / col;
+        int startCol = startIndex % col;
         
-        Debug.Log($"StartRow : {startRow}, StartCol : {startCol}, StartIndex : {startIndex}");
+        //Debug.Log($"StartRow : {startRow}, StartCol : {startCol}, StartIndex : {startIndex}");
     
         queue.Enqueue(startIndex);
         visited[startRow, startCol] = true;
@@ -332,7 +392,8 @@ public static class MoveNavigation
     }
     public static Queue<MapSquare> FindNavigation(MapSquare start, MapSquare end)
     {
-        var mapList = _convertedMapSquareDic.Values.ToList();
+        //var mapList = _convertedMapSquareDic.Values.ToList();
+        var mapList = _convertedMapSquareList;
         int startIndex = mapList.IndexOf(start);
         int endIndex = mapList.IndexOf(end);
         
