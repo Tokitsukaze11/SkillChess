@@ -255,11 +255,10 @@ public abstract class Pawn : MonoBehaviour
 
         // Check target squares
         if (_isHowitzerAttack)
-            //SquareCalculator.CheckTargetSquaresAsRange(_attackRange, _curMapSquare, targetSquares, true);
             SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
         else
             SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares, true);
-        var rangeSquares = targetSquares.ToList(); // Show range squares
+        var rangeSquares = targetSquares.ToList();
         targetSquares = targetSquares.Where(x => x.IsAnyPawn() && !x.IsObstacle).ToList().Where(x => !x.CurPawn._isPlayerPawn).ToList();
         if(targetSquares.Count == 0)
         {
@@ -279,7 +278,7 @@ public abstract class Pawn : MonoBehaviour
     }
     protected virtual void Attack(Pawn targetPawn, MapSquare targetSquare)
     {
-        PawnManager.Instance.ResetSquaresColor(); // MapSquare의 색상을 초기화와 동시에 대리자 초기화
+        PawnManager.Instance.ResetSquaresColor();
         
         _outlineFx.ToList().ForEach(x => x.enabled = false);
 
@@ -361,7 +360,6 @@ public abstract class Pawn : MonoBehaviour
         var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
         var damageText = damParticle.GetComponent<DamageText>();
         var spawnPosition = this.transform.position;
-        //Vector3 spawnPosition = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
         damageText.SetText(damage, spawnPosition, false);
         var hitParticle = ObjectManager.Instance.SpawnParticleViaID(particleID);
         Vector3 spawnPoint = spawnPosition + new Vector3(0, 0.2f, 0);
@@ -398,15 +396,11 @@ public abstract class Pawn : MonoBehaviour
         }
         else // 힐을 받은 경우
         {
-            //_hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
-            //_hpBarRed.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
             _hpBar.transform.DOScaleX(targetHpBarX, 0.5f).SetDelay(0.5f).onComplete = () =>
             {
                 _hpBarRed.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
             };
         }
-        /*_hpBar.transform.localScale = new Vector3((float)_curHealth / _health, 1, 1);
-        _hpBarRed.transform.DOScaleX((float)_curHealth / _health, 0.5f).SetDelay(1f);*/
     }
     public void Heal(int healAmount)
     {

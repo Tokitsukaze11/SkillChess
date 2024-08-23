@@ -58,12 +58,10 @@ public class PlayerPawnController : MonoBehaviour
                 var curMapSquare = SquareCalculator.CurrentMapSquare(targetIndex);
                 Vector2 curKey = SquareCalculator.CurrentKey(targetIndex);
             
-                //obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
                 obj.GetComponent<NavMeshAgent>().enabled = false;
                 obj.transform.position = Vector3.zero;
                 obj.transform.position = spawnPos;
                 obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
-                //obj.gameObject.GetComponent<NavMeshAgent>().destination = new Vector3(curKey.x, 0, curKey.y);
                 obj.gameObject.name = $"PlayerPawn_{i}";
                 obj.SetActive(true);
                 var pawn = obj.GetComponent<Pawn>();

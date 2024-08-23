@@ -36,10 +36,7 @@ public static class SquareCalculator
             foreach (var sq in path)
                 mapSet.Add(sq);
         }
-        foreach (var map in mapSet)
-        {
-            targetSquares.Add(map);
-        }
+        targetSquares.AddRange(mapSet);
     }
     /// <summary>
     /// Check squares that can something be done

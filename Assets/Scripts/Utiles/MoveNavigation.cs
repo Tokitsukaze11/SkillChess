@@ -225,7 +225,6 @@ public static class MoveNavigation
                 }
             }
         }
-
         return new Queue<int>(); // 경로를 찾지 못한 경우
     }
     private static Queue<int> ReconstructPath(int[,] parent, int startIndex, int endIndex, bool isForwardTracking)
