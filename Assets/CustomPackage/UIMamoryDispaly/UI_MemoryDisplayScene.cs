@@ -29,35 +29,46 @@ public class UI_MemoryDisplayScene : MonoBehaviour
     {
         StartCoroutine(UpdateUI());
         yield return new WaitForSeconds(1f);
+
+        List<float> fpsListPerSecond = new List<float>();
+        float elapsedTime = 0f;
+
         while (true)
         {
             float memoryInMB = System.GC.GetTotalMemory(false) / (1024.0f * 1024.0f);
             this.memoryInMB = memoryInMB;
             float fps = 1.0f / Time.deltaTime;
             this.fps = fps;
-            if(fps < minFPS)
+
+            if (fps < minFPS)
             {
                 minFPS = fps;
             }
-            if(fps > maxFPS)
+            if (fps > maxFPS)
             {
                 maxFPS = fps;
             }
+
             msFPS = Time.deltaTime * 1000.0f;
-            fpsListForLower.Add(fps);
-            fpsListForLower = fpsListForLower.OrderBy(x => x).ToList();
-            lower1PercentFPS = fpsListForLower[Mathf.FloorToInt(fpsListForLower.Count * 0.01f)];
-            if(fpsListForLower.Count > 100)
+
+            // 1초 동안의 FPS 데이터 수집
+            fpsListPerSecond.Add(fps);
+            elapsedTime += Time.deltaTime;
+
+            // 1초가 지나면 하위 1%와 상위 95% 계산
+            if (elapsedTime >= 1f)
             {
-                fpsListForLower.RemoveAt(fpsListForLower.Count - 1);
+                fpsListPerSecond.Sort();
+                int count = fpsListPerSecond.Count;
+
+                lower1PercentFPS = fpsListPerSecond[Mathf.FloorToInt(count * 0.01f)];
+                height95PercentFPS = fpsListPerSecond[Mathf.FloorToInt(count * 0.95f)];
+
+                // 리스트 초기화 및 경과 시간 재설정
+                fpsListPerSecond.Clear();
+                elapsedTime = 0f;
             }
-            fpsListForHeight.Add(fps);
-            fpsListForHeight = fpsListForHeight.OrderByDescending(x => x).ToList();
-            height95PercentFPS = fpsListForHeight[Mathf.FloorToInt(fpsListForHeight.Count * 0.05f)];
-            if(fpsListForHeight.Count > 100)
-            {
-                fpsListForHeight.RemoveAt(fpsListForHeight.Count - 1);
-            }
+
             yield return null;
         }
     }
@@ -67,7 +78,9 @@ public class UI_MemoryDisplayScene : MonoBehaviour
         yield return new WaitForSeconds(2f);
         while (true)
         {
-            displayText.text = $"Memory: {memoryInMB:F2} MB\nFPS: {fps:F2}\nMaxFPS: {maxFPS:F2}\nMinFPS: {minFPS:F2}\nLower1%FPS: {lower1PercentFPS:F2}\nHeight95%FPS: {height95PercentFPS:F2}\nFPS Time: {msFPS:F2}ms";
+            displayText.text = $"Memory: {memoryInMB:F2} MB\nFPS: {fps:F2}\n" +
+                               $"MaxFPS: {maxFPS:F2}\nMinFPS: {minFPS:F2}\nLower1%FPS: {lower1PercentFPS:F2}\nHeight95%FPS: {height95PercentFPS:F2}\n" +
+                               $"FPS Time: {msFPS:F2}ms";
             yield return new WaitForSeconds(1f);
         }
         yield break;
