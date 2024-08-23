@@ -207,38 +207,36 @@ public abstract class Pawn : MonoBehaviour
     }
     protected virtual IEnumerator Co_Move(Queue<MapSquare> path, Action callback)
     {
-        // TODO : 꼭지점 이동을 정확히 하기위해 MapSquare의 위치를 이용해야 함.
-        List<Vector2> pathList = path.Select(SquareCalculator.CurrentKey).ToList();
-        // 이동 경로에서 각각의 꼭지점을 찾기.
-        Queue<Vector2> vertex = new Queue<Vector2>();
-        var thisPos = new Vector2(_curMapSquare.transform.position.x, _curMapSquare.transform.position.z);
-        var curPath = thisPos;
-        vertex.Enqueue(curPath);
-        for (int i = 0; i < pathList.Count; i++)
+        List<int> pathIndexList = path.Select(SquareCalculator.CurrentIndex).ToList();
+        Queue<int> vertexIndex = new Queue<int>();
+        var curIndex = SquareCalculator.CurrentIndex(_curMapSquare);
+        vertexIndex.Enqueue(curIndex);
+        for (int i = 0; i < pathIndexList.Count; i++)
         {
-            var key = pathList[i];
-            float x = key.x;
-            float y = key.y;
-            if (Mathf.Approximately(x, curPath.x) || Mathf.Approximately(y, curPath.y))
+            var index = pathIndexList[i];
+            int nextRow = index % GlobalValues.ROW;
+            int nextCol = index / GlobalValues.ROW;
+            int curRow = curIndex % GlobalValues.ROW;
+            int curCol = curIndex / GlobalValues.ROW;
+            if (nextRow == curRow || nextCol == curCol)
                 continue;
-            vertex.Enqueue(pathList[i - 1]);
-            curPath = pathList[i];
+            vertexIndex.Enqueue(pathIndexList[i - 1]);
+            curIndex = pathIndexList[i -1];
         }
-        if(!vertex.Contains(pathList[^1]))
-            vertex.Enqueue(pathList[^1]);
-        vertex.Dequeue(); // 시작점 제거
-        float time = 0.5f + Math.Clamp((vertex.Count - 1) * 0.1f, 0, 0.5f);
+        if (!vertexIndex.Contains(pathIndexList[^1]))
+            vertexIndex.Enqueue(pathIndexList[^1]);
+        vertexIndex.Dequeue(); // 시작점 제거
+        float time = 0.5f + Math.Clamp((vertexIndex.Count - 1) * 0.1f, 0, 0.5f);
         yield return new WaitForSeconds(0.3f);
-        while (vertex.Count > 0)
+        while (vertexIndex.Count > 0)
         {
-            var key = vertex.Dequeue();
-            var target = new Vector3(key.x, 0, key.y);
-            this.transform.rotation = Quaternion.LookRotation(target - this.transform.position);
+            var index = vertexIndex.Dequeue();
+            var target = SquareCalculator.CurrentKey(index);
+            this.transform.rotation = Quaternion.LookRotation(new Vector3(target.x, 0, target.y) - this.transform.position);
             _animator.SetBool(Run, true);
-            this.transform.DOMove(target, time).onComplete = () =>
+            this.transform.DOMove(new Vector3(target.x, 0, target.y), time).onComplete = () =>
             {
                 _animator.SetBool(Run, false);
-                //this.transform.rotation = Quaternion.Euler(0, 0, 0);
                 this.transform.rotation = GameManager.Instance.IsPlayer1Turn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
             };
             yield return new WaitForSeconds(time);
