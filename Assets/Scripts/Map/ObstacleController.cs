@@ -10,6 +10,7 @@ public class ObstacleController : MonoBehaviour
     
     private Camera _mainCamera;
     private List<Pawn> _pawns;
+    private RaycastHit[] hits = new RaycastHit[10];
     private void Awake()
     {
         PawnManager.Instance.OnSpawnComplete += OnPawnSpawn;
@@ -28,17 +29,21 @@ public class ObstacleController : MonoBehaviour
     {
         if (_pawns == null)
             return;
-        foreach (var pawn in _pawns.Where(pawn => pawn != null))
+        foreach (var pawn in _pawns.Where(pawn => !ReferenceEquals(pawn, null)))
         {
-            RaycastHit[] hits;
-            hits = Physics.RaycastAll(_mainCamera.transform.position, pawn.transform.position - _mainCamera.transform.position);
+            /*RaycastHit[] hits;
+            hits = Physics.RaycastAll(_mainCamera.transform.position, pawn.transform.position - _mainCamera.transform.position);*/
+            
+            Physics.RaycastNonAlloc(_mainCamera.transform.position, pawn.transform.position - _mainCamera.transform.position, hits);
+            
             //Debug.DrawRay(_mainCamera.transform.position, pawn.transform.position - _mainCamera.transform.position, Color.red);
-            foreach (var hit in hits)
+            foreach (var hit in hits.Where(x => !ReferenceEquals(x.collider,null)))
             {
-                var obstacle = hit.collider.GetComponent<Obstacle>();
-                if (obstacle == null)
-                    continue;
-                SetObstacleCovered(obstacle, true);
+                /*var obstacle = hit.collider.GetComponent<Obstacle>();
+                if (obstacle is null)
+                    continue;*/
+                if(hit.collider.TryGetComponent<Obstacle>(out var obstacle))
+                    SetObstacleCovered(obstacle, true);
             }
         }
         SetObstaclesUncovered();
@@ -46,16 +51,15 @@ public class ObstacleController : MonoBehaviour
     public void SetObstacle(List<Obstacle> obstacles)
     {
         _obstacleCoverageMap.Clear();
-        foreach(var obstacle in obstacles)
+        foreach (var obstacle in obstacles.Where(obstacle => !ReferenceEquals(obstacle, null)))
         {
-            if(obstacle == null)
-                continue;
             _obstacleCoverageMap.TryAdd(obstacle, false);
         }
     }
     private void SetObstacleCovered(Obstacle obstacle, bool isCovered)
     {
-        _obstacleCoverageMap[obstacle] = isCovered;
+        if (_obstacleCoverageMap.ContainsKey(obstacle))
+            _obstacleCoverageMap[obstacle] = isCovered;
     }
     private void SetObstaclesUncovered()
     {

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UniRx;
+using UniRx.InternalUtil;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,7 +12,6 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 {
     [SerializeField] private TextMeshProUGUI _textMeshProUGUI;
     private Camera _renderCamera;
-    private Coroutine _mouseOverCoroutine;
     private string _linkId = null;
     private void Awake()
     {
@@ -18,11 +19,13 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_mouseOverCoroutine != null)
+        if(Observable.FromMicroCoroutine(Co_MouseOver).Subscribe() == null)
+            Observable.FromMicroCoroutine(Co_MouseOver).Subscribe().AddTo(this);
+        else
         {
-            StopCoroutine(_mouseOverCoroutine);
+            Observable.FromMicroCoroutine(Co_MouseOver).Subscribe().Dispose();
+            Observable.FromMicroCoroutine(Co_MouseOver).Subscribe().AddTo(this);
         }
-        _mouseOverCoroutine = StartCoroutine(Co_MouseOver());
     }
     private IEnumerator Co_MouseOver()
     {
@@ -61,9 +64,10 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void OnPointerExit(PointerEventData eventData)
     {
         MouseChange(false);
-        if (_mouseOverCoroutine == null)
+        if (Observable.FromMicroCoroutine(Co_MouseOver).Subscribe() == null)
             return;
-        StopCoroutine(_mouseOverCoroutine);
+        else
+            Observable.FromMicroCoroutine(Co_MouseOver).Subscribe().Dispose();
         if(_linkId != null)
             LinkManager.Instance.LinkEvent(_linkId, false);
     }

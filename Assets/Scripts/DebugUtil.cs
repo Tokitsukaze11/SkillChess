@@ -17,14 +17,14 @@ public class DebugUtil : MonoBehaviour
         #if !UNITY_EDITOR
         Destroy(this);
         #endif
-        _debugButton.onClick.AddListener(DebugFunc);
+        //_debugButton.onClick.AddListener(DebugFunc);
     }
     private void DebugFunc()
     {
-        int randomRow = Random.Range(8, 20);
+        /*int randomRow = Random.Range(8, 20);
         int randomCol = Random.Range(8, 20);
         GlobalValues.ROW = randomRow;
         GlobalValues.COL = randomCol;
-        FindObjectOfType<MapSpawner>().ResetMapSquares();
+        FindObjectOfType<MapSpawner>().ResetMapSquares();*/
     }
 }

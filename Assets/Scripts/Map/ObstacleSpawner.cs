@@ -26,18 +26,20 @@ public class ObstacleSpawner : MonoBehaviour
     }
     private string TypeString(int type)
     {
-        switch (type)
+        return type switch
         {
-            case TOWER_A_OBSTACLE:
-                return StringKeys.TOWER_A_OBSTACLE;
-            case TOWER_B_OBSTACLE:
-                return StringKeys.TOWER_B_OBSTACLE;
-            case TOWER_C_OBSTACLE:
-                return StringKeys.TOWER_C_OBSTACLE;
-            case WALL_B_OBSTACLE:
-                return StringKeys.WALL_B_OBSTACLE;
-            default:
-                return null;
+            TOWER_A_OBSTACLE => StringKeys.TOWER_A_OBSTACLE,
+            TOWER_B_OBSTACLE => StringKeys.TOWER_B_OBSTACLE,
+            TOWER_C_OBSTACLE => StringKeys.TOWER_C_OBSTACLE,
+            WALL_B_OBSTACLE => StringKeys.WALL_B_OBSTACLE,
+            _ => null
+        };
+    }
+    public void InvisibleObstacle()
+    {
+        foreach (var obstacle in _obstacleList)
+        {
+            obstacle.gameObject.SetActive(false);
         }
     }
     private void ResetObstacle()
@@ -99,7 +101,7 @@ public class ObstacleSpawner : MonoBehaviour
         targetMap.IsObstacle = true;
         var obj = ObjectManager.Instance.SpawnObject(_obstaclePrefabs[type], TypeString(type), true);
         Vector3 targetPos = targetMap.transform.position;
-        // TODO : 장애물의 위치가 각각 다를 수 있음(최대한 프리팹의 위치를 기준으로 잡아야 함)
+        // 장애물의 위치가 각각 다를 수 있음(최대한 프리팹의 위치를 기준으로 잡아야 함)
         obj.transform.position += targetPos;
         obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
         obj.gameObject.SetActive(true);

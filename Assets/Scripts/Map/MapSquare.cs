@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
+public class MapSquare : MonoBehaviour
 {
     [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private Material[] _colorMaterials;
@@ -48,7 +48,7 @@ public class MapSquare : MonoBehaviour // TODO : Check it will be abstract
             _spriteRenderer.DOColor(color, 0.3f).onComplete = () => _spriteRenderer.color = color;
         _originColor = color;
     }
-    public void OnMouseDown()
+    public void OnMouseDown() // 레이케스트 방식으로 변경해야 함(장애물이 앞에 있으면 클릭이 안됨 -> 불쾌한 경험 해결)
     {
         if (!_isChoosen)
             return;

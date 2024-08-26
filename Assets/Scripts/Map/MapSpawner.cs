@@ -64,15 +64,8 @@ public class MapSpawner : MonoBehaviour
         NavMeshController.Instance.BakeNavMesh();
         PawnManager.Instance.SpawnPawn();
     }
-    public void ResetMapSquares()
+    private void ResetMapSquares()
     {
-        /*var mapSquareDic = SquareCalculator.MapSquareDic;
-        foreach (var mapSquare in mapSquareDic.Values)
-        {
-            ObjectManager.Instance.RemoveObject(mapSquare.gameObject);
-        }
-        SquareCalculator.MapSquareDic.Clear();
-        PawnManager.Instance.ResetPawns();*/
         ClearMapSquares();
         MakeMapSquares(GlobalValues.ROW, GlobalValues.COL);
     }
@@ -85,5 +78,6 @@ public class MapSpawner : MonoBehaviour
         }
         SquareCalculator.MapSquareDic.Clear();
         PawnManager.Instance.ResetPawns();
+        _obstacleSpawner.InvisibleObstacle(); // Destroy시 Obstacle에서 SetAlpha를 호출하면서 문제 발생
     }
 }
