@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 
 public class KeyManager : MonoBehaviour
@@ -11,7 +13,8 @@ public class KeyManager : MonoBehaviour
     private void Awake()
     {
         _keyActions.Add(KeyCode.Escape, EscapeKey);
-        UpdateManager.Instance.OnUpdate += KeyChecker;
+        var keyDownStream = this.UpdateAsObservable().Where(x => Input.anyKeyDown);
+        keyDownStream.Subscribe(_ => KeyChecker());
     }
     public void AttachKeyEvent(KeyCode keyCode, Action action)
     {

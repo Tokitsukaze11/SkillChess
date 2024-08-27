@@ -2,7 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ObstacleController : MonoBehaviour
 {
@@ -11,9 +14,14 @@ public class ObstacleController : MonoBehaviour
     private Camera _mainCamera;
     private List<Pawn> _pawns;
     private RaycastHit[] hits = new RaycastHit[10];
+    
+    private List<Obstacle> preCachedObstacles = new List<Obstacle>();
     private void Awake()
     {
         PawnManager.Instance.OnSpawnComplete += OnPawnSpawn;
+        
+        var lateUpdateStream = this.LateUpdateAsObservable();
+        lateUpdateStream.Subscribe(_ => OnLateUpdate());
     }
     private void Start()
     {
@@ -25,7 +33,15 @@ public class ObstacleController : MonoBehaviour
         var enemyPawns = PawnManager.Instance.GetPawns(false);
         _pawns = playerPawns.Concat(enemyPawns).ToList();
     }
-    private void LateUpdate()
+    public void SetPreCachedObstacles(Obstacle obstacles)
+    {
+        preCachedObstacles.Add(obstacles);
+    }
+    public void RemovePreCachedObstacles(Obstacle obstacles)
+    {
+        preCachedObstacles.Remove(obstacles);
+    }
+    private void OnLateUpdate()
     {
         if (_pawns == null)
             return;
@@ -58,6 +74,13 @@ public class ObstacleController : MonoBehaviour
     }
     private void SetObstacleCovered(Obstacle obstacle, bool isCovered)
     {
+        if(preCachedObstacles.Contains(obstacle))
+        {
+            _obstacleCoverageMap[obstacle] = true;
+            return;
+        }
+        /*if(preCachedObstacles.Any(x => ReferenceEquals(x, obstacle)))
+            return;*/
         if (_obstacleCoverageMap.ContainsKey(obstacle))
             _obstacleCoverageMap[obstacle] = isCovered;
     }

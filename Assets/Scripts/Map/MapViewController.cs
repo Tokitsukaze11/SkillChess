@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
+using UniRx.Triggers;
 
 public class MapViewController : MonoBehaviour
 {
@@ -19,7 +21,8 @@ public class MapViewController : MonoBehaviour
     private void Awake()
     {
         _cameraTransform = _mainCamera.transform;
-        UpdateManager.Instance.OnUpdate += KeyCheck;
+        var updateStream = this.UpdateAsObservable();
+        updateStream.Subscribe(_ => KeyCheck());
         
         _defaultPosition = _cameraTransform.position;
         _defaultRotation = _cameraTransform.rotation;

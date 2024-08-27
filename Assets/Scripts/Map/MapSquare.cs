@@ -48,7 +48,8 @@ public class MapSquare : MonoBehaviour
             _spriteRenderer.DOColor(color, 0.3f).onComplete = () => _spriteRenderer.color = color;
         _originColor = color;
     }
-    public void OnMouseDown() // 레이케스트 방식으로 변경해야 함(장애물이 앞에 있으면 클릭이 안됨 -> 불쾌한 경험 해결)
+    #region RayCast Event
+    public void OnMouseClick()
     {
         if (!_isChoosen)
             return;
@@ -59,12 +60,16 @@ public class MapSquare : MonoBehaviour
         }
         OnClickSquare?.Invoke(this);
     }
-    public void OnMouseEnter()
+    private List<Obstacle> _obstacles = new List<Obstacle>();
+    public void OnMouseEnterCast()
     {
         if(_isChoosen)
+        {
             _mouseOverCoroutine = StartCoroutine(Co_ColourFade());
+            // 장애물들 체크해서 투명하게 하기
+        }
     }
-    public void OnMouseExit()
+    public void OnMouseExitCast()
     {
         if (!_isChoosen)
             return;
@@ -73,7 +78,37 @@ public class MapSquare : MonoBehaviour
         StopCoroutine(_mouseOverCoroutine);
         _mouseOverCoroutine = null;
         SetColor(_originColor, true);
+        // 장애물들 체크해서 원래대로 돌리기
     }
+    #endregion
+    #region Unity Event
+    public void OnMouseDown() // 레이케스트 방식으로 변경해야 함(장애물이 앞에 있으면 클릭이 안됨 -> 불쾌한 경험 해결)
+    {
+        /*if (!_isChoosen)
+            return;
+        if(_mouseOverCoroutine != null)
+        {
+            StopCoroutine(_mouseOverCoroutine);
+            _mouseOverCoroutine = null;
+        }
+        OnClickSquare?.Invoke(this);*/
+    }
+    public void OnMouseEnter()
+    {
+        /*if(_isChoosen)
+            _mouseOverCoroutine = StartCoroutine(Co_ColourFade());*/
+    }
+    public void OnMouseExit()
+    {
+        /*if (!_isChoosen)
+            return;
+        if (_mouseOverCoroutine == null)
+            return;
+        StopCoroutine(_mouseOverCoroutine);
+        _mouseOverCoroutine = null;
+        SetColor(_originColor, true);*/
+    }
+  #endregion
     private IEnumerator Co_ColourFade()
     {
         yield return new WaitForSeconds(0.5f);

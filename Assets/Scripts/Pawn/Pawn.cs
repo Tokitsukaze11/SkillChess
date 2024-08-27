@@ -119,12 +119,12 @@ public abstract class Pawn : MonoBehaviour
         }
         yield break;
     }
-    protected void Update()
+    private void Update()
     {
         var camRotation = _mainCamera.transform.rotation.eulerAngles;
         _hpBarTransform.rotation = Quaternion.Euler(camRotation.x, camRotation.y, camRotation.z);
     }
-    protected virtual void OnMouseDown()
+    protected virtual void OnMouseDown() // 얘도 레이케스트 방식으로 변경해야 함
     {
         if(_curMapSquare.IsCanClick()) // MapSquare을 누를 수 있게 보정
         {
