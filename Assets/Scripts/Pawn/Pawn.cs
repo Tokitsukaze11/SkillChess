@@ -124,13 +124,9 @@ public abstract class Pawn : MonoBehaviour
         var camRotation = _mainCamera.transform.rotation.eulerAngles;
         _hpBarTransform.rotation = Quaternion.Euler(camRotation.x, camRotation.y, camRotation.z);
     }
-    protected virtual void OnMouseDown() // 얘도 레이케스트 방식으로 변경해야 함
+    public void OnMouseClick()
     {
-        if(_curMapSquare.IsCanClick()) // MapSquare을 누를 수 있게 보정
-        {
-            _curMapSquare.OnMouseDown();
-            return;
-        }
+        // 보정은 미리 하고 들어옴
         if (!_isPlayerPawn || !_isCanClick)
             return;
         OnPawnClicked?.Invoke(true, this);

@@ -49,27 +49,40 @@ public class MapSquare : MonoBehaviour
         _originColor = color;
     }
     #region RayCast Event
-    public void OnMouseClick()
+    public void OnMouseClick(Action correctionAction)
     {
-        if (!_isChoosen)
+        /*if (!_isChoosen)
+        {
+            _curPawn?.OnMouseClick();
             return;
+        }*/
+        if(OnClickSquare == null)
+        {
+            if(ReferenceEquals(_curPawn,null))
+                correctionAction?.Invoke();
+            else
+                _curPawn.OnMouseClick();
+            return;
+        }
         if(_mouseOverCoroutine != null)
         {
             StopCoroutine(_mouseOverCoroutine);
             _mouseOverCoroutine = null;
         }
         OnClickSquare?.Invoke(this);
+        
     }
     private List<Obstacle> _obstacles = new List<Obstacle>();
-    public void OnMouseEnterCast()
+    public void OnMouseEnterCast(Action callBack)
     {
         if(_isChoosen)
         {
             _mouseOverCoroutine = StartCoroutine(Co_ColourFade());
             // 장애물들 체크해서 투명하게 하기
+            callBack?.Invoke();
         }
     }
-    public void OnMouseExitCast()
+    public void OnMouseExitCast(Action callBack)
     {
         if (!_isChoosen)
             return;
@@ -79,6 +92,7 @@ public class MapSquare : MonoBehaviour
         _mouseOverCoroutine = null;
         SetColor(_originColor, true);
         // 장애물들 체크해서 원래대로 돌리기
+        callBack?.Invoke();
     }
     #endregion
     #region Unity Event
@@ -121,10 +135,6 @@ public class MapSquare : MonoBehaviour
             yield return null;
         }
         yield break;
-    }
-    public bool IsCanClick()
-    {
-        return _isChoosen;
     }
     public void ResetColor()
     {

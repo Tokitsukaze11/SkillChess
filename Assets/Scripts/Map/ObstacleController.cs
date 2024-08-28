@@ -47,20 +47,17 @@ public class ObstacleController : MonoBehaviour
             return;
         foreach (var pawn in _pawns.Where(pawn => !ReferenceEquals(pawn, null)))
         {
-            /*RaycastHit[] hits;
-            hits = Physics.RaycastAll(_mainCamera.transform.position, pawn.transform.position - _mainCamera.transform.position);*/
-            
-            Physics.RaycastNonAlloc(_mainCamera.transform.position, pawn.transform.position - _mainCamera.transform.position, hits);
-            
-            //Debug.DrawRay(_mainCamera.transform.position, pawn.transform.position - _mainCamera.transform.position, Color.red);
-            foreach (var hit in hits.Where(x => !ReferenceEquals(x.collider,null)))
+            var origin = _mainCamera.transform.position;
+            var distance = pawn.transform.position - _mainCamera.transform.position;
+            List<Obstacle> obs = RaycastTool.RaycastNonAlloc<Obstacle>(origin,distance,hits);
+            foreach (var obstacle in obs.Where(x => !ReferenceEquals(x, null)))
             {
-                /*var obstacle = hit.collider.GetComponent<Obstacle>();
-                if (obstacle is null)
-                    continue;*/
-                if(hit.collider.TryGetComponent<Obstacle>(out var obstacle))
-                    SetObstacleCovered(obstacle, true);
+                SetObstacleCovered(obstacle, true);
             }
+        }
+        foreach(var obstacle in preCachedObstacles)
+        {
+            SetObstacleCovered(obstacle, true);
         }
         SetObstaclesUncovered();
     }
@@ -79,8 +76,6 @@ public class ObstacleController : MonoBehaviour
             _obstacleCoverageMap[obstacle] = true;
             return;
         }
-        /*if(preCachedObstacles.Any(x => ReferenceEquals(x, obstacle)))
-            return;*/
         if (_obstacleCoverageMap.ContainsKey(obstacle))
             _obstacleCoverageMap[obstacle] = isCovered;
     }

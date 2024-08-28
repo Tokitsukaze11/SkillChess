@@ -9,8 +9,10 @@ public class ClickController : MonoBehaviour
 {
     private Camera _mainCamera;
     private int _squareLayMask;
+    private int _pawnLayMask;
     private MapSquare _mouseOverSquare = null;
     [SerializeField] private ObstacleController _obstacleController;
+    private List<Obstacle> _preObstacles = new List<Obstacle>();
     private void Awake()
     {
         _mainCamera = GameManager.Instance.mainCamera;
@@ -18,6 +20,7 @@ public class ClickController : MonoBehaviour
         //Observable.EveryGameObjectUpdate().Subscribe(_ => OnMouseClick());
         //this.UpdateAsObservable().Subscribe(_ => OnMouseClick());
         _squareLayMask = LayerMask.GetMask("Square");
+        _pawnLayMask = LayerMask.GetMask("Pawn");
 
         var mouseDownStream = this.UpdateAsObservable().Where(x => Input.GetMouseButtonDown((0)));
         mouseDownStream.Subscribe(_ => OnMouseClick());
@@ -30,7 +33,15 @@ public class ClickController : MonoBehaviour
         if (GameManager.Instance.GameState != GameState.Play)
             return;
         // Enter가 먼저 실행되기 때문에 Raycast를 안 쏴도 됨
-        _mouseOverSquare?.OnMouseClick();
+        if (ReferenceEquals(_mouseOverSquare, null))
+            return;
+        _mouseOverSquare.OnMouseClick(TryPawnClick);
+    }
+    private void TryPawnClick()
+    {
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+        var pawn = RaycastTool.RaycastOnLayer<Pawn>(ray, _pawnLayMask);
+        pawn?.OnMouseClick();
     }
     private void MouseOverDetector()
     {
@@ -38,29 +49,45 @@ public class ClickController : MonoBehaviour
             return;
         Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
         // 레이케스트에서는 하나의 MapSquare만 인식이 가능함(님은 2개 동시에 클릭 ㄱㄴ?)
-        RaycastHit hit;
-        Physics.Raycast(ray, out hit, float.MaxValue, _squareLayMask);
-        if (hit.collider != null)
+        var mapSquare = RaycastTool.RaycastOnLayer<MapSquare>(ray, _squareLayMask);
+        if (ReferenceEquals(mapSquare, null))
         {
-            hit.collider.TryGetComponent<MapSquare>(out var mapSquare);
-            //if (mapSquare == null || mapSquare == _mouseOverSquare)
-            if(ReferenceEquals(mapSquare, null) || ReferenceEquals(mapSquare, _mouseOverSquare))
-                return;
-            // Enter Event
-            CheckOtherSquare();
-            _mouseOverSquare = mapSquare;
-            _mouseOverSquare.OnMouseEnterCast();
+            if (CheckOtherSquare()) // Exit Event
+                _mouseOverSquare = null;
+            // Nothing Hit
             return;
         }
-        // Exit Event
-        if(CheckOtherSquare())
-            _mouseOverSquare = null;
+        if (ReferenceEquals(mapSquare, _mouseOverSquare)) // Same Square
+            return;
+        // Enter Event
+        CheckOtherSquare();
+        _mouseOverSquare = mapSquare;
+        Action obstacleCheck = () =>
+        {
+            var origin = _mainCamera.transform.position;
+            var distance = _mouseOverSquare.transform.position - _mainCamera.transform.position;
+            var obs = RaycastTool.RaycastNonAlloc<Obstacle>(origin,distance,new RaycastHit[10]);
+            foreach (var obstacle in obs)
+            {
+                _obstacleController.SetPreCachedObstacles(obstacle);
+            }
+            _preObstacles = obs;
+        };
+        _mouseOverSquare.OnMouseEnterCast(obstacleCheck);
     }
     private bool CheckOtherSquare()
     {
         if(ReferenceEquals(_mouseOverSquare, null))
             return false;
-        _mouseOverSquare.OnMouseExitCast();
+        Action obstacleRemove = () =>
+        {
+            foreach (var obstacle in _preObstacles)
+            {
+                _obstacleController.RemovePreCachedObstacles(obstacle);
+            }
+            _preObstacles.Clear();
+        };
+        _mouseOverSquare.OnMouseExitCast(obstacleRemove);
         return true;
     }
 }
