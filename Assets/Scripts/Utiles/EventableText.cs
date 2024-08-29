@@ -59,7 +59,6 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             }
             yield return null;
         }
-        yield break;
     }
     public void OnPointerExit(PointerEventData eventData)
     {

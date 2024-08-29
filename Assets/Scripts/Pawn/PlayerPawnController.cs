@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -21,6 +22,11 @@ public class PlayerPawnController : MonoBehaviour
     {
         PawnManager.Instance.OnResetPawns += ResetPawns;
         PawnManager.Instance.OnSpawnPawns += SpawnPlayerPawn;
+        foreach (var pawn in playerPawnPrefab)
+        {
+            ObjectManager.Instance.MakePool(pawn, pawn.gameObject.name);
+        }
+        ObjectManager.Instance.MakePool(playerKingPrefab, playerKingPrefab.gameObject.name);
     }
     private void ResetPawns()
     {
@@ -28,6 +34,8 @@ public class PlayerPawnController : MonoBehaviour
             return;
         foreach(var pawn in _playerPawns)
         {
+            pawn.TryGetComponent(out NavMeshAgent nav);
+            nav.enabled = false;
             ObjectManager.Instance.RemoveObject(pawn.gameObject);
         }
         _playerPawns.Clear();
@@ -46,11 +54,17 @@ public class PlayerPawnController : MonoBehaviour
             for (int i = 0; i < col/2; i++)
             {
                 GameObject obj = null;
-                
-                if(i == col/2/2 && nowRow == 0)
-                    obj = ObjectManager.Instance.SpawnObject(playerKingPrefab, null, false);
+
+                if (i == col / 2 / 2 && nowRow == 0)
+                    //obj = ObjectManager.Instance.SpawnObject(playerKingPrefab, null, false);
+                    obj = ObjectManager.Instance.SpawnObject(playerKingPrefab,playerKingPrefab.gameObject.name);
                 else
-                    obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab[Random.Range(0,playerPawnPrefab.Length)], null, false);
+
+                    //obj = ObjectManager.Instance.SpawnObject(playerPawnPrefab[Random.Range(0,playerPawnPrefab.Length)], null, false);
+                {
+                    var target = playerPawnPrefab[Random.Range(0, playerPawnPrefab.Length)];
+                    obj = ObjectManager.Instance.SpawnObject(target, target.gameObject.name);
+                }
                 
                 int curRow = nowRow;
                 int curCol = i * 2;
@@ -77,19 +91,21 @@ public class PlayerPawnController : MonoBehaviour
                 StartCoroutine(pawn.Co_MoveToDest(curMapSquare.transform.position));
             }
         }
-        StartCoroutine(SetNavMeshAgentEnable());
+        //StartCoroutine(SetNavMeshAgentEnable());
+        Observable.FromCoroutine(SetNavMeshAgentEnable).Subscribe();
         _pawnBehaviorUIController.UpdatePlayerPawns(_playerPawns);
     }
     private IEnumerator SetNavMeshAgentEnable()
     {
         yield return new WaitForSeconds(0.1f);
-        _playerPawns.ForEach(x => x.GetComponent<NavMeshAgent>().enabled = true);
+        //_playerPawns.ForEach(x => x.GetComponent<NavMeshAgent>().enabled = true);
+        foreach (var pawn in _playerPawns)
+        {
+            pawn.TryGetComponent<NavMeshAgent>(out var navMeshAgent);
+            if(!ReferenceEquals(navMeshAgent, null))
+                navMeshAgent.enabled = true;
+        }
         yield break;
-    }
-    public void DespawnPlayerPawn()
-    {
-        _playerPawns.ForEach(x => ObjectManager.Instance.RemoveObject(x.gameObject, "PlayerPawn", true));
-        _playerPawns.Clear();
     }
     public List<Pawn> GetPawns()
     {

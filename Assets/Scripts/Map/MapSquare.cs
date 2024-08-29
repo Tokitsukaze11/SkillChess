@@ -10,7 +10,6 @@ public class MapSquare : MonoBehaviour
     [SerializeField] private Material[] _colorMaterials;
     [SerializeField] private SpriteRenderer _spriteRenderer;
     private bool _isAnyPawn; // 다른 Pawn이 차지하고 있는지 여부
-    private bool _isChoosen;
     private bool _isObstacle; // 장애물이 있는지 여부, Pawn 제외
     public event Action<MapSquare> OnClickSquare;
     private Pawn _curPawn;
@@ -36,7 +35,6 @@ public class MapSquare : MonoBehaviour
     }
     public void SetColor(Color color, bool isDirect = false)
     {
-        _isChoosen = color != GlobalValues.UNSELECT_COLOUR;
         if (color == GlobalValues.UNSELECT_COLOUR)
         {
             _spriteRenderer.color = GlobalValues.UNSELECT_COLOUR;
@@ -51,11 +49,6 @@ public class MapSquare : MonoBehaviour
     #region RayCast Event
     public void OnMouseClick(Action correctionAction)
     {
-        /*if (!_isChoosen)
-        {
-            _curPawn?.OnMouseClick();
-            return;
-        }*/
         if(OnClickSquare == null)
         {
             if(ReferenceEquals(_curPawn,null))
@@ -72,19 +65,17 @@ public class MapSquare : MonoBehaviour
         OnClickSquare?.Invoke(this);
         
     }
-    private List<Obstacle> _obstacles = new List<Obstacle>();
     public void OnMouseEnterCast(Action callBack)
     {
-        if(_isChoosen)
-        {
-            _mouseOverCoroutine = StartCoroutine(Co_ColourFade());
-            // 장애물들 체크해서 투명하게 하기
-            callBack?.Invoke();
-        }
+        if (OnClickSquare == null)
+            return;
+        _mouseOverCoroutine = StartCoroutine(Co_ColourFade());
+        // 장애물들 체크해서 투명하게 하기
+        callBack?.Invoke();
     }
     public void OnMouseExitCast(Action callBack)
     {
-        if (!_isChoosen)
+        if(OnClickSquare == null)
             return;
         if (_mouseOverCoroutine == null)
             return;
@@ -134,7 +125,6 @@ public class MapSquare : MonoBehaviour
             _spriteRenderer.color = Color.Lerp(_originColor, GlobalValues.UNSELECT_COLOUR, Mathf.PingPong(time, 1));
             yield return null;
         }
-        yield break;
     }
     public void ResetColor()
     {

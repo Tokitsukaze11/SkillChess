@@ -19,10 +19,6 @@ public class TurnManager : MonoBehaviour
         _turnTextRect = _turnText.gameObject.GetComponent<RectTransform>();
         EventManager.Instance.OnGameStart += (row, col) => StartGame();
     }
-    private void Start()
-    {
-        //StartGame();
-    }
     private void StartGame()
     {
         _isPlayer1Turn = true;

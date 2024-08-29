@@ -60,7 +60,7 @@ public class ObjectPool : MonoBehaviour
     }
     public void TryRemoveObject(GameObject obj)
     {
-        var targetKey = _objectPooling.FirstOrDefault(x => x.Value.Contains(obj)).Key;
+        string targetKey = _objectPooling.FirstOrDefault(x => x.Value.Contains(obj)).Key;
         if (targetKey != null)
         {
             RemoveObject(obj, targetKey);

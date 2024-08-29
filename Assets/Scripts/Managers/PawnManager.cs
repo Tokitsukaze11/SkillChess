@@ -40,10 +40,6 @@ public class PawnManager : Singleton<PawnManager>
         OnSpawnPawns?.Invoke();
         OnSpawnComplete?.Invoke();
     }
-    public void DespawnPawn()
-    {
-        
-    }
     public void TurnChange(bool isPlayerTurn)
     {
         if (isPlayerTurn) OnPlayerTurn?.Invoke();

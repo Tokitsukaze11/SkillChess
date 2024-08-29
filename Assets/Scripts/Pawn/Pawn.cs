@@ -101,10 +101,10 @@ public abstract class Pawn : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
         _navMeshAgent.SetDestination(destination);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
         _animator.SetBool(Run,true);
         
-        while (true)
+        while (_navMeshAgent.enabled)
         {
             if (_navMeshAgent.remainingDistance <= 0.1f)
             {

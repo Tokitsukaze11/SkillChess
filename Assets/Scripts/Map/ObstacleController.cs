@@ -12,13 +12,14 @@ public class ObstacleController : MonoBehaviour
     private Dictionary<Obstacle, bool> _obstacleCoverageMap = new Dictionary<Obstacle, bool>();
     
     private Camera _mainCamera;
-    private List<Pawn> _pawns;
+    private List<Pawn> _pawns = null;
     private RaycastHit[] hits = new RaycastHit[10];
     
     private List<Obstacle> preCachedObstacles = new List<Obstacle>();
     private void Awake()
     {
         PawnManager.Instance.OnSpawnComplete += OnPawnSpawn;
+        PawnManager.Instance.OnResetPawns += OnResetPawns;
         
         var lateUpdateStream = this.LateUpdateAsObservable();
         lateUpdateStream.Subscribe(_ => OnLateUpdate());
@@ -33,6 +34,10 @@ public class ObstacleController : MonoBehaviour
         var enemyPawns = PawnManager.Instance.GetPawns(false);
         _pawns = playerPawns.Concat(enemyPawns).ToList();
     }
+    private void OnResetPawns()
+    {
+        _pawns = null;
+    }
     public void SetPreCachedObstacles(Obstacle obstacles)
     {
         preCachedObstacles.Add(obstacles);
@@ -45,7 +50,8 @@ public class ObstacleController : MonoBehaviour
     {
         if (_pawns == null)
             return;
-        foreach (var pawn in _pawns.Where(pawn => !ReferenceEquals(pawn, null)))
+        //foreach(var pawn in _pawns.Where(pawn => pawn != null)) // real null과 fake null 둘다 false여야 함.
+        foreach(var pawn in _pawns.Where(pawn => !ReferenceEquals(pawn, null))) // Reset으로 _pawns가 null이 되게 했으므로 이렇게 바꿔도 됨.
         {
             var origin = _mainCamera.transform.position;
             var distance = pawn.transform.position - _mainCamera.transform.position;
@@ -84,7 +90,7 @@ public class ObstacleController : MonoBehaviour
         // 가려지지 않은 오브젝트 찾기
         foreach (var pair in _obstacleCoverageMap)
         {
-            pair.Key.SetAlpha(pair.Value);
+            pair.Key?.SetAlpha(pair.Value); // 리셋할떄 여기서 가끔 에러 뜸 (null 체크로 일단 임시로 해결해 둠)
         }
         // 가려짐 상태 업데이트
         _obstacleCoverageMap.ToList().ForEach(pair => _obstacleCoverageMap[pair.Key] = false);

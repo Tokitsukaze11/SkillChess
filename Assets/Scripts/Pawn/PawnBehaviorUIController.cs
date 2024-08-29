@@ -24,6 +24,7 @@ public class PawnBehaviorUIController : MonoBehaviour
     private void Start()
     {
         pawnBehaviorUIPanel.SetActive(false);
+        //EventManager.Instance.OnTitle += () => PawnBehaviorUIPanelActive(false); // 적용시 에러 발생
     }
     public void UpdatePlayerPawns(List<Pawn> playerPawns)
     {

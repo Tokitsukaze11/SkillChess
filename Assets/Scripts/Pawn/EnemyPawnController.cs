@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,6 +16,7 @@ public class EnemyPawnController : MonoBehaviour
     {
         PawnManager.Instance.OnResetPawns += ResetPawns;
         PawnManager.Instance.OnSpawnPawns += SpawnEnemyPawn;
+        // TODO : Player1과 모델이 다르다면 여기서도 ObjectManager.Instance.MakePool을 해줘야 함.
     }
     private void ResetPawns()
     {
@@ -22,6 +24,8 @@ public class EnemyPawnController : MonoBehaviour
             return;
         foreach(var pawn in _enemyPawns)
         {
+            pawn.TryGetComponent(out NavMeshAgent nav);
+            nav.enabled = false;
             ObjectManager.Instance.RemoveObject(pawn.gameObject);
         }
         _enemyPawns.Clear();
@@ -42,9 +46,14 @@ public class EnemyPawnController : MonoBehaviour
                 GameObject obj = null;
                 
                 if(i == col/2/2 && nowRow == row-1)
-                    obj = ObjectManager.Instance.SpawnObject(enemyKingPrefab, null, false);
+                    //obj = ObjectManager.Instance.SpawnObject(enemyKingPrefab, null, false);
+                    obj = ObjectManager.Instance.SpawnObject(enemyKingPrefab,enemyKingPrefab.gameObject.name);
                 else
-                    obj = ObjectManager.Instance.SpawnObject(enemyPawnPrefab[Random.Range(0,enemyPawnPrefab.Length)], null, false);
+                    //obj = ObjectManager.Instance.SpawnObject(enemyPawnPrefab[Random.Range(0,enemyPawnPrefab.Length)], null, false);
+                {
+                    var target = enemyPawnPrefab[Random.Range(0, enemyPawnPrefab.Length)];
+                    obj = ObjectManager.Instance.SpawnObject(target, target.gameObject.name);
+                }
                 
                 int curRow = nowRow;
                 int curCol = i * 2;
@@ -75,17 +84,20 @@ public class EnemyPawnController : MonoBehaviour
                 StartCoroutine(pawn.Co_MoveToDest(curMapSquare.transform.position));
             }
         }
-        StartCoroutine(SetNavMeshAgentEnable());
+        //StartCoroutine(SetNavMeshAgentEnable());
+        Observable.FromCoroutine(SetNavMeshAgentEnable).Subscribe();
     }
     private IEnumerator SetNavMeshAgentEnable()
     {
         yield return new WaitForSeconds(0.1f);
-        _enemyPawns.ForEach(x => x.GetComponent<NavMeshAgent>().enabled = true);
+        //_enemyPawns.ForEach(x => x.GetComponent<NavMeshAgent>().enabled = true);
+        foreach(var pawn in _enemyPawns)
+        {
+            pawn.TryGetComponent(out NavMeshAgent navMeshAgent);
+            if(!ReferenceEquals(navMeshAgent, null))
+                navMeshAgent.enabled = true;
+        }
         yield break;
-    }
-    public void DespawnEnemyPawn()
-    {
-        
     }
     public List<Pawn> GetPawns()
     {

@@ -32,7 +32,7 @@ public class ClickController : MonoBehaviour
     {
         if (GameManager.Instance.GameState != GameState.Play)
             return;
-        // Enter가 먼저 실행되기 때문에 Raycast를 안 쏴도 됨
+        // TODO : 턴이 시작되야 클릭 가능하게 만들어야 함.
         if (ReferenceEquals(_mouseOverSquare, null))
             return;
         _mouseOverSquare.OnMouseClick(TryPawnClick);
