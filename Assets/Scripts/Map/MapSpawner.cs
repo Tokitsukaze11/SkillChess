@@ -29,8 +29,8 @@ public class MapSpawner : MonoBehaviour
          /*_originPlayer1HQpos = _player1HQ.transform.position;
          _originPlayer2HQpos = _player2HQ.transform.position;*/
         GameManager.Instance.OnGameRestart += ResetMapSquares;
-        EventManager.Instance.OnGameStart += MakeMapSquares;
-        EventManager.Instance.OnTitle += ClearMapSquares;
+        EventManager.Instance.OnGameStartHaveParam += MakeMapSquares;
+        GameManager.Instance.OnTitle += ClearMapSquares;
         _obstacleSpawner.OnObstacleSet += _obstacleController.SetObstacle;
         GlobalValues.ROW = row;
         GlobalValues.COL = col;

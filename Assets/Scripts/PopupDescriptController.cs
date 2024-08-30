@@ -8,6 +8,7 @@ using DG.Tweening.Plugins.Options;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UniRx;
 
 public class PopupDescriptController : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class PopupDescriptController : MonoBehaviour
     
     public TextMeshProUGUI _descriptionText;
     public Image _descriptionPopupImage;
-    private Coroutine _panelAnimCoroutine = null;
+    private IDisposable _panelAnimDisposable = null;
     private RectTransform _panelRectTransform;
     
     public EventableText _eventableText;
@@ -49,24 +50,16 @@ public class PopupDescriptController : MonoBehaviour
 
         Action UIAction = () =>
         {
-            Coroutine panelAnimCoroutine = null;
+            _panelAnimDisposable?.Dispose();
             if (isOn)
             {
-                if (_panelAnimCoroutine != null)
-                {
-                    StopCoroutine(_panelAnimCoroutine);
-                }
-                panelAnimCoroutine = StartCoroutine(Co_PanelAnim(true));
+                _descriptionPopupImage.gameObject.SetActive(true);
+                _panelAnimDisposable = Co_PanelAnim(true).ToObservable().Subscribe();
             }
             else
             {
-                if (_panelAnimCoroutine != null)
-                {
-                    StopCoroutine(_panelAnimCoroutine);
-                }
-                panelAnimCoroutine = StartCoroutine(Co_PanelAnim(false));
+                _panelAnimDisposable = Co_PanelAnim(false).ToObservable().Subscribe();
             }
-            _panelAnimCoroutine = panelAnimCoroutine;
         };
         UIManager.Instance.UpdateUI(UIAction);
     }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UniRx;
 
 public enum AttackType
 {
@@ -67,7 +68,7 @@ public class AttackDecorator : SkillDecorator
     protected override void SkillEffect(MapSquare targetSquare)
     {
         base.SkillEffect(targetSquare);
-        CoroutineManager.Instance.AsyncStartViaCoroutine(Co_SkillEffect(targetSquare));
+        Observable.FromCoroutine(() => Co_SkillEffect(targetSquare)).Subscribe();
     }
     protected override IEnumerator Co_SkillEffect(MapSquare targetSquare)
     {

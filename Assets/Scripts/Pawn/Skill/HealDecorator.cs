@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 public enum HealType
 {
@@ -144,7 +145,7 @@ public class HealDecorator : SkillDecorator
     }
     private void HealSingle(MapSquare targetSquare, bool isTick = false)
     {
-        CoroutineManager.Instance.AsyncStartViaCoroutine(!isTick ? Co_SkillEffect(targetSquare) : Co_SkillEffectNoAnim(new List<MapSquare>(){targetSquare}));
+        Observable.FromCoroutine(() => !isTick ? Co_SkillEffect(targetSquare) : Co_SkillEffectNoAnim(new List<MapSquare>(){targetSquare})).Subscribe();
     }
     private void HealArea(MapSquare targetSquare, bool isTick = false)
     {
@@ -162,7 +163,7 @@ public class HealDecorator : SkillDecorator
         };
         radial = radial.Concat(dir).ToList();
         radial = radial.Concat(area).ToList();
-        CoroutineManager.Instance.AsyncStartViaCoroutine(!isTick ? Co_SkillEffectArea(radial) : Co_SkillEffectNoAnim(radial));
+        Observable.FromCoroutine(() => !isTick ? Co_SkillEffectArea(radial) : Co_SkillEffectNoAnim(radial)).Subscribe();
     }
     private void TickHeal(int healType, MapSquare targetSquare)
     {

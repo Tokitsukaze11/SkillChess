@@ -13,7 +13,7 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public string description;
     public event Action<bool,string> OnMouseOverPopup;
     public event Action<PopupObject> OnMouseOverNew;
-    private Coroutine _mouseOverCoroutine;
+    private IDisposable _mouseOverDisposable;
     private bool _isPanelLock = false;
     [SerializeField] private Image _timeSlider;
     public void InitDescription(DescriptObject descriptObject)
@@ -27,11 +27,8 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         OnMouseOverPopup?.Invoke(true,description);
         OnMouseOverNew?.Invoke(this);
         _timeSlider.fillAmount = 0;
-        if (_mouseOverCoroutine != null)
-        {
-            StopCoroutine(_mouseOverCoroutine);
-        }
-        _mouseOverCoroutine = StartCoroutine(Co_MouseOver());
+        _mouseOverDisposable?.Dispose();
+        _mouseOverDisposable = Observable.FromCoroutine(Co_MouseOver).Subscribe();
     }
     private IEnumerator Co_MouseOver()
     {
@@ -57,10 +54,7 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             OnMouseOverPopup?.Invoke(false, null);
             _timeSlider.fillAmount = 0;
         }
-        if (_mouseOverCoroutine != null)
-        {
-            StopCoroutine(_mouseOverCoroutine);
-        }
+        _mouseOverDisposable?.Dispose();
     }
     public void UnlockPopup()
     {
@@ -75,10 +69,7 @@ public class PopupObject : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     }
     public void StopFillAnim()
     {
-        if (_mouseOverCoroutine != null)
-        {
-            StopCoroutine(_mouseOverCoroutine);
-        }
+        _mouseOverDisposable?.Dispose();
         _timeSlider.fillAmount = 0;
     }
 }

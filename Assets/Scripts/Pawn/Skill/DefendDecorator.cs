@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 public class DefendDecorator : SkillDecorator
@@ -54,7 +55,7 @@ public class DefendDecorator : SkillDecorator
     protected override void SkillEffect(MapSquare targetSquare)
     {
         base.SkillEffect(targetSquare);
-        CoroutineManager.Instance.AsyncStartViaCoroutine(Co_SkillEffect(targetSquare));
+        Observable.FromCoroutine(() => Co_SkillEffect(targetSquare)).Subscribe();
     }
     protected override IEnumerator Co_SkillEffect(MapSquare targetSquare)
     {

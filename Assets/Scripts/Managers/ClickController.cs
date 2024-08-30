@@ -13,6 +13,7 @@ public class ClickController : MonoBehaviour
     private MapSquare _mouseOverSquare = null;
     [SerializeField] private ObstacleController _obstacleController;
     private List<Obstacle> _preObstacles = new List<Obstacle>();
+    private bool _isCanClick = false;
     private void Awake()
     {
         _mainCamera = GameManager.Instance.mainCamera;
@@ -27,12 +28,26 @@ public class ClickController : MonoBehaviour
         
         var updateStream = this.UpdateAsObservable();
         updateStream.Subscribe(_ => MouseOverDetector());
+
+        /*GameManager.Instance.OnGameStart += () =>
+        {
+            _isCanClick = true;
+        };*/
+        EventManager.Instance.OnGameStart += () =>
+        {
+            _isCanClick = true;
+        };
+        GameManager.Instance.OnGameEnd += (x) =>
+        {
+            _isCanClick = false;
+        };
     }
     private void OnMouseClick()
     {
         if (GameManager.Instance.GameState != GameState.Play)
             return;
-        // TODO : 턴이 시작되야 클릭 가능하게 만들어야 함.
+        if (!_isCanClick)
+            return;
         if (ReferenceEquals(_mouseOverSquare, null))
             return;
         _mouseOverSquare.OnMouseClick(TryPawnClick);

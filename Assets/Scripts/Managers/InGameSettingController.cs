@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -28,7 +29,7 @@ public class InGameSettingController : MonoBehaviour
     
     private event Action<GameState> _onGameStateChange;
     
-    private Coroutine _panelAnimCoroutine = null;
+    private IDisposable _panelAnimDisposable = null;
     
     private List<RectTransform> _buttonsRect = new List<RectTransform>();
     private List<TextMeshProUGUI> _buttonsText = new List<TextMeshProUGUI>();
@@ -104,7 +105,7 @@ public class InGameSettingController : MonoBehaviour
     private void GoTitle()
     {
         InGameMenuPanelActive(false);
-        EventManager.Instance.GoTitle();
+        GameManager.Instance.GameTitle();
     }
     private void CameraResetDescription(bool isOn, string description = null)
     {
@@ -112,25 +113,16 @@ public class InGameSettingController : MonoBehaviour
 
         Action UIAction = () =>
         {
-            Coroutine panelAnimCoroutine = null;
+            _panelAnimDisposable?.Dispose();
             if (isOn)
             {
-                if (_panelAnimCoroutine != null)
-                {
-                    StopCoroutine(_panelAnimCoroutine);
-                }
                 _camResetDesc.gameObject.SetActive(true);
-                panelAnimCoroutine = StartCoroutine(Co_PanelAnim(true));
+                _panelAnimDisposable = Co_PanelAnim(true).ToObservable().Subscribe();
             }
             else
             {
-                if (_panelAnimCoroutine != null)
-                {
-                    StopCoroutine(_panelAnimCoroutine);
-                }
-                panelAnimCoroutine = StartCoroutine(Co_PanelAnim(false));
+                _panelAnimDisposable = Co_PanelAnim(false).ToObservable().Subscribe();
             }
-            _panelAnimCoroutine = panelAnimCoroutine;
         };
         UIManager.Instance.UpdateUI(UIAction);
     }

@@ -18,7 +18,7 @@ public class TitleController : MonoBehaviour
     {
         _startButton.onClick.AddListener(StartGame);
         _exitButton.onClick.AddListener(ExitGame);
-        EventManager.Instance.OnTitle += () => TitleChange(true);
+        GameManager.Instance.OnTitle += () => TitleChange(true);
     }
     private void Start()
     {
@@ -38,7 +38,8 @@ public class TitleController : MonoBehaviour
     private void StartGame()
     {
         TitleChange(false);
-        EventManager.Instance.GameStart(GlobalValues.ROW, GlobalValues.COL);
+        //EventManager.Instance.GameStart(GlobalValues.ROW, GlobalValues.COL);
+        GameManager.Instance.GameStart();
     }
     private void ExitGame()
     {

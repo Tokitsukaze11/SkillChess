@@ -24,6 +24,13 @@ public class GameManager : Singleton<GameManager>
     private event Action<GameState> OnGameStateChanged;
     public event Action<bool> OnGameEnd;
     public event Action OnGameRestart;
+    public event Action OnGameStart;
+    public event Action OnTitle;
+    public void GameStart()
+    {
+        //EventManager.Instance.GameStart();
+        OnGameStart?.Invoke();
+    }
     public void TurnEnd()
     {
         if(!_isEndGame)
@@ -67,5 +74,9 @@ public class GameManager : Singleton<GameManager>
         _isEndGame = false;
         GameStateChange(GameState.Play);
         OnGameRestart?.Invoke();
+    }
+    public void GameTitle()
+    {
+        OnTitle?.Invoke();
     }
 }

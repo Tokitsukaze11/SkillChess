@@ -19,12 +19,12 @@ public class PawnBehaviorUIController : MonoBehaviour
     public Button skillButton;
     [SerializeField] private Image _skillTimer;
     public Image _skillIconImage;
-    public RectTransform _buttonsContainer;
     private List<Pawn> _playerPawns;
     private void Start()
     {
         pawnBehaviorUIPanel.SetActive(false);
-        //EventManager.Instance.OnTitle += () => PawnBehaviorUIPanelActive(false); // 적용시 에러 발생
+        GameManager.Instance.OnTitle += () => PawnBehaviorUIPanelActive(false); // 적용시 에러 발생 => Pawn들이 제거될 때 outlineFX를 제거하도록 임시 조치
+        GameManager.Instance.OnGameEnd += (x) => PawnBehaviorUIPanelActive(false); // 얘는 pawn이랑 상관 없음
     }
     public void UpdatePlayerPawns(List<Pawn> playerPawns)
     {

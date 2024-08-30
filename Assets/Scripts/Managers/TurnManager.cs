@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
+using UniRx;
 using UnityEngine;
 
 public class TurnManager : MonoBehaviour
@@ -17,12 +18,13 @@ public class TurnManager : MonoBehaviour
         GameManager.Instance.IsPlayer1Turn = () => _isPlayer1Turn;
         GameManager.Instance.OnGameRestart += StartGame;
         _turnTextRect = _turnText.gameObject.GetComponent<RectTransform>();
-        EventManager.Instance.OnGameStart += (row, col) => StartGame();
+        EventManager.Instance.OnGameStartHaveParam += (row, col) => StartGame();
     }
     private void StartGame()
     {
         _isPlayer1Turn = true;
-        StartCoroutine(Co_TurnChange(true, 5));
+        //StartCoroutine(Co_TurnChange(true, 5));
+        Observable.FromCoroutine(() => Co_TurnChange(true, 5)).Subscribe();
     }
     private void TurnChange()
     {
@@ -33,12 +35,14 @@ public class TurnManager : MonoBehaviour
     private void PlayerTurn()
     {
         PawnManager.Instance.TurnChange(true);
-        StartCoroutine(Co_TurnChange(true));
+        //StartCoroutine(Co_TurnChange(true));
+        Observable.FromCoroutine(() => Co_TurnChange(true)).Subscribe();
     }
     private void EnemyTurn()
     {
         PawnManager.Instance.TurnChange(false);
-        StartCoroutine(Co_TurnChange(false));
+        //StartCoroutine(Co_TurnChange(false));
+        Observable.FromCoroutine(() => Co_TurnChange(false)).Subscribe();
     }
     private IEnumerator Co_TurnChange(bool isPlayer1, int delay = 0)
     {

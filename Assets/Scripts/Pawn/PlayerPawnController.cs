@@ -36,6 +36,11 @@ public class PlayerPawnController : MonoBehaviour
         {
             pawn.TryGetComponent(out NavMeshAgent nav);
             nav.enabled = false;
+            var outs =pawn.GetComponentsInChildren<OutlineFx.OutlineFx>();
+            foreach (var outline in outs)
+            {
+                outline.enabled = false;
+            }
             ObjectManager.Instance.RemoveObject(pawn.gameObject);
         }
         _playerPawns.Clear();

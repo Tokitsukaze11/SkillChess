@@ -1,19 +1,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using UniRx;
 using UnityEngine;
 
 public class EventManager : Singleton<EventManager>
 {
-    public event Action<int, int> OnGameStart;
-    public event Action OnTitle;
-    
-    public void GameStart(int row, int col)
+    public event Action<int, int> OnGameStartHaveParam;
+    public event Action OnGameStart;
+    private void Awake()
     {
-        OnGameStart?.Invoke(row, col);
+        GameManager.Instance.OnGameStart += GameStart;
+        GameManager.Instance.OnGameRestart += GameRestart;
     }
-    public void GoTitle()
+    private void GameStart()
     {
-        OnTitle?.Invoke();
+        GameStart(GlobalValues.ROW, GlobalValues.COL);
+        DelayGameStart();
+    }
+    private void GameRestart()
+    {
+        DelayGameStart();
+    }
+    private void GameStart(int row, int col)
+    {
+        OnGameStartHaveParam?.Invoke(row, col);
+    }
+    private void DelayGameStart()
+    {
+        //Task.Delay(5000).ContinueWith(t => OnGameStart?.Invoke());
+        Observable.Timer(System.TimeSpan.FromSeconds(5)).Subscribe(_ => OnGameStart?.Invoke());
     }
 }
