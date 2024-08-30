@@ -24,6 +24,7 @@ public class PawnBehaviorUIController : MonoBehaviour
     {
         pawnBehaviorUIPanel.SetActive(false);
         GameManager.Instance.OnTitle += () => PawnBehaviorUIPanelActive(false); // 적용시 에러 발생 => Pawn들이 제거될 때 outlineFX를 제거하도록 임시 조치
+        // 근데 계속 에러 발생함(ㅅㅂ?)
         GameManager.Instance.OnGameEnd += (x) => PawnBehaviorUIPanelActive(false); // 얘는 pawn이랑 상관 없음
     }
     public void UpdatePlayerPawns(List<Pawn> playerPawns)
