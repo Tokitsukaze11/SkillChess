@@ -13,18 +13,19 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [SerializeField] private TextMeshProUGUI _textMeshProUGUI;
     private Camera _renderCamera;
     private string _linkId = null;
+    private IDisposable _mouseOverDisposable;
     private void Awake()
     {
         _renderCamera = UIManager.Instance.renderCamera;
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(Observable.FromMicroCoroutine(Co_MouseOver).Subscribe() == null)
-            Observable.FromMicroCoroutine(Co_MouseOver).Subscribe().AddTo(this);
+        if(_mouseOverDisposable == null)
+            _mouseOverDisposable = Observable.FromMicroCoroutine(Co_MouseOver).Subscribe();
         else
         {
-            Observable.FromMicroCoroutine(Co_MouseOver).Subscribe().Dispose();
-            Observable.FromMicroCoroutine(Co_MouseOver).Subscribe().AddTo(this);
+            _mouseOverDisposable.Dispose();
+            _mouseOverDisposable = Observable.FromMicroCoroutine(Co_MouseOver).Subscribe();
         }
     }
     private IEnumerator Co_MouseOver()
@@ -63,10 +64,7 @@ public class EventableText : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void OnPointerExit(PointerEventData eventData)
     {
         MouseChange(false);
-        if (Observable.FromMicroCoroutine(Co_MouseOver).Subscribe() == null)
-            return;
-        else
-            Observable.FromMicroCoroutine(Co_MouseOver).Subscribe().Dispose();
+        _mouseOverDisposable?.Dispose();
         if(_linkId != null)
             LinkManager.Instance.LinkEvent(_linkId, false);
     }

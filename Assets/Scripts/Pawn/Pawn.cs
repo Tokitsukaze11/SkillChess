@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using UniRx;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
@@ -97,6 +98,10 @@ public abstract class Pawn : MonoBehaviour
         // TODO : 이벤트가 null이 아닌지 확실히 확인 필요
         _skill.OnSkillUsed += OnPawnClicked;
     }
+    public void SetNavMeshAgentDisable()
+    {
+        _navMeshAgent.enabled = false;
+    }
     public IEnumerator Co_MoveToDest(Vector3 destination)
     {
         yield return new WaitForSeconds(0.2f);
@@ -133,18 +138,15 @@ public abstract class Pawn : MonoBehaviour
         PawnManager.Instance.ResetSquaresColor();
         _outlineFx.ToList().ForEach(x => x.enabled = true);
     }
-    public void UnSelected()
+    public void OnOutlineDisable()
     {
         _outlineFx.ToList().ForEach(x => x.enabled = false);
     }
     public virtual void ShowMoveRange()
     {
-        // Reset color
         PawnManager.Instance.ResetSquaresColor();
-        // Check now values
         var targetSquares = new List<MapSquare>();
         int curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
-        // Check target squares
         if(_moveType == MoveType.Straight)
             SquareCalculator.CheckTargetSquares(_movementRange, curKeyIndex, targetSquares, _isConsiderObstacle); // 직선 이동
         else
@@ -193,13 +195,13 @@ public abstract class Pawn : MonoBehaviour
         if (pathKeys.Count > 0)
         {
             OnPawnClicked?.Invoke(false,null);
-            StartCoroutine(Co_Move(path, callBack));
+            Observable.FromCoroutine(() => Co_Move(path, callBack)).Subscribe().AddTo(this);
         }
         return;
     }
     public void MoveOrder(Queue<MapSquare> path, Action callback)
     {
-        StartCoroutine(Co_Move(path, callback));
+        Observable.FromCoroutine(() => Co_Move(path, callback)).Subscribe().AddTo(this);
     }
     protected virtual IEnumerator Co_Move(Queue<MapSquare> path, Action callback)
     {
@@ -242,14 +244,11 @@ public abstract class Pawn : MonoBehaviour
     }
     public virtual void ShowAttackRange()
     {
-        // Reset color
         PawnManager.Instance.ResetSquaresColor();
 
-        // Check now values
-        var targetSquares = new List<MapSquare>(); // Real target squares
+        var targetSquares = new List<MapSquare>();
         var curKeyIndex = SquareCalculator.CurrentIndex(_curMapSquare);
 
-        // Check target squares
         if (_isHowitzerAttack)
             SquareCalculator.CheckTargetSquares(_attackRange, curKeyIndex, targetSquares);
         else
@@ -286,7 +285,7 @@ public abstract class Pawn : MonoBehaviour
             _objectTriggerAnimation.ResetTrigger();
         };
         OnPawnClicked?.Invoke(false, null);
-        StartCoroutine(Co_Attack(targetSquare));
+        Observable.FromCoroutine(() => Co_Attack(targetSquare)).Subscribe().AddTo(this);
     }
     private IEnumerator Co_Attack(MapSquare targetSquare)
     {
@@ -313,19 +312,19 @@ public abstract class Pawn : MonoBehaviour
         _objectTriggerAnimation.OnAnimationEndTrigger += () =>
         {
             _curMapSquare = realPath.Last();
-            StartCoroutine(Co_Move(reversPathQueue, () =>
+            Observable.FromCoroutine(() => Co_Move(reversPathQueue, () =>
             {
                 _curMapSquare = curSq;
                 _objectTriggerAnimation.ResetEndTrigger();
                 this.transform.rotation = GameManager.Instance.IsPlayer1Turn.Invoke() ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
                 GameManager.Instance.TurnEnd();
-            }));
+            })).Subscribe().AddTo(this);
         };
-        StartCoroutine(Co_Move(realPath, () =>
+        Observable.FromCoroutine(() => Co_Move(realPath, () =>
         {
             this.transform.rotation = Quaternion.LookRotation(new Vector3(targetSquare.transform.position.x, 0, targetSquare.transform.position.z) - this.transform.position);
             _animator.SetTrigger(Attack1);
-        }));
+        })).Subscribe().AddTo(this);
         yield break;
     }
     public virtual void Defend()

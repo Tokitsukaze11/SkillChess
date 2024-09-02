@@ -76,14 +76,7 @@ public class MapSetController : MonoBehaviour
     }
     private void UpdateUI()
     {
-        //_matrixText.text = $"<color=red>{GlobalValues.COL}</color> X <color=red>{GlobalValues.ROW}</color>";
-        /*foreach (var text in _matrixText)
-        {
+        foreach (var text in _matrixText)
             text.text = $"<color=red>{GlobalValues.COL}</color> X <color=red>{GlobalValues.ROW}</color>";
-        }*/
-        if(GameManager.Instance.GameState == GameState.End)
-            _matrixText[1].text = $"<color=red>{GlobalValues.COL}</color> X <color=red>{GlobalValues.ROW}</color>";
-        else
-            _matrixText[0].text = $"<color=red>{GlobalValues.COL}</color> X <color=red>{GlobalValues.ROW}</color>";
     }
 }

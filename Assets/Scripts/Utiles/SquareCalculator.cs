@@ -13,9 +13,13 @@ public static class SquareCalculator
         set
         {
             _mapSquareDic = value;
+            _mapSquares = _mapSquareDic.Values.ToList();
+            _keys = _mapSquareDic.Keys.ToList();
         }
         get => _mapSquareDic;
     }
+    private static List<MapSquare> _mapSquares;
+    private static List<Vector2> _keys;
     #region Check Target Squares
     /// <summary>
     /// Check squares that can something be done as range
@@ -60,45 +64,12 @@ public static class SquareCalculator
     /// <param name="isConsideringObstacles">Is considering obstacles to do. If true, try to stop when obstacle is found</param>
     public static void CheckDiagonalTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
     {
-        var keys = _mapSquareDic.Keys.ToList();
+        //var keys = _mapSquareDic.Keys.ToList();
         int row = GlobalValues.ROW; // n
         int col = GlobalValues.COL; // m
         
         int nowRow = curKeyIndex % row;
         int nowCol = curKeyIndex / row;
-        
-        /*// Check Right Up Direction
-        for(int i = 1; i <= targetRange; i++)
-        {
-            int newKeyIndex = curKeyIndex + (i * n) + i;
-            CheckDirection(newKeyIndex, nowRow, n * (nowCol + 1) - 1, keys, targetSquares);
-            if(isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
-                break;
-        }
-        // Check Right Down Direction
-        for(int i = 1; i <= targetRange; i++)
-        {
-            int newKeyIndex = curKeyIndex - (i * n) + i;
-            CheckDirection(newKeyIndex, nowRow, n * (nowCol + 1) - 1, keys, targetSquares);
-            if(isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
-                break;
-        }
-        // Check Left Up Direction
-        for(int i = 1; i <= targetRange; i++)
-        {
-            int newKeyIndex = curKeyIndex + (i * n) - i;
-            CheckDirection(newKeyIndex, n * nowCol, nowRow, keys, targetSquares);
-            if(isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
-                break;
-        }
-        // Check Left Down Direction
-        for(int i = 1; i <= targetRange; i++)
-        {
-            int newKeyIndex = curKeyIndex - (i * n) - i;
-            CheckDirection(newKeyIndex, n * nowCol, nowRow, keys, targetSquares);
-            if(isConsideringObstacles && IsOverlapped(i, targetRange, targetSquares))
-                break;
-        }*/
         
         int[] dx = { 1, 1, -1, -1 };
         int[] dy = { 1, -1, 1, -1 };
@@ -117,8 +88,7 @@ public static class SquareCalculator
                     break;
 
                 int newKeyIndex = newRow + newCol * row;
-                //CheckDirection(newKeyIndex, newRow, newCol, keys, targetSquares);
-                CheckDirection(newKeyIndex, 0, row * col - 1, keys, targetSquares);
+                CheckDirection(newKeyIndex, 0, row * col - 1, _keys, targetSquares);
                 
                 if(CheckBool(isConsideringObstacles, false, targetSquares))
                     break;
@@ -135,24 +105,6 @@ public static class SquareCalculator
         int maxBoundary = row * (nowCol + 1) - 1;
         int minBoundary = row * nowCol;
         
-        /*// Check Up Direction
-        for(int i = 1; i <= targetRange; i++)
-        {
-            int newKeyIndex = curKeyIndex + i;
-            CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
-            if(isMove && IsOverlapped(i, targetRange, targetSquares))
-                break;
-        }
-        // Check Down Direction
-        for(int i = 1; i <= targetRange; i++)
-        {
-            int newKeyIndex = curKeyIndex - i;
-            CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
-            if(isMove && IsOverlapped(i, targetRange, targetSquares))
-                break;
-        }*/
-        
-        // Make Less Cognitive Complexity
         int[] directions = { 1, -1 }; // 위, 아래 방향
 
         foreach (int direction in directions)
@@ -161,7 +113,8 @@ public static class SquareCalculator
             while (curRange < targetRange)
             {
                 int newKeyIndex = curKeyIndex + (curRange + 1) * direction;
-                CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
+                //CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
+                CheckDirection(newKeyIndex, minBoundary, maxBoundary, _keys, targetSquares);
                 
                 if(CheckBool(isConsideringObstacles, isConsideringAnyPawn, targetSquares))
                     break;
@@ -183,24 +136,6 @@ public static class SquareCalculator
         int minBoundary = nowRow;
         int maxBoundary = curKeyIndex + (row * targetRange);
         
-        /*// Check Right Direction
-        for(int i = 1; i <= targetRange; i++)
-        {
-            int newKeyIndex = curKeyIndex + (i * n);
-            CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
-            if(isMove && IsOverlapped(i, targetRange, targetSquares))
-                break;
-        }
-        // Check Left Direction
-        for(int i = 1; i <= targetRange; i++)
-        {
-            int newKeyIndex = curKeyIndex - (i * n);
-            CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
-            if(isMove && IsOverlapped(i, targetRange, targetSquares))
-                break;
-        }*/
-        
-        // Make Less Cognitive Complexity
         int[] directions = { row, -row }; // 오른쪽, 왼쪽 방향
 
         foreach (int direction in directions)
@@ -209,7 +144,8 @@ public static class SquareCalculator
             while (curRange < targetRange)
             {
                 int newKeyIndex = curKeyIndex + (curRange + 1) * direction;
-                CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
+                //CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
+                CheckDirection(newKeyIndex, minBoundary, maxBoundary, _keys, targetSquares);
                 
                 if(CheckBool(isConsideringObstacles, isConsideringAnyPawn, targetSquares))
                     break;
@@ -217,7 +153,6 @@ public static class SquareCalculator
                 curRange++;
             }
         }
-
         // n*m (n 행 m 열)
         // 나의 행에서 이동할 수 있는 거리만큼의 최대 값 : 현재 인덱스 + (n*이동할 수 있는 거리)
         // 나의 행에서 이동할 수 있는 거리만큼의 최소 값 : 현재 행의 인덱스
@@ -245,8 +180,6 @@ public static class SquareCalculator
         }
         if (isConsideringAnyPawn && targetSquares.Any(x => x.IsAnyPawn())) // 타겟 지정이고 타겟 영향 있을 때
         {
-            /*if(targetSquares[^1].CurPawn!._isPlayerPawn)
-                targetSquares.RemoveAt(targetSquares.Count - 1);*/
             if (targetSquares[^1].CurPawn == null)
                 return false;
             if(targetSquares[^1].CurPawn!._isPlayerPawn)
@@ -266,15 +199,15 @@ public static class SquareCalculator
         if (curMapSquare == null)
             return -1;
         Vector2 curKey = _mapSquareDic.FirstOrDefault(x => x.Value == curMapSquare).Key;
-        int curKeyIndexInt = _mapSquareDic.Keys.ToList().IndexOf(curKey);
+        //int curKeyIndexInt = _mapSquareDic.Keys.ToList().IndexOf(curKey);
+        int curKeyIndexInt = _keys.IndexOf(curKey);
         return curKeyIndexInt;
     }
     public static MapSquare CurrentMapSquare(int curKeyIndex)
     {
-        //return _mapSquareDic.FirstOrDefault(x => x.Key == CurrentKey(curKeyIndex)).Value;
         return _mapSquareDic.Values.ToList()[curKeyIndex];
     }
-    [Obsolete("Use CurrentMapSquare(int curKeyIndex) instead. Don't suggest find current map square by key.")]
+    [Obsolete("Use CurrentMapSquare(int curKeyIndex) instead. We don't suggest find current map square by key.")]
     public static MapSquare CurrentMapSquare(Vector2 curKey)
     {
         return _mapSquareDic.Keys.ToList().Where(x => Mathf.Approximately(x.x, curKey.x) && Mathf.Approximately(x.y, curKey.y)).Select(x => _mapSquareDic[x]).FirstOrDefault();

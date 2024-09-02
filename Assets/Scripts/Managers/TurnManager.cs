@@ -23,7 +23,6 @@ public class TurnManager : MonoBehaviour
     private void StartGame()
     {
         _isPlayer1Turn = true;
-        //StartCoroutine(Co_TurnChange(true, 5));
         Observable.FromCoroutine(() => Co_TurnChange(true, 5)).Subscribe();
     }
     private void TurnChange()
@@ -35,18 +34,18 @@ public class TurnManager : MonoBehaviour
     private void PlayerTurn()
     {
         PawnManager.Instance.TurnChange(true);
-        //StartCoroutine(Co_TurnChange(true));
         Observable.FromCoroutine(() => Co_TurnChange(true)).Subscribe();
     }
     private void EnemyTurn()
     {
         PawnManager.Instance.TurnChange(false);
-        //StartCoroutine(Co_TurnChange(false));
         Observable.FromCoroutine(() => Co_TurnChange(false)).Subscribe();
     }
     private IEnumerator Co_TurnChange(bool isPlayer1, int delay = 0)
     {
         yield return new WaitForSeconds(delay);
+        if(GameManager.Instance.GameState == GameState.End)
+            yield break;
         _turnText.gameObject.SetActive(true);
         _turnText.text = isPlayer1 ? "Player1 턴" : "Player2 턴";
         _turnTextRect.DOAnchorPosX(0, 0.3f).SetEase(Ease.OutQuint);

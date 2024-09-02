@@ -39,12 +39,12 @@ public class LinkEventPopup : MonoBehaviour
         // 계산된 가로 세로 길이로 팝업 크기 조정
         _popupRect.sizeDelta = new Vector2(width, height);
         
-        position.y += height * 0.5f; // 팝업이 마우스 위로 나타나도록 위치 조정
+        position.y += height * 0.5f; // 팝업이 마우스 보다 위로 나타나도록 위치 조정
         
-        /*if (position.x + width * 0.5f > Screen.width)
+        if (position.x + width * 0.5f > Screen.width) // 팝업이 화면을 넘어가지 않도록 보정
         {
             position.x = Screen.width - width * 0.5f;
-        }*/
+        }
         _popupRect.position = Vector3.zero;
         _popupRect.anchoredPosition = new Vector2(position.x, position.y);
         _popupRect.localPosition = new Vector3(_popupRect.localPosition.x, _popupRect.localPosition.y, 0);

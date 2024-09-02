@@ -7326,12 +7326,12 @@ RectTransform:
   - {fileID: 1525848780}
   - {fileID: 2085437510}
   - {fileID: 1535461716}
+  - {fileID: 67269016}
   - {fileID: 1428274779}
   - {fileID: 1004861315}
   - {fileID: 778727592}
   - {fileID: 601318844}
   - {fileID: 735448278}
-  - {fileID: 67269016}
   - {fileID: 1833724137}
   m_Father: {fileID: 1930907876}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

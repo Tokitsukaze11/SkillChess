@@ -24,13 +24,8 @@ public class EnemyPawnController : MonoBehaviour
             return;
         foreach(var pawn in _enemyPawns)
         {
-            pawn.TryGetComponent(out NavMeshAgent nav);
-            nav.enabled = false;
-            var outs =pawn.GetComponentsInChildren<OutlineFx.OutlineFx>();
-            foreach (var outline in outs)
-            {
-                outline.enabled = false;
-            }
+            pawn.SetNavMeshAgentDisable();
+            pawn.OnOutlineDisable();
             ObjectManager.Instance.RemoveObject(pawn.gameObject);
         }
         _enemyPawns.Clear();
@@ -51,10 +46,8 @@ public class EnemyPawnController : MonoBehaviour
                 GameObject obj = null;
                 
                 if(i == col/2/2 && nowRow == row-1)
-                    //obj = ObjectManager.Instance.SpawnObject(enemyKingPrefab, null, false);
                     obj = ObjectManager.Instance.SpawnObject(enemyKingPrefab,enemyKingPrefab.gameObject.name);
                 else
-                    //obj = ObjectManager.Instance.SpawnObject(enemyPawnPrefab[Random.Range(0,enemyPawnPrefab.Length)], null, false);
                 {
                     var target = enemyPawnPrefab[Random.Range(0, enemyPawnPrefab.Length)];
                     obj = ObjectManager.Instance.SpawnObject(target, target.gameObject.name);
@@ -65,14 +58,11 @@ public class EnemyPawnController : MonoBehaviour
                 int curIndex = curCol * row + curRow;
                 var curKey = SquareCalculator.CurrentKey(curIndex);
             
-                //obj.transform.position = new Vector3(curKey.x, 0, curKey.y);
                 obj.GetComponent<NavMeshAgent>().enabled = false;
                 obj.transform.position = Vector3.zero;
                 obj.transform.position = spawnPos;
                 obj.transform.SetParent(ObjectManager.Instance.globalObjectParent);
-                obj.gameObject.name = $"EnemyPawn_{i}";
-                //obj.transform.rotation = Quaternion.Euler(0, 180, 0);
-                //obj.GetComponent<MeshRenderer>().material.color = Color.magenta;
+                obj.gameObject.name = $"EnemyPawn_{nowRow}_{curCol}";
                 obj.SetActive(true);
                 var pawn = obj.GetComponent<Pawn>();
                 pawn._isPlayerPawn = false;
@@ -85,17 +75,14 @@ public class EnemyPawnController : MonoBehaviour
                 pawn.CurMapSquare = curMapSquare;
                 _enemyPawns.Add(pawn);
                 pawn.OnDie += PawnDie;
-                //obj.GetComponent<NavMeshAgent>().enabled = true;
-                StartCoroutine(pawn.Co_MoveToDest(curMapSquare.transform.position));
+                Observable.FromCoroutine(()=>pawn.Co_MoveToDest(curMapSquare.transform.position)).Subscribe();
             }
         }
-        //StartCoroutine(SetNavMeshAgentEnable());
         Observable.FromCoroutine(SetNavMeshAgentEnable).Subscribe();
     }
     private IEnumerator SetNavMeshAgentEnable()
     {
         yield return new WaitForSeconds(0.1f);
-        //_enemyPawns.ForEach(x => x.GetComponent<NavMeshAgent>().enabled = true);
         foreach(var pawn in _enemyPawns)
         {
             pawn.TryGetComponent(out NavMeshAgent navMeshAgent);
@@ -117,6 +104,7 @@ public class EnemyPawnController : MonoBehaviour
     }
     private void PawnDie(Pawn diedPawn)
     {
+        diedPawn.OnOutlineDisable();
         _enemyPawns.Remove(diedPawn);
         if(diedPawn.PawnType == PawnType.King)
         {

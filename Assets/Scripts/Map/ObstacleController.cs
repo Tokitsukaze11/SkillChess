@@ -88,9 +88,10 @@ public class ObstacleController : MonoBehaviour
     private void SetObstaclesUncovered()
     {
         // 가려지지 않은 오브젝트 찾기
-        foreach (var pair in _obstacleCoverageMap)
+        foreach ((var obstacle, bool value) in _obstacleCoverageMap)
         {
-            pair.Key?.SetAlpha(pair.Value); // 리셋할떄 여기서 가끔 에러 뜸 (null 체크로 일단 임시로 해결해 둠)
+            if(!ReferenceEquals(obstacle, null) && obstacle != null) // real null과 fake null 둘다 false여야 함.
+                obstacle.SetAlpha(value);
         }
         // 가려짐 상태 업데이트
         _obstacleCoverageMap.ToList().ForEach(pair => _obstacleCoverageMap[pair.Key] = false);
