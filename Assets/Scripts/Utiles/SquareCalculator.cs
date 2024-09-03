@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Unity.VisualScripting;
 
 public static class SquareCalculator
 {
@@ -52,8 +51,8 @@ public static class SquareCalculator
     /// <param name="isConsideringAnyPawn">기물 영향을 받는지(타겟 지정일 시)</param>
     public static void CheckTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false, bool isConsideringAnyPawn = false)
     {
-        GetVerticalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles, isConsideringAnyPawn);
-        GetHorizontalCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles, isConsideringAnyPawn);
+        GetDirectionCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles, isConsideringAnyPawn);
+        GetDirectionCheck(targetRange, curKeyIndex, targetSquares, isConsideringObstacles, isConsideringAnyPawn, false);
     }
     /// <summary>
     /// Check squares that can something be done in diagonal direction
@@ -95,6 +94,7 @@ public static class SquareCalculator
             }
         }
     }
+    #region Check Vertical and Horizontal as isolated
     private static void GetVerticalCheck(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false, bool isConsideringAnyPawn = false)
     {
         int row = GlobalValues.ROW; // n
@@ -113,7 +113,6 @@ public static class SquareCalculator
             while (curRange < targetRange)
             {
                 int newKeyIndex = curKeyIndex + (curRange + 1) * direction;
-                //CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
                 CheckDirection(newKeyIndex, minBoundary, maxBoundary, _keys, targetSquares);
                 
                 if(CheckBool(isConsideringObstacles, isConsideringAnyPawn, targetSquares))
@@ -144,7 +143,6 @@ public static class SquareCalculator
             while (curRange < targetRange)
             {
                 int newKeyIndex = curKeyIndex + (curRange + 1) * direction;
-                //CheckDirection(newKeyIndex, minBoundary, maxBoundary, _mapSquareDic.Keys.ToList(), targetSquares);
                 CheckDirection(newKeyIndex, minBoundary, maxBoundary, _keys, targetSquares);
                 
                 if(CheckBool(isConsideringObstacles, isConsideringAnyPawn, targetSquares))
@@ -157,6 +155,36 @@ public static class SquareCalculator
         // 나의 행에서 이동할 수 있는 거리만큼의 최대 값 : 현재 인덱스 + (n*이동할 수 있는 거리)
         // 나의 행에서 이동할 수 있는 거리만큼의 최소 값 : 현재 행의 인덱스
     }
+  #endregion
+    // Merge GetVerticalCheck and GetHorizontalCheck
+    private static void GetDirectionCheck(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false, bool isConsideringAnyPawn = false, bool isVertical = true)
+    {
+        int row = GlobalValues.ROW;
+        int col = GlobalValues.COL;
+        
+        int nowCol = curKeyIndex / row;
+        int nowRow = curKeyIndex % row;
+
+        int maxBoundary = isVertical ? row * (nowCol + 1) - 1 : curKeyIndex + (row * targetRange);
+        int minBoundary = isVertical ? row * nowCol : nowRow;
+        
+        int[] directions = isVertical ? new int[] { 1, -1 } : new int[] { row, -row };
+        
+        foreach (int direction in directions)
+        {
+            int curRange = 0;
+            while (curRange < targetRange)
+            {
+                int newKeyIndex = curKeyIndex + (curRange + 1) * direction;
+                CheckDirection(newKeyIndex, minBoundary, maxBoundary, _keys, targetSquares);
+                
+                if(CheckBool(isConsideringObstacles, isConsideringAnyPawn, targetSquares))
+                    break;
+
+                curRange++;
+            }
+        }
+    }
     private static void CheckDirection(int newKeyIndex, int minBoundary, int maxBoundary, List<Vector2> keys, List<MapSquare> targetSquares)
     {
         if ((newKeyIndex >= minBoundary && newKeyIndex < keys.Count) && (newKeyIndex <= maxBoundary && newKeyIndex >= 0))
@@ -168,30 +196,25 @@ public static class SquareCalculator
     }
     private static bool CheckBool(bool isConsideringObstacles, bool isConsideringAnyPawn, List<MapSquare> targetSquares)
     {
-        if (isConsideringObstacles && isConsideringAnyPawn) // 타겟 지정이고 장애물 영향 있을 때
+        switch (isConsideringObstacles, isConsideringAnyPawn, targetSquares)
         {
-            if (targetSquares.Any(x => x.IsAnyPawn()))
+            case (true,true,var squares) when squares.Any(x=>x.IsAnyPawn()):
                 return true;
-            if (targetSquares.Any(x => x.IsObstacle))
-            {
+            case (true,true,var squares) when squares.Any(x=>x.IsObstacle):
                 targetSquares.RemoveAt(targetSquares.Count - 1);
                 return true;
-            }
-        }
-        if (isConsideringAnyPawn && targetSquares.Any(x => x.IsAnyPawn())) // 타겟 지정이고 타겟 영향 있을 때
-        {
-            if (targetSquares[^1].CurPawn == null)
+            case (true,false,var squares) when squares.Any(x=>x.IsObstacle):
+                targetSquares.RemoveAt(targetSquares.Count - 1);
+                return true;
+            case (false,true,var squares)
+                when squares.Any(x=>x.IsAnyPawn()) && !squares[^1].CurPawn.Equals(null):
+                if (!squares[^1].CurPawn._isPlayerPawn)
+                    return false;
+                targetSquares.RemoveAt(targetSquares.Count - 1);
+                return true;
+            default:
                 return false;
-            if(targetSquares[^1].CurPawn!._isPlayerPawn)
-                targetSquares.RemoveAt(targetSquares.Count - 1);
-            return true;
         }
-        if (isConsideringObstacles && targetSquares.Any(x =>x.IsObstacle)) // 장애물 영향 있고 타겟 영향 없을 때
-        {
-            targetSquares.RemoveAt(targetSquares.Count - 1);
-            return true;
-        }
-        return false;
     }
 #endregion
     public static int CurrentIndex(MapSquare curMapSquare)
@@ -199,18 +222,12 @@ public static class SquareCalculator
         if (curMapSquare == null)
             return -1;
         Vector2 curKey = _mapSquareDic.FirstOrDefault(x => x.Value == curMapSquare).Key;
-        //int curKeyIndexInt = _mapSquareDic.Keys.ToList().IndexOf(curKey);
         int curKeyIndexInt = _keys.IndexOf(curKey);
         return curKeyIndexInt;
     }
     public static MapSquare CurrentMapSquare(int curKeyIndex)
     {
         return _mapSquareDic.Values.ToList()[curKeyIndex];
-    }
-    [Obsolete("Use CurrentMapSquare(int curKeyIndex) instead. We don't suggest find current map square by key.")]
-    public static MapSquare CurrentMapSquare(Vector2 curKey)
-    {
-        return _mapSquareDic.Keys.ToList().Where(x => Mathf.Approximately(x.x, curKey.x) && Mathf.Approximately(x.y, curKey.y)).Select(x => _mapSquareDic[x]).FirstOrDefault();
     }
     public static Vector2 CurrentKey(MapSquare curMapSquare)
     {
