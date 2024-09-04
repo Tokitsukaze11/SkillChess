@@ -63,7 +63,6 @@ public static class SquareCalculator
     /// <param name="isConsideringObstacles">Is considering obstacles to do. If true, try to stop when obstacle is found</param>
     public static void CheckDiagonalTargetSquares(int targetRange, int curKeyIndex, List<MapSquare> targetSquares, bool isConsideringObstacles = false)
     {
-        //var keys = _mapSquareDic.Keys.ToList();
         int row = GlobalValues.ROW; // n
         int col = GlobalValues.COL; // m
         
@@ -207,7 +206,7 @@ public static class SquareCalculator
                 targetSquares.RemoveAt(targetSquares.Count - 1);
                 return true;
             case (false,true,var squares)
-                when squares.Any(x=>x.IsAnyPawn()) && !squares[^1].CurPawn.Equals(null):
+                when squares.Any(x=>x.IsAnyPawn()) && squares[^1].CurPawn != null:
                 if (!squares[^1].CurPawn._isPlayerPawn)
                     return false;
                 targetSquares.RemoveAt(targetSquares.Count - 1);
@@ -227,7 +226,7 @@ public static class SquareCalculator
     }
     public static MapSquare CurrentMapSquare(int curKeyIndex)
     {
-        return _mapSquareDic.Values.ToList()[curKeyIndex];
+        return _mapSquares[curKeyIndex];
     }
     public static Vector2 CurrentKey(MapSquare curMapSquare)
     {
@@ -235,6 +234,6 @@ public static class SquareCalculator
     }
     public static Vector2 CurrentKey(int curKeyIndex)
     {
-        return _mapSquareDic.Keys.ToList()[curKeyIndex];
+        return _keys[curKeyIndex];
     }
 }

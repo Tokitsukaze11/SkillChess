@@ -16,6 +16,7 @@ public class PlayerPawnController : MonoBehaviour
     public GameObject playerKingPrefab;
     private List<Pawn> _playerPawns = new List<Pawn>();
     [SerializeField] private PawnBehaviorUIController _pawnBehaviorUIController;
+    [SerializeField] private PopupDescriptController _popupDescriptController;
     [SerializeField] private AudioClip[] _pawnDieSounds;
     public event Action PlayerTickHandler;
     private void Awake()
@@ -80,6 +81,7 @@ public class PlayerPawnController : MonoBehaviour
                 pawn.OnPawnClicked += _pawnBehaviorUIController.PawnBehaviorUIPanelActive;
                 pawn.OnCannotAction += _pawnBehaviorUIController.ButtonShake;
                 pawn.OnPlayDieSound += PlayDieSound;
+                pawn.OnCannotClick += _popupDescriptController.CannotClickEvent;
                 curMapSquare.CurPawn = pawn;
                 pawn.CurMapSquare = curMapSquare;
                 pawn.OnDie += PawnDie;

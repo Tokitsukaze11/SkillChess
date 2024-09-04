@@ -29,7 +29,6 @@ public class EventManager : Singleton<EventManager>
     }
     private void DelayGameStart()
     {
-        //Task.Delay(5000).ContinueWith(t => OnGameStart?.Invoke());
         Observable.Timer(System.TimeSpan.FromSeconds(5)).Subscribe(_ => OnGameStart?.Invoke());
     }
 }

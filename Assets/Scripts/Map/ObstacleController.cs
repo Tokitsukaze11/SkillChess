@@ -50,8 +50,7 @@ public class ObstacleController : MonoBehaviour
     {
         if (_pawns == null)
             return;
-        //foreach(var pawn in _pawns.Where(pawn => pawn != null)) // real null과 fake null 둘다 false여야 함.
-        foreach(var pawn in _pawns.Where(pawn => !ReferenceEquals(pawn, null))) // Reset으로 _pawns가 null이 되게 했으므로 이렇게 바꿔도 됨.
+        foreach(var pawn in _pawns.Where(pawn => pawn != null))
         {
             var origin = _mainCamera.transform.position;
             var distance = pawn.transform.position - _mainCamera.transform.position;
@@ -87,13 +86,11 @@ public class ObstacleController : MonoBehaviour
     }
     private void SetObstaclesUncovered()
     {
-        // 가려지지 않은 오브젝트 찾기
         foreach ((var obstacle, bool value) in _obstacleCoverageMap)
         {
-            if(!ReferenceEquals(obstacle, null) && obstacle != null) // real null과 fake null 둘다 false여야 함.
-                obstacle.SetAlpha(value);
+            //if(obstacle != null)
+            obstacle?.SetAlpha(value);
         }
-        // 가려짐 상태 업데이트
         _obstacleCoverageMap.ToList().ForEach(pair => _obstacleCoverageMap[pair.Key] = false);
     }
 }

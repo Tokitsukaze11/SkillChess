@@ -10,7 +10,6 @@ public class ObstacleSpawner : MonoBehaviour
     [Header("Obstacle")]
     [SerializeField] GameObject[] _obstaclePrefabs;
     private List<GameObject> _obstacleList = new List<GameObject>();
-    //private List<Tuple<string,GameObject>> _obstacleList2 = new List<Tuple<string, GameObject>>();
     private const int TOWER_A_OBSTACLE = 0;
     private const int TOWER_B_OBSTACLE = 1;
     private const int TOWER_C_OBSTACLE = 2;
@@ -18,7 +17,6 @@ public class ObstacleSpawner : MonoBehaviour
     public event Action<List<Obstacle>> OnObstacleSet;
     private void Awake()
     {
-        //ObjectManager.Instance.MakePool(_obstaclePrefabs[BOX_OBSTACLE], StringKeys.BOX_OBSTACLE);
         ObjectManager.Instance.MakePool(_obstaclePrefabs[TOWER_A_OBSTACLE], StringKeys.TOWER_A_OBSTACLE);
         ObjectManager.Instance.MakePool(_obstaclePrefabs[TOWER_B_OBSTACLE], StringKeys.TOWER_B_OBSTACLE);
         ObjectManager.Instance.MakePool(_obstaclePrefabs[TOWER_C_OBSTACLE], StringKeys.TOWER_C_OBSTACLE);
@@ -60,7 +58,7 @@ public class ObstacleSpawner : MonoBehaviour
         // 각각 아래 2개행과 위 2개행은 장애물이 없게 설정.
         // 다른 모든 곳은 장애물을 랜덤으로 생성.
         // 두 곳 모두 최소 출입구가 2개 이상이며 경로 또한 2개 이상인지 확인해야 함. (최종 목적) => 외나무 다리 방지 (근데 그래도 큰 문제는 없을 듯)
-        // 일단은 BFS로 경로가 존재하는지 확인하도록 만들기.
+        // BFS로 경로가 존재하는지 확인하도록 만들기.
         do
         {
             obstacleList.Clear();

@@ -24,6 +24,9 @@ public class PopupDescriptController : MonoBehaviour
     
     public EventableText _eventableText;
     
+    public RectTransform _cannotPopup;
+    private IDisposable _cannotPopupDisposable = null;
+    
     private void Awake()
     {
         _movePopup.OnMouseOverPopup += PopupControl;
@@ -43,6 +46,7 @@ public class PopupDescriptController : MonoBehaviour
         _descriptionPopupImage.gameObject.SetActive(false);
         _descriptionPopupImage.rectTransform.sizeDelta = new Vector2(800, 0);
         PopupControl(false);
+        _cannotPopup.gameObject.SetActive(false);
     }
     private void PopupControl(bool isOn,string description = null)
     {
@@ -96,5 +100,14 @@ public class PopupDescriptController : MonoBehaviour
             _skillPopup
         };
         popupObjects.Where(popup => popup != popupObject).ToList().ForEach(popup => popup.UnlockAsForce());
+    }
+    public void CannotClickEvent()
+    {
+        _cannotPopup.gameObject.SetActive(true);
+        _cannotPopup.DOShakePosition(0.5f, 10, 90).onComplete += () =>
+        {
+            _cannotPopup.gameObject.SetActive(false);
+            _cannotPopup.anchoredPosition = new Vector2(0, -150);
+        };
     }
 }

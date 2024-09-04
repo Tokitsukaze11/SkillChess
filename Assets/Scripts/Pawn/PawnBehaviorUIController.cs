@@ -38,6 +38,8 @@ public class PawnBehaviorUIController : MonoBehaviour
         {
             if(active)
             {
+                if(curPawn == null)
+                    return;
                 BehaviorButtonHandle(curPawn);
                 pawnBehaviorUIPanel.SetActive(true);
             }
@@ -57,8 +59,8 @@ public class PawnBehaviorUIController : MonoBehaviour
     }
     private void BehaviorButtonHandle(Pawn curPawn)
     {
-        if(curPawn == null)
-            throw new System.Exception("When UI is active, curPawn must not be null");
+        if (curPawn == null)
+            return;
         
         moveButton.onClick.RemoveAllListeners();
         moveButton.onClick.AddListener(curPawn.ShowMoveRange);
@@ -83,13 +85,13 @@ public class PawnBehaviorUIController : MonoBehaviour
         {
             case 0:
                 moveButton.gameObject.GetComponent<PopupObject>().StopFillAnim();
-                moveButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 10, 90, 90, false, true);
+                moveButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 20, 90, 90, false, true);
                 _moveTimer.fillAmount = 1;
                 _moveTimer.DOFillAmount(0, 0.5f).SetDelay(1f);
                 break;
             case 1:
                 attackButton.gameObject.GetComponent<PopupObject>().StopFillAnim();
-                attackButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 10, 90, 90, false, true);
+                attackButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 20, 90, 90, false, true);
                 _attackTimer.fillAmount = 1;
                 _attackTimer.DOFillAmount(0, 0.5f).SetDelay(1f);
                 break;
@@ -98,7 +100,7 @@ public class PawnBehaviorUIController : MonoBehaviour
                 break;
             case 3:
                 skillButton.gameObject.GetComponent<PopupObject>().StopFillAnim();
-                skillButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 10, 90, 90, false, true);
+                skillButton.GetComponent<RectTransform>().DOShakePosition(0.5f, 20, 90, 90, false, true);
                 _skillTimer.fillAmount = 1;
                 _skillTimer.DOFillAmount(0, 0.5f).SetDelay(1f);
                 break;

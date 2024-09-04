@@ -79,6 +79,7 @@ public abstract class Pawn : MonoBehaviour
     public event Action OnPlayDieSound;
     public event Action<int> OnCannotAction;
     public event Action OnHowitzerAttack;
+    public event Action OnCannotClick;
     // static variables
     private static readonly int Run = Animator.StringToHash("Run");
     private static readonly int Attack1 = Animator.StringToHash("Attack");
@@ -133,7 +134,10 @@ public abstract class Pawn : MonoBehaviour
     {
         // 보정은 미리 하고 들어옴
         if (!_isPlayerPawn || !_isCanClick)
+        {
+            OnCannotClick?.Invoke();
             return;
+        }
         OnPawnClicked?.Invoke(true, this);
         PawnManager.Instance.ResetSquaresColor();
         _outlineFx.ToList().ForEach(x => x.enabled = true);
@@ -364,6 +368,7 @@ public abstract class Pawn : MonoBehaviour
     }
     protected virtual void Die()
     {
+        _isCanClick = false;
         _objectTriggerAnimation.OnAnimationTrigger += () =>
         {
             OnDie?.Invoke(this);

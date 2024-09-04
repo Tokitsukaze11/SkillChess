@@ -28,7 +28,6 @@ public class GameManager : Singleton<GameManager>
     public event Action OnTitle;
     public void GameStart()
     {
-        //EventManager.Instance.GameStart();
         OnGameStart?.Invoke();
     }
     public void TurnEnd()

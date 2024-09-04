@@ -17,10 +17,6 @@ public class MapSetController : MonoBehaviour
 
     private void Awake()
     {
-        /*_colUpButton.onClick.AddListener(ColUp);
-        _colDownButton.onClick.AddListener(ColDown);
-        _rowUpButton.onClick.AddListener(RowUp);
-        _rowDownButton.onClick.AddListener(RowDown);*/
         foreach (var button in _colUpButton)
         {
             button.onClick.AddListener(ColUp);

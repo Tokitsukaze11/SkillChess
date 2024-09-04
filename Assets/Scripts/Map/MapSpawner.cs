@@ -14,11 +14,6 @@ public class MapSpawner : MonoBehaviour
     public GameObject _player2HQ;
     private Vector3 _originPlayer1HQpos = new Vector3(5, -4.6f, -4.8f);
     private Vector3 _originPlayer2HQpos = new Vector3(5, -4.6f, 15.2f);
-
-    [ReadOnly] private int row = 8;
-    [ReadOnly] private int col = 8;
-    
-    //private Dictionary<Vector2,MapSquare> _mapSquareDic = new Dictionary<Vector2, MapSquare>();
     
     [SerializeField] private ObstacleSpawner _obstacleSpawner;
     [SerializeField] private ObstacleController _obstacleController;
@@ -26,26 +21,27 @@ public class MapSpawner : MonoBehaviour
     private void Awake()
     {
         ObjectManager.Instance.MakePool(place, StringKeys.MAP_PLACE);
-         /*_originPlayer1HQpos = _player1HQ.transform.position;
-         _originPlayer2HQpos = _player2HQ.transform.position;*/
         GameManager.Instance.OnGameRestart += ResetMapSquares;
         EventManager.Instance.OnGameStartHaveParam += MakeMapSquares;
         GameManager.Instance.OnTitle += ClearMapSquares;
         _obstacleSpawner.OnObstacleSet += _obstacleController.SetObstacle;
-        GlobalValues.ROW = row;
-        GlobalValues.COL = col;
+        GlobalValues.ROW = 8;
+        GlobalValues.COL = 8;
     }
-    private void MakeMapSquares(int row, int col)
+    private void SetHqPos(int row, int col)
     {
-        GameManager.Instance.GameStateChange(GameState.Play);
-        var targetX = (col - 8) * (squareSize / 2);
-        var targetZ = (row - 8) * (squareSize);
+        float targetX = (col - 8) * (squareSize / 2);
+        float targetZ = (row - 8) * (squareSize);
         var newPos1 = new Vector3(_originPlayer1HQpos.x + targetX, _originPlayer1HQpos.y, _originPlayer1HQpos.z);
         var newPos2 = new Vector3(_originPlayer2HQpos.x + targetX, _originPlayer2HQpos.y, _originPlayer2HQpos.z + targetZ);
         _player1HQ.transform.position = newPos1;
         _player2HQ.transform.position = newPos2;
+    }
+    private void MakeMapSquares(int row, int col)
+    {
+        GameManager.Instance.GameStateChange(GameState.Play);
+        SetHqPos(row, col);
         Dictionary<Vector2,MapSquare> mapSquareDic = new Dictionary<Vector2, MapSquare>();
-        //Debug.Log("행 : " + row + " 열 : " + col);
         for (int i = 0; i < col; i++)
         {
             for (int j = 0; j < row; j++)
@@ -78,6 +74,6 @@ public class MapSpawner : MonoBehaviour
         }
         SquareCalculator.MapSquareDic.Clear();
         PawnManager.Instance.ResetPawns();
-        _obstacleSpawner.InvisibleObstacle(); // Destroy시 Obstacle에서 SetAlpha를 호출하면서 문제 발생
+        _obstacleSpawner.InvisibleObstacle(); // Destroy하면 Obstacle에서 SetAlpha를 호출하면서 문제 발생
     }
 }

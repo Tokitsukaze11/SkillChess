@@ -29,14 +29,10 @@ public class PawnManager : Singleton<PawnManager>
     }
     public void ResetPawns()
     {
-        /*_playerPawnController.ResetPawns();
-        _enemyPawnController.ResetPawns();*/
         OnResetPawns?.Invoke();
     }
     public void SpawnPawn()
     {
-        /*_playerPawnController.SpawnPlayerPawn();
-        _enemyPawnController.SpawnEnemyPawn();*/
         OnSpawnPawns?.Invoke();
         OnSpawnComplete?.Invoke();
     }
