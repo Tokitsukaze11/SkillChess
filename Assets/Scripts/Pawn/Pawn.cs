@@ -347,7 +347,11 @@ public abstract class Pawn : MonoBehaviour
     public virtual void TakeDamage(int damage, string particleID = null)
     {
         damage -= _curDefense;
+        int originDamage = damage;
         damage -= _shield;
+        _shield -= damage;
+        if (_shield < 0)
+            _shield = 0;
         if(damage < 0)
         {
             damage = 0;
@@ -359,7 +363,7 @@ public abstract class Pawn : MonoBehaviour
         var damParticle = ObjectManager.Instance.SpawnParticle(PawnManager.Instance._damageTextParticle, StringKeys.DAMAGE, true);
         var damageText = damParticle.GetComponent<DamageText>();
         var spawnPosition = this.transform.position;
-        damageText.SetText(damage, spawnPosition, false);
+        damageText.SetText(originDamage, spawnPosition, false);
         var hitParticle = ObjectManager.Instance.SpawnParticleViaID(particleID);
         Vector3 spawnPoint = spawnPosition + new Vector3(0, 0.2f, 0);
         hitParticle.transform.position = spawnPoint;

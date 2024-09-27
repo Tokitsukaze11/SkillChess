@@ -18,7 +18,6 @@ public class PlayerPawnController : MonoBehaviour
     [SerializeField] private PawnBehaviorUIController _pawnBehaviorUIController;
     [SerializeField] private PopupDescriptController _popupDescriptController;
     [SerializeField] private AudioClip[] _pawnDieSounds;
-    public event Action PlayerTickHandler;
     private void Awake()
     {
         PawnManager.Instance.OnResetPawns += ResetPawns;
@@ -111,8 +110,6 @@ public class PlayerPawnController : MonoBehaviour
     public void TurnChange(bool isPlayerTurn)
     {
         _playerPawns.ForEach(x => x._isCanClick = isPlayerTurn);
-        if(isPlayerTurn)
-            PlayerTickHandler?.Invoke();
         _playerPawns.ForEach(x => x._isPlayerPawn = isPlayerTurn);
         if(isPlayerTurn)
             _pawnBehaviorUIController.UpdatePlayerPawns(_playerPawns);

@@ -63,7 +63,7 @@ public class ClickController : MonoBehaviour
         if (GameManager.Instance.GameState != GameState.Play)
             return;
         Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-        // 레이케스트에서는 하나의 MapSquare만 인식이 가능함(님은 2개 동시에 클릭 ㄱㄴ?)
+        // 레이케스트에서는 하나의 MapSquare만 인식이 가능함
         var mapSquare = RaycastTool.RaycastOnLayer<MapSquare>(ray, _squareLayMask);
         if (ReferenceEquals(mapSquare, null))
         {

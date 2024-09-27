@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.3069224, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6434,6 +6434,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI_MemoryDisplayScene
       objectReference: {fileID: 0}
+    - target: {fileID: 8813019071857411858, guid: d6920a74e529c2841a62014d0539b32e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8813019071857412332, guid: d6920a74e529c2841a62014d0539b32e, type: 3}
       propertyPath: m_UiScaleMode
       value: 1
@@ -6532,23 +6536,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8813019073409061475, guid: d6920a74e529c2841a62014d0539b32e, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8813019073409061475, guid: d6920a74e529c2841a62014d0539b32e, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8813019073409061475, guid: d6920a74e529c2841a62014d0539b32e, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 216.88889
       objectReference: {fileID: 0}
     - target: {fileID: 8813019073409061475, guid: d6920a74e529c2841a62014d0539b32e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 3363.3335
       objectReference: {fileID: 0}
     - target: {fileID: 8813019073409061475, guid: d6920a74e529c2841a62014d0539b32e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7476,6 +7480,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1565637672}
   - {fileID: 1525848780}
   - {fileID: 2085437510}
   - {fileID: 1535461716}
@@ -8758,7 +8763,7 @@ GameObject:
   - component: {fileID: 1565637675}
   - component: {fileID: 1565637674}
   - component: {fileID: 1565637673}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: InGameMenu_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8772,12 +8777,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565637671}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2036039152}
+  m_Father: {fileID: 1324249377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -11973,7 +11978,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1565637672}
   - {fileID: 1924922408}
   m_Father: {fileID: 1930907876}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

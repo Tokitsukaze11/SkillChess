@@ -57,7 +57,6 @@ public class ObstacleSpawner : MonoBehaviour
         
         // 각각 아래 2개행과 위 2개행은 장애물이 없게 설정.
         // 다른 모든 곳은 장애물을 랜덤으로 생성.
-        // 두 곳 모두 최소 출입구가 2개 이상이며 경로 또한 2개 이상인지 확인해야 함. (최종 목적) => 외나무 다리 방지 (근데 그래도 큰 문제는 없을 듯)
         // BFS로 경로가 존재하는지 확인하도록 만들기.
         do
         {
@@ -70,7 +69,7 @@ public class ObstacleSpawner : MonoBehaviour
                 if (curRow < 2 || curRow >= row - 2)
                     continue;
                 int rand = Random.Range(0, 100);
-                if(rand < 50) // 확률이 너무 높으면 무한 반복 됨 (얘도 가끔 그러더라)
+                if(rand < 50)
                     continue;
                 SquareCalculator.CurrentMapSquare(index).IsObstacle = true; // 코드 상으로만 장애물 생성
                 obstacleList.Add(index);
